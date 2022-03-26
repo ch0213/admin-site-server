@@ -2,6 +2,7 @@ package admin.adminsiteserver.member.member.ui.dto;
 
 import admin.adminsiteserver.member.member.domain.Member;
 import lombok.Getter;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Getter
 public class SignUpRequest {
@@ -13,8 +14,8 @@ public class SignUpRequest {
     private String studentNumber;
     private String phoneNumber;
 
-    public void encryptPassword(String encryptedPassword) {
-        password = encryptedPassword;
+    public void encryptPassword(PasswordEncoder passwordEncoder) {
+        password = passwordEncoder.encode(password);
     }
 
     public Member toMember() {
