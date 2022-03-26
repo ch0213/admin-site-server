@@ -14,14 +14,10 @@ public class SignUpRequest {
     private String studentNumber;
     private String phoneNumber;
 
-    public void encryptPassword(PasswordEncoder passwordEncoder) {
-        password = passwordEncoder.encode(password);
-    }
-
-    public Member toMember() {
+    public Member toMember(PasswordEncoder passwordEncoder) {
         return Member.builder()
                 .userId(userId)
-                .password(password)
+                .password(passwordEncoder.encode(password))
                 .email(email)
                 .name(name)
                 .studentNumber(studentNumber)
