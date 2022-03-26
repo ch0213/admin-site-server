@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 import static admin.adminsiteserver.member.member.ui.MemberResponseMessage.*;
 
 @RestController
@@ -18,7 +20,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/member")
-    public CommonResponse<MemberDto> signUp(@RequestBody SignUpRequest signUpRequest) {
+    public CommonResponse<MemberDto> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
         return CommonResponse.from(memberService.signUp(signUpRequest), SIGNUP_SUCCESS.getMessage());
     }
 }
