@@ -24,7 +24,7 @@ public class MemberService {
     @Transactional
     public MemberDto signUp(SignUpRequest signUpRequest) {
         Member member = signUpRequest.toMember(passwordEncoder);
-        memberRepository.findByEmail(member.getEmail())
+        memberRepository.findByUserId(member.getUserId())
                 .ifPresent(m -> {throw new AlreadyExistEmailException(ALREADY_EXIST_EMAIL);});
         return MemberDto.from(memberRepository.save(member));
     }
