@@ -24,9 +24,4 @@ public class MemberController {
     public CommonResponse<MemberDto> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
         return CommonResponse.from(memberService.signUp(signUpRequest), SIGNUP_SUCCESS.getMessage());
     }
-
-    @GetMapping("/auth-test")
-    public CommonResponse<Void> authTest() {
-        return CommonResponse.from("JWT 토큰이 유효합니다.");
-    }
 }
