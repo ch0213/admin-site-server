@@ -17,11 +17,11 @@ public class CommonResponse<T> {
     private PageInfo pageInfo;
     private String message;
 
-    public static <T> CommonResponse<T> from(T data, PageInfo pageInfo, String message) {
+    public static <T> CommonResponse<T> of(T data, PageInfo pageInfo, String message) {
         return new CommonResponse<>(data, pageInfo, message);
     }
 
-    public static <T> CommonResponse<T> from(T data, String message) {
+    public static <T> CommonResponse<T> of(T data, String message) {
         return new CommonResponse<>(data, null, message);
     }
 

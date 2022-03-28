@@ -5,9 +5,11 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+import static admin.adminsiteserver.member.auth.exception.AuthExceptionType.NOT_EXIST_MEMBER;
+
 @Getter
 public class NotExistMemberException extends BaseException {
-    public NotExistMemberException(AuthExceptionType authExceptionType) {
-        super(authExceptionType.getMessage(), LocalDateTime.now(), authExceptionType.getStatus());
+    public NotExistMemberException() {
+        super(NOT_EXIST_MEMBER.getMessage(), LocalDateTime.now(), NOT_EXIST_MEMBER.getStatus());
     }
 }

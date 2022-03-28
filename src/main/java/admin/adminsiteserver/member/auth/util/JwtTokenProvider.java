@@ -1,6 +1,7 @@
 package admin.adminsiteserver.member.auth.util;
 
 import admin.adminsiteserver.member.auth.application.dto.JwtTokenDto;
+import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
 import admin.adminsiteserver.member.member.domain.Member;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -49,10 +50,10 @@ public class JwtTokenProvider {
 
     public String createToken(Member member, String encodingKey, long validTime) {
         Claims claims = Jwts.claims().setSubject(member.getUserId());
-        claims.put("id", member.getId());
-        claims.put("name", member.getName());
+        claims.put("userId", member.getUserId());
         claims.put("email", member.getEmail());
-        claims.put("phoneNumber", member.getPhoneNumber());
+        claims.put("name", member.getName());
+        claims.put("role", member.getRole().getDescription());
 
         Date now = new Date();
         Date expireDate = new Date(now.getTime() + validTime);
@@ -74,9 +75,11 @@ public class JwtTokenProvider {
 
     public String extractToken(HttpServletRequest request) {
         String header = request.getHeader(AUTHORIZATION);
+
         if (header == null || !header.startsWith(BEARER)) {
             return null;
         }
+
         return header.split(TOKEN_DELIMITER)[1].trim();
     }
 
@@ -87,5 +90,14 @@ public class JwtTokenProvider {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public LoginUserInfo getLoginUserInfo(String token) {;
+        Claims claims = Jwts.parser()
+                .setSigningKey(SECRET_KEY)
+                .parseClaimsJws(token)
+                .getBody();
+
+        return LoginUserInfo.from(claims);
     }
 }

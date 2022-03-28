@@ -12,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import static admin.adminsiteserver.member.auth.exception.AuthExceptionType.*;
-
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -24,10 +22,10 @@ public class AuthService {
 
     public LoginResponse login(LoginRequest loginRequest) {
         Member member = memberRepository.findByUserId(loginRequest.getUserId())
-                .orElseThrow(() -> new NotExistMemberException(NOT_EXIST_MEMBER));
+                .orElseThrow(NotExistMemberException::new);
 
         if (isWrongPassword(loginRequest, member)) {
-            throw new WrongPasswordException(WRONG_PASSWORD);
+            throw new WrongPasswordException();
         }
 
         JwtTokenDto tokens = jwtTokenProvider.createTokens(member);
