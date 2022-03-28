@@ -6,8 +6,8 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class AlreadyExistEmailException extends BaseException {
-    public AlreadyExistEmailException(MemberExceptionType memberExceptionType) {
+public class AlreadyExistUserIDException extends BaseException {
+    public AlreadyExistUserIDException(MemberExceptionType memberExceptionType) {
         super(memberExceptionType.getMessage(), LocalDateTime.now(), memberExceptionType.getStatus());
     }
 }
