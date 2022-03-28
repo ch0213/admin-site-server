@@ -17,7 +17,7 @@ public class GlobalExceptionController {
     public static final String VALID_ERROR_MESSAGE = "요청 양식을 확인해주세요.";
 
     @ExceptionHandler(BaseException.class)
-    public ResponseEntity<ErrorResponse> userExHandle(BaseException exception) {
+    public ResponseEntity<ErrorResponse> baseExceptionHandle(BaseException exception) {
         return new ResponseEntity<>(ErrorResponse.from(exception), exception.getStatus());
     }
 
