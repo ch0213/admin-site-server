@@ -1,4 +1,4 @@
-package admin.adminsiteserver.member.auth.util;
+package admin.adminsiteserver.member.auth.application;
 
 import admin.adminsiteserver.member.member.domain.Member;
 import admin.adminsiteserver.member.member.domain.MemberRepository;
