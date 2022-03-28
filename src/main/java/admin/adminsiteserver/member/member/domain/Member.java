@@ -1,6 +1,5 @@
 package admin.adminsiteserver.member.member.domain;
 
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,13 +30,16 @@ public class Member {
 
     private String phoneNumber;
 
+    private RoleType role;
+
     @Builder
-    public Member(String userId, String password, String email, String name, String studentNumber, String phoneNumber) {
+    public Member(String userId, String password, String email, String name, String studentNumber, String phoneNumber, RoleType role) {
         this.userId = userId;
         this.password = password;
         this.email = email;
         this.name = name;
         this.studentNumber = studentNumber;
         this.phoneNumber = phoneNumber;
+        this.role = role;
     }
 }
