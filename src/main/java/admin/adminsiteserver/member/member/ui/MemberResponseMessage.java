@@ -5,7 +5,8 @@ import lombok.Getter;
 @Getter
 public enum MemberResponseMessage {
     SIGNUP_SUCCESS("회원가입 성공"),
-    UPDATE_SUCCESS("회원정보 수정 성공");
+    UPDATE_SUCCESS("회원정보 수정 성공"),
+    DELETE_SUCCESS("회원탈퇴 성공");
 
     private final String message;
 

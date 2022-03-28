@@ -41,4 +41,9 @@ public class MemberService {
                 updateMemberRequest.getStudentNumber(),
                 updateMemberRequest.getPhoneNumber());
     }
+
+    @Transactional
+    public void deleteMember(String userId) {
+        memberRepository.deleteByUserId(userId);
+    }
 }

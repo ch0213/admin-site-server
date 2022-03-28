@@ -35,4 +35,10 @@ public class MemberController {
         memberService.updateMember(updateMemberRequest, loginUserInfo.getUserId());
         return CommonResponse.from(UPDATE_SUCCESS.getMessage());
     }
+
+    @DeleteMapping("/member")
+    public CommonResponse<Void> deleteMember(@LoginUser LoginUserInfo loginUserInfo) {
+        memberService.deleteMember(loginUserInfo.getUserId());
+        return CommonResponse.from(DELETE_SUCCESS.getMessage());
+    }
 }
