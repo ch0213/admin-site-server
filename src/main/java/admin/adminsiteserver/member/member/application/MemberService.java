@@ -4,7 +4,9 @@ import admin.adminsiteserver.member.member.application.dto.MemberDto;
 import admin.adminsiteserver.member.member.domain.Member;
 import admin.adminsiteserver.member.member.domain.MemberRepository;
 import admin.adminsiteserver.member.member.exception.AlreadyExistUserIDException;
+import admin.adminsiteserver.member.member.exception.NotExistMemberException;
 import admin.adminsiteserver.member.member.ui.dto.SignUpRequest;
+import admin.adminsiteserver.member.member.ui.dto.UpdateMemberRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,8 +27,18 @@ public class MemberService {
         Member member = signUpRequest.toMember(passwordEncoder);
         memberRepository.findByUserId(member.getUserId())
                 .ifPresent(m -> {
-                    throw new AlreadyExistUserIDException(ALREADY_EXIST_USER_ID);
+                    throw new AlreadyExistUserIDException();
                 });
         return MemberDto.from(memberRepository.save(member));
+    }
+
+    @Transactional
+    public void updateMember(UpdateMemberRequest updateMemberRequest, String userId) {
+        Member member = memberRepository.findByUserId(userId)
+                .orElseThrow(NotExistMemberException::new);
+        member.update(updateMemberRequest.getEmail(),
+                updateMemberRequest.getName(),
+                updateMemberRequest.getStudentNumber(),
+                updateMemberRequest.getPhoneNumber());
     }
 }
