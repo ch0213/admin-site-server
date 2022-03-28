@@ -14,6 +14,7 @@ public class MemberDto {
     private String name;
     private String studentNumber;
     private String phoneNumber;
+    private String role;
 
     public static MemberDto from(Member member) {
         return new MemberDto(
@@ -21,7 +22,8 @@ public class MemberDto {
                 member.getEmail(),
                 member.getName(),
                 member.getStudentNumber(),
-                member.getPhoneNumber()
+                member.getPhoneNumber(),
+                member.getRole().getDescription()
         );
     }
 }
