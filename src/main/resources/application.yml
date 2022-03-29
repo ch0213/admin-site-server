@@ -13,6 +13,25 @@ spring:
         format_sql: true
         default_batch_fetch_size: 100
 
+  servlet:
+    multipart:
+      max-file-size: 1MB
+      max-request-size: 1MB
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${S3_ACCESSKEY}
+      secret-key: ${S3_SECRETKEY}
+    region:
+      static: ${S3_REGION}
+    s3:
+      bucket: ${S3_BUCKET}
+    cloudfront:
+      url: ${CLOUD_FRONT_URL}
+    stack:
+      auto: false
+
 logging:
   level:
     org.hibernate.SQL: debug
