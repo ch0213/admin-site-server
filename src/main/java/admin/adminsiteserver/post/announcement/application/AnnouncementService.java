@@ -6,7 +6,7 @@ import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
 import admin.adminsiteserver.post.announcement.application.dto.UploadAnnouncementResponse;
 import admin.adminsiteserver.post.announcement.domain.Announcement;
 import admin.adminsiteserver.post.announcement.domain.AnnouncementRepository;
-import admin.adminsiteserver.post.announcement.domain.FilePath;
+import admin.adminsiteserver.common.domain.FilePath;
 import admin.adminsiteserver.post.announcement.ui.dto.UploadAnnouncementRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

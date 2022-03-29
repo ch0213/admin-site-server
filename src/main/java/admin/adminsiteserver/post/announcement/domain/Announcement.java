@@ -1,6 +1,7 @@
 package admin.adminsiteserver.post.announcement.domain;
 
 import admin.adminsiteserver.common.domain.BaseTimeEntity;
+import admin.adminsiteserver.common.domain.FilePath;
 import lombok.*;
 
 import javax.persistence.*;

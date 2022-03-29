@@ -1,6 +1,6 @@
 package admin.adminsiteserver.common.aws.infrastructure.dto;
 
-import admin.adminsiteserver.post.announcement.domain.FilePath;
+import admin.adminsiteserver.common.domain.FilePath;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

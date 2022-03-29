@@ -1,5 +1,6 @@
-package admin.adminsiteserver.post.announcement.domain;
+package admin.adminsiteserver.common.domain;
 
+import admin.adminsiteserver.post.announcement.domain.Announcement;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
