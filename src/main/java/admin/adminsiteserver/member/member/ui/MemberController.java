@@ -10,6 +10,7 @@ import admin.adminsiteserver.member.member.ui.dto.UpdateMemberRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -23,7 +24,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/signup")
-    public CommonResponse<MemberDto> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
+    public CommonResponse<MemberDto> signUp(SignUpRequest signUpRequest) {
         return CommonResponse.of(memberService.signUp(signUpRequest), SIGNUP_SUCCESS.getMessage());
     }
 
@@ -33,6 +34,15 @@ public class MemberController {
             @LoginUser LoginUserInfo loginUserInfo
     ) {
         memberService.updateMember(updateMemberRequest, loginUserInfo.getUserId());
+        return CommonResponse.from(UPDATE_SUCCESS.getMessage());
+    }
+
+    @PutMapping("/member/image")
+    public CommonResponse<Void> updateMemberImage(
+            @RequestParam MultipartFile image,
+            @LoginUser LoginUserInfo loginUserInfo
+    ) {
+        memberService.updateMemberImage(image, loginUserInfo.getUserId());
         return CommonResponse.from(UPDATE_SUCCESS.getMessage());
     }
 

@@ -1,5 +1,9 @@
 package admin.adminsiteserver.member.member.application;
 
+import admin.adminsiteserver.common.aws.infrastructure.S3Uploader;
+import admin.adminsiteserver.common.domain.FilePath;
+import admin.adminsiteserver.common.domain.FilePathRepository;
+import admin.adminsiteserver.common.dto.FilePathDto;
 import admin.adminsiteserver.member.member.application.dto.MemberDto;
 import admin.adminsiteserver.member.member.domain.Member;
 import admin.adminsiteserver.member.member.domain.MemberRepository;
@@ -11,8 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static admin.adminsiteserver.member.member.exception.MemberExceptionType.ALREADY_EXIST_USER_ID;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +23,10 @@ import static admin.adminsiteserver.member.member.exception.MemberExceptionType.
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final FilePathRepository filePathRepository;
     private final PasswordEncoder passwordEncoder;
+    private final S3Uploader s3Uploader;
+    private static final String MEMBER_IMAGE_PATH = "announcement/";
 
     @Transactional
     public MemberDto signUp(SignUpRequest signUpRequest) {
@@ -29,7 +35,12 @@ public class MemberService {
                 .ifPresent(m -> {
                     throw new AlreadyExistUserIDException();
                 });
-        return MemberDto.from(memberRepository.save(member));
+        FilePathDto filePathDto = s3Uploader.upload(signUpRequest.getImage(), MEMBER_IMAGE_PATH);
+        FilePath filePath = filePathDto.toFilePath();
+        Member signupMember = memberRepository.save(member);
+
+        signupMember.addProfileImage(filePathDto.toFilePath());
+        return MemberDto.of(signupMember, filePathDto);
     }
 
     @Transactional
@@ -40,6 +51,15 @@ public class MemberService {
                 updateMemberRequest.getName(),
                 updateMemberRequest.getStudentNumber(),
                 updateMemberRequest.getPhoneNumber());
+    }
+
+    @Transactional
+    public void updateMemberImage(MultipartFile multipartFile, String userId) {
+        Member member = memberRepository.findByUserId(userId)
+                .orElseThrow(NotExistMemberException::new);
+        s3Uploader.delete(member.getFilePath().getFileUrl());
+        FilePath filePath = filePathRepository.save(s3Uploader.upload(multipartFile, MEMBER_IMAGE_PATH).toFilePath());
+        member.addProfileImage(filePath);
     }
 
     @Transactional
