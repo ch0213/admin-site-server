@@ -3,35 +3,39 @@ package admin.adminsiteserver.post.announcement.domain;
 import admin.adminsiteserver.common.domain.BaseTimeEntity;
 import admin.adminsiteserver.common.domain.FilePath;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import static javax.persistence.CascadeType.*;
+import static lombok.AccessLevel.*;
 
+@Slf4j
 @Getter
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor
 public class Announcement extends BaseTimeEntity {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long id;
     private String authorId;
     private String authorName;
     private String title;
     private String content;
 
-    @OneToMany(mappedBy = "announcement", cascade = ALL)
-    private List<FilePath> images;
+    @OneToMany(mappedBy = "announcement", cascade = ALL, orphanRemoval = true)
+    private List<FilePath> images = new ArrayList<>();
 
     @Builder
-    public Announcement(String authorId, String authorName, String title, String content, List<FilePath> images) {
+    public Announcement(String authorId, String authorName, String title, String content) {
         this.authorId = authorId;
         this.authorName = authorName;
         this.title = title;
         this.content = content;
-        this.images = images;
     }
 
     public void updateAnnouncement(String title, String content) {
@@ -39,10 +43,21 @@ public class Announcement extends BaseTimeEntity {
         this.content = content;
     }
 
-    public void saveImages(List<FilePath> images) {
-        this.images = images;
-        for (FilePath image : images) {
-            image.includedToAnnouncement(this);
+    public void addImages(List<FilePath> newFilePaths) {
+        if (newFilePaths == null) {
+            return;
         }
+
+        for (FilePath newFilePath : newFilePaths) {
+            newFilePath.includedToAnnouncement(this);
+            this.images.add(newFilePath);
+        }
+    }
+
+    public void deleteImages(List<String> deleteFileUrls) {
+        if (deleteFileUrls == null) {
+            return;
+        }
+        images.removeIf(filePath -> deleteFileUrls.contains(filePath.getFileUrl()));
     }
 }

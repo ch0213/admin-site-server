@@ -7,10 +7,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @Getter
-@AllArgsConstructor
-public class UploadAnnouncementRequest {
-
-    private String title;
-    private String content;
-    private List<MultipartFile> images;
+public class UploadAnnouncementRequest extends BaseAnnouncementRequest{
+    public UploadAnnouncementRequest(String title, String content, List<MultipartFile> images) {
+        super(title, content, images);
+    }
 }

@@ -2,12 +2,13 @@ package admin.adminsiteserver.member.member.ui.dto;
 
 import admin.adminsiteserver.member.member.domain.Member;
 import admin.adminsiteserver.member.member.domain.RoleType;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import javax.validation.constraints.NotNull;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
+@AllArgsConstructor
 public class SignUpRequest {
 
     private String userId;
@@ -16,6 +17,7 @@ public class SignUpRequest {
     private String name;
     private String studentNumber;
     private String phoneNumber;
+    private MultipartFile image;
 
     public Member toMember(PasswordEncoder passwordEncoder) {
         return Member.builder()

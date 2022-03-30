@@ -1,6 +1,6 @@
 package admin.adminsiteserver.post.announcement.application.dto;
 
-import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
+import admin.adminsiteserver.common.dto.FilePathDto;
 import admin.adminsiteserver.post.announcement.domain.Announcement;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class UploadAnnouncementResponse {
+public class AnnouncementResponse {
     private String authorId;
     private String authorName;
     private String title;
@@ -19,11 +19,8 @@ public class UploadAnnouncementResponse {
     private LocalDateTime lastModifiedAt;
     private List<FilePathDto> image;
 
-    public static UploadAnnouncementResponse of(
-            Announcement announcement,
-            List<FilePathDto> image
-    ) {
-        return new UploadAnnouncementResponse(
+    public static AnnouncementResponse of(Announcement announcement, List<FilePathDto> image) {
+        return new AnnouncementResponse(
                 announcement.getAuthorId(),
                 announcement.getAuthorName(),
                 announcement.getTitle(),
