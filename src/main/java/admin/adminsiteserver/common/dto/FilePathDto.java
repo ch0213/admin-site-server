@@ -1,4 +1,4 @@
-package admin.adminsiteserver.common.aws.infrastructure.dto;
+package admin.adminsiteserver.common.dto;
 
 import admin.adminsiteserver.common.domain.FilePath;
 import lombok.AllArgsConstructor;
@@ -16,5 +16,9 @@ public class FilePathDto {
 
     public FilePath toFilePath() {
         return new FilePath(fileName, fileUrl);
+    }
+
+    public static FilePathDto from(FilePath filePath) {
+        return new FilePathDto(filePath.getFileName(), filePath.getFileUrl());
     }
 }

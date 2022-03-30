@@ -4,24 +4,36 @@ import admin.adminsiteserver.common.dto.CommonResponse;
 import admin.adminsiteserver.member.auth.util.LoginUser;
 import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
 import admin.adminsiteserver.post.announcement.application.AnnouncementService;
-import admin.adminsiteserver.post.announcement.application.dto.UploadAnnouncementResponse;
+import admin.adminsiteserver.post.announcement.application.dto.AnnouncementResponse;
+import admin.adminsiteserver.post.announcement.ui.dto.UpdateAnnouncementRequest;
 import admin.adminsiteserver.post.announcement.ui.dto.UploadAnnouncementRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static admin.adminsiteserver.post.announcement.ui.AnnouncementResponseMessage.UPLOAD_SUCCESS;
 
 @RestController
+@RequestMapping("/announcement")
 @RequiredArgsConstructor
 public class AnnouncementController {
 
     private final AnnouncementService announcementService;
 
-    @PostMapping("/announcement")
-    public CommonResponse<UploadAnnouncementResponse> uploadAnnouncement(UploadAnnouncementRequest request,
-                                                   @LoginUser LoginUserInfo loginUserInfo) {
-        UploadAnnouncementResponse response = announcementService.upload(request, loginUserInfo);
+    @PostMapping
+    public CommonResponse<AnnouncementResponse> uploadAnnouncement(UploadAnnouncementRequest request,
+                                                                   @LoginUser LoginUserInfo loginUserInfo) {
+        AnnouncementResponse response = announcementService.upload(request, loginUserInfo);
         return CommonResponse.of(response, UPLOAD_SUCCESS.getMessage());
+    }
+
+    @PutMapping("/{announcementId}")
+    public CommonResponse<Void> updateAnnouncement(
+            UpdateAnnouncementRequest request,
+            @LoginUser LoginUserInfo loginUserInfo,
+            @PathVariable Long announcementId
+    )
+    {
+        announcementService.update(request, loginUserInfo, announcementId);
+        return CommonResponse.from(UPLOAD_SUCCESS.getMessage());
     }
 }
