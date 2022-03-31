@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +16,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class S3Uploader {
@@ -51,9 +53,11 @@ public class S3Uploader {
             delete(fileUrl);
         }
     }
+
     public void delete(String fileUrl) {
-        if (amazonS3.doesObjectExist(bucketName, fileUrl)) {
-            amazonS3.deleteObject(new DeleteObjectRequest(bucketName, fileUrl));
+        String fileName = fileUrl.replace(cloudfront, "");
+        if (amazonS3.doesObjectExist(bucketName, fileName)) {
+            amazonS3.deleteObject(new DeleteObjectRequest(bucketName, fileName));
         }
     }
 }

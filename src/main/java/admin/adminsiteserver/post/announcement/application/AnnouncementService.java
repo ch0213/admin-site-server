@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -58,6 +59,19 @@ public class AnnouncementService {
         }
 
         return AnnouncementResponse.of(announcement, getImagePathDtosFromAnnouncement(announcement));
+    }
+
+    @Transactional
+    public void delete(Long announcementId) {
+        Announcement announcement = announcementRepository.findById(announcementId)
+                .orElseThrow(NotExistAnnouncementException::new);
+
+        List<String> deleteFileURls = announcement.getImages().stream()
+                .map(FilePath::getFileUrl)
+                .collect(Collectors.toList());
+        s3Uploader.delete(deleteFileURls);
+
+        announcementRepository.delete(announcement);
     }
 
     private List<FilePathDto> getImagePathDtosFromAnnouncement(Announcement announcement) {
