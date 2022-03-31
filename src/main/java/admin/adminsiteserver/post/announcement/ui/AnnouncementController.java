@@ -10,7 +10,7 @@ import admin.adminsiteserver.post.announcement.ui.dto.UploadAnnouncementRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import static admin.adminsiteserver.post.announcement.ui.AnnouncementResponseMessage.UPLOAD_SUCCESS;
+import static admin.adminsiteserver.post.announcement.ui.AnnouncementResponseMessage.*;
 
 @RestController
 @RequestMapping("/announcement")
@@ -34,6 +34,12 @@ public class AnnouncementController {
     )
     {
         announcementService.update(request, loginUserInfo, announcementId);
-        return CommonResponse.from(UPLOAD_SUCCESS.getMessage());
+        return CommonResponse.from(UPDATE_SUCCESS.getMessage());
+    }
+
+    @DeleteMapping("/{announcementId}")
+    public CommonResponse<Void> deleteAnnouncement(@LoginUser LoginUserInfo loginUserInfo, @PathVariable Long announcementId) {
+        announcementService.delete(announcementId);
+        return CommonResponse.from(DELETE_SUCCESS.getMessage());
     }
 }
