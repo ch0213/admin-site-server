@@ -27,7 +27,7 @@ public class AnnouncementController {
     public CommonResponse<AnnouncementResponse> uploadAnnouncement(UploadAnnouncementRequest request,
                                                                    @LoginUser LoginUserInfo loginUserInfo) {
         AnnouncementResponse response = announcementService.upload(request, loginUserInfo);
-        return CommonResponse.of(response, UPLOAD_SUCCESS.getMessage());
+        return CommonResponse.of(response, ANNOUNCEMENT_UPLOAD_SUCCESS.getMessage());
     }
 
     @PutMapping("/{announcementId}")
@@ -38,13 +38,18 @@ public class AnnouncementController {
     )
     {
         announcementService.update(request, loginUserInfo, announcementId);
-        return CommonResponse.from(UPDATE_SUCCESS.getMessage());
+        return CommonResponse.from(ANNOUNCEMENT_UPDATE_SUCCESS.getMessage());
     }
 
     @DeleteMapping("/{announcementId}")
     public CommonResponse<Void> deleteAnnouncement(@LoginUser LoginUserInfo loginUserInfo, @PathVariable Long announcementId) {
         announcementService.delete(announcementId);
-        return CommonResponse.from(DELETE_SUCCESS.getMessage());
+        return CommonResponse.from(ANNOUNCEMENT_DELETE_SUCCESS.getMessage());
+    }
+
+    @GetMapping("/{announcementId}")
+    public CommonResponse<AnnouncementDto> findAnnouncement(@PathVariable Long announcementId) {
+        return CommonResponse.of(announcementService.find(announcementId), ANNOUNCEMENT_FIND_SUCCESS.getMessage());
     }
 
     @GetMapping

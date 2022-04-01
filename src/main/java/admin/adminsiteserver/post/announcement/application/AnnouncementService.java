@@ -79,11 +79,17 @@ public class AnnouncementService {
         announcementRepository.delete(announcement);
     }
 
+    public AnnouncementDto find(Long announcementId) {
+        Announcement announcement = announcementRepository.findById(announcementId)
+                .orElseThrow(NotExistAnnouncementException::new);
+        return AnnouncementDto.from(announcement);
+    }
+
     public CommonResponse<List<AnnouncementDto>> findAll(Pageable pageable) {
         Page<AnnouncementDto> announcements = announcementRepository.findAll(pageable)
                 .map(AnnouncementDto::from);
 
-        return CommonResponse.of(announcements.getContent(), PageInfo.from(announcements), FIND_ALL_SUCCESS.getMessage());
+        return CommonResponse.of(announcements.getContent(), PageInfo.from(announcements), ANNOUNCEMENT_FIND_ALL_SUCCESS.getMessage());
     }
 
     private List<FilePathDto> getImagePathDtosFromAnnouncement(Announcement announcement) {
