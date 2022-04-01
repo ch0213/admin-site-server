@@ -1,20 +1,20 @@
-package admin.adminsiteserver.post.announcement.ui;
+package admin.adminsiteserver.announcement.ui;
 
 import admin.adminsiteserver.common.dto.CommonResponse;
 import admin.adminsiteserver.member.auth.util.LoginUser;
 import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
-import admin.adminsiteserver.post.announcement.application.AnnouncementDto;
-import admin.adminsiteserver.post.announcement.application.AnnouncementService;
-import admin.adminsiteserver.post.announcement.application.dto.AnnouncementResponse;
-import admin.adminsiteserver.post.announcement.ui.dto.UpdateAnnouncementRequest;
-import admin.adminsiteserver.post.announcement.ui.dto.UploadAnnouncementRequest;
+import admin.adminsiteserver.announcement.application.AnnouncementDto;
+import admin.adminsiteserver.announcement.application.AnnouncementService;
+import admin.adminsiteserver.announcement.application.dto.AnnouncementResponse;
+import admin.adminsiteserver.announcement.ui.dto.UpdateAnnouncementRequest;
+import admin.adminsiteserver.announcement.ui.dto.UploadAnnouncementRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static admin.adminsiteserver.post.announcement.ui.AnnouncementResponseMessage.*;
+import static admin.adminsiteserver.announcement.ui.AnnouncementResponseMessage.*;
 
 @RestController
 @RequestMapping("/announcement")

@@ -1,4 +1,4 @@
-package admin.adminsiteserver.post.announcement.application;
+package admin.adminsiteserver.announcement.application;
 
 import admin.adminsiteserver.common.aws.infrastructure.S3Uploader;
 import admin.adminsiteserver.common.domain.FilePathRepository;
@@ -6,14 +6,14 @@ import admin.adminsiteserver.common.dto.CommonResponse;
 import admin.adminsiteserver.common.dto.FilePathDto;
 import admin.adminsiteserver.common.dto.PageInfo;
 import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
-import admin.adminsiteserver.post.announcement.application.dto.AnnouncementResponse;
-import admin.adminsiteserver.post.announcement.domain.Announcement;
-import admin.adminsiteserver.post.announcement.domain.AnnouncementRepository;
+import admin.adminsiteserver.announcement.application.dto.AnnouncementResponse;
+import admin.adminsiteserver.announcement.domain.Announcement;
+import admin.adminsiteserver.announcement.domain.AnnouncementRepository;
 import admin.adminsiteserver.common.domain.FilePath;
-import admin.adminsiteserver.post.announcement.exception.NotExistAnnouncementException;
-import admin.adminsiteserver.post.announcement.ui.dto.BaseAnnouncementRequest;
-import admin.adminsiteserver.post.announcement.ui.dto.UpdateAnnouncementRequest;
-import admin.adminsiteserver.post.announcement.ui.dto.UploadAnnouncementRequest;
+import admin.adminsiteserver.announcement.exception.NotExistAnnouncementException;
+import admin.adminsiteserver.announcement.ui.dto.BaseAnnouncementRequest;
+import admin.adminsiteserver.announcement.ui.dto.UpdateAnnouncementRequest;
+import admin.adminsiteserver.announcement.ui.dto.UploadAnnouncementRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static admin.adminsiteserver.post.announcement.ui.AnnouncementResponseMessage.*;
+import static admin.adminsiteserver.announcement.ui.AnnouncementResponseMessage.*;
 
 @Slf4j
 @Service

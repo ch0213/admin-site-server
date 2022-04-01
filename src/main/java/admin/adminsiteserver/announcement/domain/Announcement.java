@@ -1,4 +1,4 @@
-package admin.adminsiteserver.post.announcement.domain;
+package admin.adminsiteserver.announcement.domain;
 
 import admin.adminsiteserver.common.domain.BaseTimeEntity;
 import admin.adminsiteserver.common.domain.FilePath;

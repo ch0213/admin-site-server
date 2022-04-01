@@ -1,7 +1,7 @@
-package admin.adminsiteserver.post.announcement.application.dto;
+package admin.adminsiteserver.announcement.application.dto;
 
 import admin.adminsiteserver.common.dto.FilePathDto;
-import admin.adminsiteserver.post.announcement.domain.Announcement;
+import admin.adminsiteserver.announcement.domain.Announcement;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

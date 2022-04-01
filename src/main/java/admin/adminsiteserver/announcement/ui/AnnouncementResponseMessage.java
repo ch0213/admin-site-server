@@ -1,4 +1,4 @@
-package admin.adminsiteserver.post.announcement.ui;
+package admin.adminsiteserver.announcement.ui;
 
 import lombok.Getter;
 
