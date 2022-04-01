@@ -3,12 +3,16 @@ package admin.adminsiteserver.post.announcement.ui;
 import admin.adminsiteserver.common.dto.CommonResponse;
 import admin.adminsiteserver.member.auth.util.LoginUser;
 import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
+import admin.adminsiteserver.post.announcement.application.AnnouncementDto;
 import admin.adminsiteserver.post.announcement.application.AnnouncementService;
 import admin.adminsiteserver.post.announcement.application.dto.AnnouncementResponse;
 import admin.adminsiteserver.post.announcement.ui.dto.UpdateAnnouncementRequest;
 import admin.adminsiteserver.post.announcement.ui.dto.UploadAnnouncementRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static admin.adminsiteserver.post.announcement.ui.AnnouncementResponseMessage.*;
 
@@ -41,5 +45,10 @@ public class AnnouncementController {
     public CommonResponse<Void> deleteAnnouncement(@LoginUser LoginUserInfo loginUserInfo, @PathVariable Long announcementId) {
         announcementService.delete(announcementId);
         return CommonResponse.from(DELETE_SUCCESS.getMessage());
+    }
+
+    @GetMapping
+    public CommonResponse<List<AnnouncementDto>> findAllAnnouncement(Pageable pageable) {
+        return announcementService.findAll(pageable);
     }
 }
