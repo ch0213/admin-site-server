@@ -4,16 +4,14 @@ import admin.adminsiteserver.common.domain.BaseTimeEntity;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 import static lombok.AccessLevel.*;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor
-public class QnaBox extends BaseTimeEntity {
+public class Question extends BaseTimeEntity {
 
     @Id @GeneratedValue
     private Long id;
@@ -25,4 +23,8 @@ public class QnaBox extends BaseTimeEntity {
     private String title;
 
     private String content;
+
+    @OneToOne
+    @JoinColumn(name = "question_id")
+    private Qna qna;
 }
