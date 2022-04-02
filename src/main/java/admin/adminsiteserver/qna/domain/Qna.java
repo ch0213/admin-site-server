@@ -6,15 +6,17 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.CascadeType.*;
+
 @Entity
 public class Qna extends BaseTimeEntity {
 
     @Id @GeneratedValue
     private Long id;
 
-    @OneToOne
+    @OneToOne(cascade = ALL, orphanRemoval = true)
     private Question question;
 
-    @OneToMany(mappedBy = "qna")
+    @OneToMany(mappedBy = "qna", orphanRemoval = true)
     private List<Answer> answers = new ArrayList<>();
 }
