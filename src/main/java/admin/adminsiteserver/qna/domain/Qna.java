@@ -4,6 +4,7 @@ import admin.adminsiteserver.common.domain.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.List;
 import static javax.persistence.CascadeType.*;
 import static lombok.AccessLevel.*;
 
+@Slf4j
 @Getter
 @Entity
 @NoArgsConstructor(access = PROTECTED)
@@ -31,14 +33,12 @@ public class Qna extends BaseTimeEntity {
     private List<Answer> answers = new ArrayList<>();
 
     @Builder
-    public Qna(Long id, String authorId, String authorName, String title, String content, List<QuestionFilePath> images, List<Answer> answers) {
+    public Qna(Long id, String authorId, String authorName, String title, String content) {
         this.id = id;
         this.authorId = authorId;
         this.authorName = authorName;
         this.title = title;
         this.content = content;
-        this.images = images;
-        this.answers = answers;
     }
 
     public void addQuestionImages(List<QuestionFilePath> newFilePaths) {
@@ -47,7 +47,7 @@ public class Qna extends BaseTimeEntity {
         }
 
         for (QuestionFilePath newFilePath : newFilePaths) {
-            newFilePath.includedToAnnouncement(this);
+            newFilePath.includedToQna(this);
             this.images.add(newFilePath);
         }
     }
