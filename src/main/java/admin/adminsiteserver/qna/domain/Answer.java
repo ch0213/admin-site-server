@@ -6,6 +6,10 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static javax.persistence.CascadeType.ALL;
 import static lombok.AccessLevel.*;
 
 @Entity
@@ -25,6 +29,10 @@ public class Answer extends BaseTimeEntity {
     private String content;
 
     @ManyToOne
-    @JoinColumn(name = "answer_id")
+    @JoinColumn(name = "qna_id")
     private Qna qna;
+
+
+    @OneToMany(mappedBy = "answer", cascade = ALL, orphanRemoval = true)
+    private List<AnswerFilePath> images = new ArrayList<>();
 }
