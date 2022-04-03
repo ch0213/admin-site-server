@@ -2,6 +2,7 @@ package admin.adminsiteserver.qna.domain;
 
 import admin.adminsiteserver.common.domain.BaseTimeEntity;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import java.util.List;
 import static javax.persistence.CascadeType.ALL;
 import static lombok.AccessLevel.*;
 
+@Getter
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor
