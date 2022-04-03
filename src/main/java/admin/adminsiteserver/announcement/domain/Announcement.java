@@ -1,7 +1,6 @@
 package admin.adminsiteserver.announcement.domain;
 
 import admin.adminsiteserver.common.domain.BaseTimeEntity;
-import admin.adminsiteserver.common.domain.FilePath;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,7 +27,7 @@ public class Announcement extends BaseTimeEntity {
     private String content;
 
     @OneToMany(mappedBy = "announcement", cascade = ALL, orphanRemoval = true)
-    private List<FilePath> images = new ArrayList<>();
+    private List<AnnouncementFilePath> images = new ArrayList<>();
 
     @Builder
     public Announcement(String authorId, String authorName, String title, String content) {
@@ -43,12 +42,12 @@ public class Announcement extends BaseTimeEntity {
         this.content = content;
     }
 
-    public void addImages(List<FilePath> newFilePaths) {
+    public void addImages(List<AnnouncementFilePath> newFilePaths) {
         if (newFilePaths == null) {
             return;
         }
 
-        for (FilePath newFilePath : newFilePaths) {
+        for (AnnouncementFilePath newFilePath : newFilePaths) {
             newFilePath.includedToAnnouncement(this);
             this.images.add(newFilePath);
         }

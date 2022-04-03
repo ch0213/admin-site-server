@@ -1,15 +1,16 @@
 package admin.adminsiteserver.announcement.application;
 
+import admin.adminsiteserver.announcement.application.dto.AnnouncementDto;
 import admin.adminsiteserver.common.aws.infrastructure.S3Uploader;
-import admin.adminsiteserver.common.domain.FilePathRepository;
+import admin.adminsiteserver.announcement.domain.AnnouncementFilePathRepository;
 import admin.adminsiteserver.common.dto.CommonResponse;
-import admin.adminsiteserver.common.dto.FilePathDto;
+import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
 import admin.adminsiteserver.common.dto.PageInfo;
 import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
 import admin.adminsiteserver.announcement.application.dto.AnnouncementResponse;
 import admin.adminsiteserver.announcement.domain.Announcement;
 import admin.adminsiteserver.announcement.domain.AnnouncementRepository;
-import admin.adminsiteserver.common.domain.FilePath;
+import admin.adminsiteserver.announcement.domain.AnnouncementFilePath;
 import admin.adminsiteserver.announcement.exception.NotExistAnnouncementException;
 import admin.adminsiteserver.announcement.ui.dto.BaseAnnouncementRequest;
 import admin.adminsiteserver.announcement.ui.dto.UpdateAnnouncementRequest;
@@ -22,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static admin.adminsiteserver.announcement.ui.AnnouncementResponseMessage.*;
@@ -34,17 +34,18 @@ import static admin.adminsiteserver.announcement.ui.AnnouncementResponseMessage.
 public class AnnouncementService {
 
     private final AnnouncementRepository announcementRepository;
-    private final FilePathRepository filePathRepository;
+    private final AnnouncementFilePathRepository filePathRepository;
     private final S3Uploader s3Uploader;
     private static final String ANNOUNCEMENT_IMAGE_PATH = "announcement/";
 
     @Transactional
     public AnnouncementResponse upload(UploadAnnouncementRequest request, LoginUserInfo loginUserInfo) {
-        List<FilePath> imagePaths = saveFilesAndGetImagePaths(request);
+        List<FilePathDto> filePathDtos = saveFiles(request);
+        List<AnnouncementFilePath> imagePaths = getImagePathsFromDto(filePathDtos);
         Announcement announcement = createAnnouncement(request, loginUserInfo);
         announcement.addImages(imagePaths);
         announcementRepository.save(announcement);
-        return AnnouncementResponse.of(announcement, getImagePathDtosFromAnnouncement(announcement));
+        return AnnouncementResponse.of(announcement, filePathDtos);
     }
 
     @Transactional
@@ -53,8 +54,8 @@ public class AnnouncementService {
                 .orElseThrow(NotExistAnnouncementException::new);
 
         if (request.getImages() != null) {
-            List<FilePath> imagePaths = saveFilesAndGetImagePaths(request);
-            List<FilePath> filePaths = filePathRepository.saveAll(Objects.requireNonNull(imagePaths));
+            List<FilePathDto> filePathDtos = saveFiles(request);
+            List<AnnouncementFilePath> filePaths = filePathRepository.saveAll(getImagePathsFromDto(filePathDtos));
             announcement.addImages(filePaths);
         }
 
@@ -72,7 +73,7 @@ public class AnnouncementService {
                 .orElseThrow(NotExistAnnouncementException::new);
 
         List<String> deleteFileURls = announcement.getImages().stream()
-                .map(FilePath::getFileUrl)
+                .map(AnnouncementFilePath::getFileUrl)
                 .collect(Collectors.toList());
         s3Uploader.delete(deleteFileURls);
 
@@ -98,13 +99,16 @@ public class AnnouncementService {
                 .collect(Collectors.toList());
     }
 
-    private List<FilePath> saveFilesAndGetImagePaths(BaseAnnouncementRequest request) {
+    private List<FilePathDto> saveFiles(BaseAnnouncementRequest request) {
         if (request.getImages() == null) {
             return null;
         }
-        List<FilePathDto> imagePathDtos = s3Uploader.upload(request.getImages(), ANNOUNCEMENT_IMAGE_PATH);
+        return s3Uploader.upload(request.getImages(), ANNOUNCEMENT_IMAGE_PATH);
+    }
+
+    private List<AnnouncementFilePath> getImagePathsFromDto(List<FilePathDto> imagePathDtos) {
         return imagePathDtos.stream()
-                .map(FilePathDto::toFilePath)
+                .map(filePathDto -> filePathDto.toFilePath(AnnouncementFilePath.class))
                 .collect(Collectors.toList());
     }
 
