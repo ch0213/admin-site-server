@@ -1,11 +1,11 @@
 package admin.adminsiteserver.member.member.application;
 
 import admin.adminsiteserver.common.aws.infrastructure.S3Uploader;
-import admin.adminsiteserver.common.domain.FilePath;
-import admin.adminsiteserver.common.domain.FilePathRepository;
-import admin.adminsiteserver.common.dto.FilePathDto;
+import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
 import admin.adminsiteserver.member.member.application.dto.MemberDto;
 import admin.adminsiteserver.member.member.domain.Member;
+import admin.adminsiteserver.member.member.domain.MemberFilePath;
+import admin.adminsiteserver.member.member.domain.MemberFilePathRepository;
 import admin.adminsiteserver.member.member.domain.MemberRepository;
 import admin.adminsiteserver.member.member.exception.AlreadyExistUserIDException;
 import admin.adminsiteserver.member.member.exception.NotExistMemberException;
@@ -23,10 +23,10 @@ import org.springframework.web.multipart.MultipartFile;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final FilePathRepository filePathRepository;
+    private final MemberFilePathRepository filePathRepository;
     private final PasswordEncoder passwordEncoder;
     private final S3Uploader s3Uploader;
-    private static final String MEMBER_IMAGE_PATH = "announcement/";
+    private static final String MEMBER_IMAGE_PATH = "member/";
 
     @Transactional
     public MemberDto signUp(SignUpRequest signUpRequest) {
@@ -36,10 +36,9 @@ public class MemberService {
                     throw new AlreadyExistUserIDException();
                 });
         FilePathDto filePathDto = s3Uploader.upload(signUpRequest.getImage(), MEMBER_IMAGE_PATH);
-        FilePath filePath = filePathDto.toFilePath();
         Member signupMember = memberRepository.save(member);
 
-        signupMember.addProfileImage(filePathDto.toFilePath());
+        signupMember.addProfileImage(filePathDto.toFilePath(MemberFilePath.class));
         return MemberDto.of(signupMember, filePathDto);
     }
 
@@ -58,7 +57,7 @@ public class MemberService {
         Member member = memberRepository.findByUserId(userId)
                 .orElseThrow(NotExistMemberException::new);
         s3Uploader.delete(member.getFilePath().getFileUrl());
-        FilePath filePath = filePathRepository.save(s3Uploader.upload(multipartFile, MEMBER_IMAGE_PATH).toFilePath());
+        MemberFilePath filePath = filePathRepository.save(s3Uploader.upload(multipartFile, MEMBER_IMAGE_PATH).toFilePath(MemberFilePath.class));
         member.addProfileImage(filePath);
     }
 

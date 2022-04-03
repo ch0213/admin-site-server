@@ -1,6 +1,6 @@
 package admin.adminsiteserver.member.member.application.dto;
 
-import admin.adminsiteserver.common.dto.FilePathDto;
+import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
 import admin.adminsiteserver.member.member.domain.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
