@@ -1,6 +1,6 @@
 package admin.adminsiteserver.member.member.domain;
 
-import admin.adminsiteserver.common.domain.FilePath;
+import admin.adminsiteserver.announcement.domain.AnnouncementFilePath;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,13 +26,13 @@ public class Member {
     private String phoneNumber;
 
     @OneToOne(mappedBy = "member", cascade = ALL, orphanRemoval = true)
-    private FilePath filePath;
+    private MemberFilePath filePath;
 
     @Enumerated(STRING)
     private RoleType role;
 
     @Builder
-    public Member(String userId, String password, String email, String name, String studentNumber, String phoneNumber, FilePath filePath, RoleType role) {
+    public Member(String userId, String password, String email, String name, String studentNumber, String phoneNumber, MemberFilePath filePath, RoleType role) {
         this.userId = userId;
         this.password = password;
         this.email = email;
@@ -50,7 +50,7 @@ public class Member {
         this.phoneNumber = phoneNumber;
     }
 
-    public void addProfileImage(FilePath filePath) {
+    public void addProfileImage(MemberFilePath filePath) {
         this.filePath = filePath;
         filePath.includedToMember(this);
     }

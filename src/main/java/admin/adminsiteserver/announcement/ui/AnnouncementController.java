@@ -3,7 +3,7 @@ package admin.adminsiteserver.announcement.ui;
 import admin.adminsiteserver.common.dto.CommonResponse;
 import admin.adminsiteserver.member.auth.util.LoginUser;
 import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
-import admin.adminsiteserver.announcement.application.AnnouncementDto;
+import admin.adminsiteserver.announcement.application.dto.AnnouncementDto;
 import admin.adminsiteserver.announcement.application.AnnouncementService;
 import admin.adminsiteserver.announcement.application.dto.AnnouncementResponse;
 import admin.adminsiteserver.announcement.ui.dto.UpdateAnnouncementRequest;
