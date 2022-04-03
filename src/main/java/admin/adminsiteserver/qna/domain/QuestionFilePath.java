@@ -30,7 +30,7 @@ public class QuestionFilePath {
         this.fileUrl = fileUrl;
     }
 
-    public void includedToAnnouncement(Qna qna) {
+    public void includedToQna(Qna qna) {
         this.qna = qna;
     }
 }
