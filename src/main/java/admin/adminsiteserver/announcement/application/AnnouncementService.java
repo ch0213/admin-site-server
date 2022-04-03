@@ -42,7 +42,7 @@ public class AnnouncementService {
     public AnnouncementResponse upload(UploadAnnouncementRequest request, LoginUserInfo loginUserInfo) {
         List<FilePathDto> filePathDtos = saveFiles(request);
         List<AnnouncementFilePath> imagePaths = getImagePathsFromDto(filePathDtos);
-        Announcement announcement = createAnnouncement(request, loginUserInfo);
+        Announcement announcement = request.createAnnouncement(loginUserInfo);
         announcement.addImages(imagePaths);
         announcementRepository.save(announcement);
         return AnnouncementResponse.of(announcement, filePathDtos);
@@ -110,14 +110,5 @@ public class AnnouncementService {
         return imagePathDtos.stream()
                 .map(filePathDto -> filePathDto.toFilePath(AnnouncementFilePath.class))
                 .collect(Collectors.toList());
-    }
-
-    private Announcement createAnnouncement(UploadAnnouncementRequest request, LoginUserInfo loginUserInfo) {
-        return Announcement.builder()
-                .authorId(loginUserInfo.getUserId())
-                .authorName(loginUserInfo.getName())
-                .title(request.getTitle())
-                .content(request.getContent())
-                .build();
     }
 }
