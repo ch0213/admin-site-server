@@ -4,7 +4,9 @@ import admin.adminsiteserver.common.dto.CommonResponse;
 import admin.adminsiteserver.member.auth.util.LoginUser;
 import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
 import admin.adminsiteserver.qna.application.QnaService;
+import admin.adminsiteserver.qna.application.dto.AnswerDto;
 import admin.adminsiteserver.qna.application.dto.QnaResponse;
+import admin.adminsiteserver.qna.ui.dto.AnswerRequest;
 import admin.adminsiteserver.qna.ui.dto.UpdateQnaRequest;
 import admin.adminsiteserver.qna.ui.dto.UploadQnaRequest;
 import lombok.RequiredArgsConstructor;
@@ -26,18 +28,24 @@ public class QnaController {
     }
 
     @PutMapping("/{qnaId}")
-    public CommonResponse<Void> updateQna(
+    public CommonResponse<QnaResponse> updateQna(
             UpdateQnaRequest request,
             @LoginUser LoginUserInfo loginUserInfo,
             @PathVariable Long qnaId
     ) {
-        qnaService.update(request, loginUserInfo, qnaId);
-        return CommonResponse.from(QNA_UPDATE_SUCCESS.getMessage());
+        QnaResponse qnaResponse = qnaService.update(request, loginUserInfo, qnaId);
+        return CommonResponse.of(qnaResponse, QNA_UPDATE_SUCCESS.getMessage());
     }
 
     @DeleteMapping("/{qnaId}")
     public CommonResponse<Void> deleteQna(@LoginUser LoginUserInfo loginUserInfo, @PathVariable Long qnaId) {
         qnaService.delete(qnaId);
         return CommonResponse.from(QNA_DELETE_SUCCESS.getMessage());
+    }
+
+    @PostMapping("/{qnaId}/answer")
+    public CommonResponse<AnswerDto> uploadAnswer(AnswerRequest request, @LoginUser LoginUserInfo loginUserInfo, @PathVariable Long qnaId) {
+        AnswerDto answerDto = qnaService.uploadAnswer(loginUserInfo, qnaId, request);
+        return CommonResponse.of(answerDto, ANSWER_UPLOAD_SUCCESS.getMessage());
     }
 }
