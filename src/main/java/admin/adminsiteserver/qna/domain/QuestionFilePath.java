@@ -21,16 +21,8 @@ public class QuestionFilePath {
     private String fileName;
     private String fileUrl;
 
-    @ManyToOne
-    @JoinColumn(name = "qna")
-    private Qna qna;
-
     public QuestionFilePath(String fileName, String fileUrl) {
         this.fileName = fileName;
         this.fileUrl = fileUrl;
-    }
-
-    public void includedToQna(Qna qna) {
-        this.qna = qna;
     }
 }
