@@ -52,6 +52,7 @@ public class AnnouncementService {
     public AnnouncementResponse update(UpdateAnnouncementRequest request, LoginUserInfo loginUserInfo, Long id) {
         Announcement announcement = announcementRepository.findById(id)
                 .orElseThrow(NotExistAnnouncementException::new);
+        announcement.updateTitleAndContent(request.getTitle(), request.getContent());
 
         if (request.getImages() != null) {
             List<FilePathDto> filePathDtos = saveFiles(request);

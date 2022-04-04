@@ -37,7 +37,7 @@ public class Announcement extends BaseTimeEntity {
         this.content = content;
     }
 
-    public void updateAnnouncement(String title, String content) {
+    public void updateTitleAndContent(String title, String content) {
         this.title = title;
         this.content = content;
     }
