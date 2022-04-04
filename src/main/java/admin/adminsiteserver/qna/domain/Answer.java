@@ -31,4 +31,24 @@ public class Answer extends BaseTimeEntity {
     @OneToMany(cascade = ALL, orphanRemoval = true)
     @JoinColumn(name = "answer_id")
     private List<AnswerFilePath> images = new ArrayList<>();
+
+    public Answer(String authorId, String authorName, String content) {
+        this.authorId = authorId;
+        this.authorName = authorName;
+        this.content = content;
+    }
+
+    public void addImages(List<AnswerFilePath> images) {
+        if (images == null) {
+            return;
+        }
+        this.images.addAll(images);
+    }
+
+    public void deleteImages(List<String> deleteFileUrls) {
+        if (deleteFileUrls == null) {
+            return;
+        }
+        images.removeIf(filePath -> deleteFileUrls.contains(filePath.getFileUrl()));
+    }
 }
