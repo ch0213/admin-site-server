@@ -13,7 +13,6 @@ public class AnswerDto {
     private Long id;
     private String authorId;
     private String authorName;
-    private String title;
     private String content;
     private List<FilePathDto> images;
 
@@ -22,7 +21,6 @@ public class AnswerDto {
                 answer.getId(),
                 answer.getAuthorId(),
                 answer.getAuthorName(),
-                answer.getTitle(),
                 answer.getContent(),
                 images
         );
