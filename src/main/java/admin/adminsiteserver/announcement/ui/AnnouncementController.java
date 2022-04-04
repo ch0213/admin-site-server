@@ -31,14 +31,14 @@ public class AnnouncementController {
     }
 
     @PutMapping("/{announcementId}")
-    public CommonResponse<Void> updateAnnouncement(
+    public CommonResponse<AnnouncementResponse> updateAnnouncement(
             UpdateAnnouncementRequest request,
             @LoginUser LoginUserInfo loginUserInfo,
             @PathVariable Long announcementId
     )
     {
-        announcementService.update(request, loginUserInfo, announcementId);
-        return CommonResponse.from(ANNOUNCEMENT_UPDATE_SUCCESS.getMessage());
+        AnnouncementResponse announcementResponse = announcementService.update(request, loginUserInfo, announcementId);
+        return CommonResponse.of(announcementResponse, ANNOUNCEMENT_UPDATE_SUCCESS.getMessage());
     }
 
     @DeleteMapping("/{announcementId}")
