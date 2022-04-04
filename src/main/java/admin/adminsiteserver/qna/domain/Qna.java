@@ -26,10 +26,12 @@ public class Qna extends BaseTimeEntity {
     private String title;
     private String content;
 
-    @OneToMany(mappedBy = "qna", cascade = ALL, orphanRemoval = true)
+    @OneToMany(cascade = ALL, orphanRemoval = true)
+    @JoinColumn(name = "qna_id")
     private List<QuestionFilePath> images = new ArrayList<>();
 
-    @OneToMany(mappedBy = "qna", orphanRemoval = true)
+    @OneToMany(cascade = ALL, orphanRemoval = true)
+    @JoinColumn(name = "qna_id")
     private List<Answer> answers = new ArrayList<>();
 
     @Builder
@@ -41,14 +43,26 @@ public class Qna extends BaseTimeEntity {
         this.content = content;
     }
 
+    public void updateContentAndTitle(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+
     public void addQuestionImages(List<QuestionFilePath> newFilePaths) {
         if (newFilePaths == null) {
             return;
         }
+        this.images.addAll(newFilePaths);
+    }
 
-        for (QuestionFilePath newFilePath : newFilePaths) {
-            newFilePath.includedToQna(this);
-            this.images.add(newFilePath);
+    public void addAnswer(Answer answer) {
+        this.answers.add(answer);
+    }
+
+    public void deleteImages(List<String> deleteFileUrls) {
+        if (deleteFileUrls == null) {
+            return;
         }
+        images.removeIf(filePath -> deleteFileUrls.contains(filePath.getFileUrl()));
     }
 }
