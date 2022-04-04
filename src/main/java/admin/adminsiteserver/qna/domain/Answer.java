@@ -26,15 +26,9 @@ public class Answer extends BaseTimeEntity {
 
     private String authorName;
 
-    private String title;
-
     private String content;
 
-    @ManyToOne
-    @JoinColumn(name = "qna_id")
-    private Qna qna;
-
-
-    @OneToMany(mappedBy = "answer", cascade = ALL, orphanRemoval = true)
+    @OneToMany(cascade = ALL, orphanRemoval = true)
+    @JoinColumn(name = "answer_id")
     private List<AnswerFilePath> images = new ArrayList<>();
 }
