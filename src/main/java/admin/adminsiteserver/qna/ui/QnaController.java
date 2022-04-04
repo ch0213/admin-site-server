@@ -10,8 +10,7 @@ import admin.adminsiteserver.qna.ui.dto.UploadQnaRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import static admin.adminsiteserver.qna.ui.QnaResponseMessage.QNA_UPDATE_SUCCESS;
-import static admin.adminsiteserver.qna.ui.QnaResponseMessage.QNA_UPLOAD_SUCCESS;
+import static admin.adminsiteserver.qna.ui.QnaResponseMessage.*;
 
 @RestController
 @RequestMapping("/qna")
@@ -34,5 +33,11 @@ public class QnaController {
     ) {
         qnaService.update(request, loginUserInfo, qnaId);
         return CommonResponse.from(QNA_UPDATE_SUCCESS.getMessage());
+    }
+
+    @DeleteMapping("/{qnaId}")
+    public CommonResponse<Void> deleteQna(@LoginUser LoginUserInfo loginUserInfo, @PathVariable Long qnaId) {
+        qnaService.delete(qnaId);
+        return CommonResponse.from(QNA_DELETE_SUCCESS.getMessage());
     }
 }

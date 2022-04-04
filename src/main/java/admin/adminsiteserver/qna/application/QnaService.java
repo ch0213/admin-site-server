@@ -40,8 +40,8 @@ public class QnaService {
     }
 
     @Transactional
-    public QnaResponse update(UpdateQnaRequest request, LoginUserInfo loginUserInfo, Long id) {
-        Qna qna = qnaRepository.findById(id)
+    public QnaResponse update(UpdateQnaRequest request, LoginUserInfo loginUserInfo, Long qnaId) {
+        Qna qna = qnaRepository.findById(qnaId)
                 .orElseThrow(NotExistQnaException::new);
         qna.updateContentAndTitle(request.getTitle(), request.getContent());
 
@@ -56,6 +56,19 @@ public class QnaService {
         }
 
         return QnaResponse.of(qna, getImagePathDtosFromAnnouncement(qna));
+    }
+
+    @Transactional
+    public void delete(Long qnaId) {
+        Qna qna = qnaRepository.findById(qnaId)
+                .orElseThrow(NotExistQnaException::new);
+
+        List<String> deleteFileUrls = qna.getImages().stream()
+                .map(QuestionFilePath::getFileUrl)
+                .collect(Collectors.toList());
+        s3Uploader.delete(deleteFileUrls);
+
+        qnaRepository.delete(qna);
     }
 
     private List<FilePathDto> saveFiles(BaseQnaRequest request) {
