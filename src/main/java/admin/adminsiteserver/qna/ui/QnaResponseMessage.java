@@ -4,7 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum QnaResponseMessage {
-    Qna_UPLOAD_SUCCESS("질문 등록 성공");
+    QNA_UPLOAD_SUCCESS("질문 등록 성공"),
+    QNA_UPDATE_SUCCESS("질문 수정 성공");
 
     private final String message;
 

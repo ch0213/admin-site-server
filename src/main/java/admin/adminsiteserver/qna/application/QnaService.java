@@ -8,6 +8,9 @@ import admin.adminsiteserver.qna.application.dto.QnaResponse;
 import admin.adminsiteserver.qna.domain.Qna;
 import admin.adminsiteserver.qna.domain.QnaRepository;
 import admin.adminsiteserver.qna.domain.QuestionFilePath;
+import admin.adminsiteserver.qna.exception.NotExistQnaException;
+import admin.adminsiteserver.qna.ui.dto.BaseQnaRequest;
+import admin.adminsiteserver.qna.ui.dto.UpdateQnaRequest;
 import admin.adminsiteserver.qna.ui.dto.UploadQnaRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,11 +39,36 @@ public class QnaService {
         return QnaResponse.of(qna, filePathDtos);
     }
 
-    private List<FilePathDto> saveFiles(UploadQnaRequest request) {
+    @Transactional
+    public QnaResponse update(UpdateQnaRequest request, LoginUserInfo loginUserInfo, Long id) {
+        Qna qna = qnaRepository.findById(id)
+                .orElseThrow(NotExistQnaException::new);
+        qna.updateContentAndTitle(request.getTitle(), request.getContent());
+
+        if (request.getImages() != null) {
+            List<FilePathDto> filePathDtos = saveFiles(request);
+            qna.addQuestionImages(getImagePathsFromDto(filePathDtos));
+        }
+
+        if (request.getDeleteFileUrls() != null) {
+            qna.deleteImages(request.getDeleteFileUrls());
+            s3Uploader.delete(request.getDeleteFileUrls());
+        }
+
+        return QnaResponse.of(qna, getImagePathDtosFromAnnouncement(qna));
+    }
+
+    private List<FilePathDto> saveFiles(BaseQnaRequest request) {
         if (request.getImages() == null) {
             return null;
         }
         return s3Uploader.upload(request.getImages(), QUESTION_IMAGE_PATH);
+    }
+
+    private List<FilePathDto> getImagePathDtosFromAnnouncement(Qna qna) {
+        return qna.getImages().stream()
+                .map(FilePathDto::from)
+                .collect(Collectors.toList());
     }
 
     private List<QuestionFilePath> getImagePathsFromDto(List<FilePathDto> imagePathDtos) {
