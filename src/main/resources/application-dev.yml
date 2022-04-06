@@ -35,8 +35,9 @@ cloud:
 
 logging:
   level:
-    org.hibernate.SQL: debug
-#    org.hibernate.type: trace
+    org.hibernate.SQL: info
+    com.amazonaws:
+      util.EC2MetadataUtils: error
 
 jwt:
   secretKey: ${SECRET_KEY}
