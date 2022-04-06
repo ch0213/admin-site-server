@@ -69,7 +69,7 @@ public class QnaService {
     }
 
     @Transactional
-    public AnswerDto uploadAnswer(LoginUserInfo loginUserInfo, Long qnaId, AnswerRequest request) {
+    public AnswerDto uploadAnswer(LoginUserInfo loginUserInfo, Long qnaId, AnswerUploadRequest request) {
         Qna qna = qnaRepository.findById(qnaId).orElseThrow(NotExistQnaException::new);
         List<FilePathDto> filePathDtos = s3Uploader.upload(request.getImages(), ANSWER_IMAGE_PATH);
         List<AnswerFilePath> answerFilePaths = getImagePathsFromDto(filePathDtos, AnswerFilePath.class);

@@ -6,7 +6,7 @@ import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
 import admin.adminsiteserver.qna.application.QnaService;
 import admin.adminsiteserver.qna.application.dto.AnswerDto;
 import admin.adminsiteserver.qna.application.dto.QnaResponse;
-import admin.adminsiteserver.qna.ui.dto.AnswerRequest;
+import admin.adminsiteserver.qna.ui.dto.AnswerUploadRequest;
 import admin.adminsiteserver.qna.ui.dto.AnswerUpdateRequest;
 import admin.adminsiteserver.qna.ui.dto.UpdateQnaRequest;
 import admin.adminsiteserver.qna.ui.dto.UploadQnaRequest;
@@ -45,7 +45,7 @@ public class QnaController {
     }
 
     @PostMapping("/{qnaId}/answer")
-    public CommonResponse<AnswerDto> uploadAnswer(AnswerRequest request, @LoginUser LoginUserInfo loginUserInfo, @PathVariable Long qnaId) {
+    public CommonResponse<AnswerDto> uploadAnswer(AnswerUploadRequest request, @LoginUser LoginUserInfo loginUserInfo, @PathVariable Long qnaId) {
         AnswerDto answerDto = qnaService.uploadAnswer(loginUserInfo, qnaId, request);
         return CommonResponse.of(answerDto, ANSWER_UPLOAD_SUCCESS.getMessage());
     }
