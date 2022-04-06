@@ -1,0 +1,43 @@
+spring:
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/admin-site-server
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
+    open-in-view: false
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${S3_ACCESSKEY}
+      secret-key: ${S3_SECRETKEY}
+    region:
+      static: ${S3_REGION}
+    s3:
+      bucket: ${S3_BUCKET}
+    cloudfront:
+      url: ${CLOUD_FRONT_URL}
+    stack:
+      auto: false
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+#    org.hibernate.type: trace
+
+jwt:
+  secretKey: ${SECRET_KEY}
+  refreshKey: ${REFRESH_KEY}
