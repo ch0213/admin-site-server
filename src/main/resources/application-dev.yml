@@ -3,7 +3,7 @@ spring:
     url: jdbc:mysql://${RDS_URL_DEV}/ADMIN_SITE_DB_DEV
     username: ${RDS_USERNAME_DEV}
     password: ${RDS_PASSWORD_DEV}
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
