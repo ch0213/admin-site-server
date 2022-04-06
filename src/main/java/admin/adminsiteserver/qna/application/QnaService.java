@@ -7,11 +7,9 @@ import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
 import admin.adminsiteserver.qna.application.dto.AnswerDto;
 import admin.adminsiteserver.qna.application.dto.QnaResponse;
 import admin.adminsiteserver.qna.domain.*;
+import admin.adminsiteserver.qna.exception.NotExistAnswerException;
 import admin.adminsiteserver.qna.exception.NotExistQnaException;
-import admin.adminsiteserver.qna.ui.dto.AnswerRequest;
-import admin.adminsiteserver.qna.ui.dto.BaseQnaRequest;
-import admin.adminsiteserver.qna.ui.dto.UpdateQnaRequest;
-import admin.adminsiteserver.qna.ui.dto.UploadQnaRequest;
+import admin.adminsiteserver.qna.ui.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -85,11 +83,47 @@ public class QnaService {
         return AnswerDto.of(answer, filePathDtos);
     }
 
+    @Transactional
+    public AnswerDto updateAnswer(AnswerUpdateRequest request, Long qnaId, Long answerId) {
+        Qna qna = qnaRepository.findById(qnaId)
+                .orElseThrow(NotExistQnaException::new);
+        Answer findAnswer = qna.getAnswers().stream()
+                .filter(answer -> answer.getId().equals(answerId))
+                .findAny()
+                .orElseThrow(NotExistAnswerException::new);
+        findAnswer.updateContent(request.getContent());
+
+        if (request.getImages() != null) {
+            List<FilePathDto> filePathDtos = saveAnswerImages(request);
+            findAnswer.addImages(getImagePathsFromDto(filePathDtos, AnswerFilePath.class));
+        }
+
+        if (request.getDeleteFileUrls() != null) {
+            findAnswer.deleteImages(request.getDeleteFileUrls());
+            s3Uploader.delete(request.getDeleteFileUrls());
+        }
+
+        return AnswerDto.of(findAnswer, getImagePathDtosFromAnswer(findAnswer));
+    }
+
     private List<FilePathDto> saveQuestionImages(BaseQnaRequest request) {
         if (request.getImages() == null) {
             return null;
         }
         return s3Uploader.upload(request.getImages(), QUESTION_IMAGE_PATH);
+    }
+
+    private List<FilePathDto> saveAnswerImages(AnswerUpdateRequest request) {
+        if (request.getImages() == null) {
+            return null;
+        }
+        return s3Uploader.upload(request.getImages(), ANSWER_IMAGE_PATH);
+    }
+
+    private List<FilePathDto> getImagePathDtosFromAnswer(Answer answer) {
+        return answer.getImages().stream()
+                .map(FilePathDto::from)
+                .collect(Collectors.toList());
     }
 
     private List<FilePathDto> getImagePathDtosFromQna(Qna qna) {
