@@ -69,7 +69,7 @@ public class QnaService {
     }
 
     @Transactional
-    public AnswerDto uploadAnswer(LoginUserInfo loginUserInfo, Long qnaId, AnswerUploadRequest request) {
+    public AnswerDto uploadAnswer(LoginUserInfo loginUserInfo, Long qnaId, AnswerRequest request) {
         Qna qna = qnaRepository.findById(qnaId).orElseThrow(NotExistQnaException::new);
         List<FilePathDto> filePathDtos = s3Uploader.upload(request.getImages(), ANSWER_IMAGE_PATH);
         List<AnswerFilePath> answerFilePaths = getImagePathsFromDto(filePathDtos, AnswerFilePath.class);
@@ -104,17 +104,6 @@ public class QnaService {
         }
 
         return AnswerDto.of(findAnswer, getImagePathDtosFromAnswer(findAnswer));
-    }
-
-    @Transactional
-    public void deleteAnswer(Long qnaId, Long answerId) {
-        Qna qna = qnaRepository.findById(qnaId)
-                .orElseThrow(NotExistQnaException::new);
-        Answer findAnswer = qna.getAnswers().stream()
-                .filter(answer -> answer.getId().equals(answerId))
-                .findAny()
-                .orElseThrow(NotExistAnswerException::new);
-        answerRepository.delete(findAnswer);
     }
 
     private List<FilePathDto> saveQuestionImages(BaseQnaRequest request) {
