@@ -55,4 +55,10 @@ public class QnaController {
         AnswerDto answerDto = qnaService.updateAnswer(request, qnaId, answerId);
         return CommonResponse.of(answerDto, ANSWER_UPDATE_SUCCESS.getMessage());
     }
+
+    @DeleteMapping("/{qnaId}/answer/{answerId}")
+    public CommonResponse<Void> deleteAnswer(@PathVariable Long qnaId, @PathVariable Long answerId) {
+        qnaService.deleteAnswer(qnaId, answerId);
+        return CommonResponse.from(ANSWER_DELETE_SUCCESS.getMessage());
+    }
 }
