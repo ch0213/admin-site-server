@@ -106,6 +106,17 @@ public class QnaService {
         return AnswerDto.of(findAnswer, getImagePathDtosFromAnswer(findAnswer));
     }
 
+    @Transactional
+    public void deleteAnswer(Long qnaId, Long answerId) {
+        Qna qna = qnaRepository.findById(qnaId)
+                .orElseThrow(NotExistQnaException::new);
+        Answer findAnswer = qna.getAnswers().stream()
+                .filter(answer -> answer.getId().equals(answerId))
+                .findAny()
+                .orElseThrow(NotExistAnswerException::new);
+        answerRepository.delete(findAnswer);
+    }
+
     private List<FilePathDto> saveQuestionImages(BaseQnaRequest request) {
         if (request.getImages() == null) {
             return null;
