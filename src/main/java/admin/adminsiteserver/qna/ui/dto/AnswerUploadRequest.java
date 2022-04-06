@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class AnswerRequest {
+public class AnswerUploadRequest {
     private String content;
     private List<MultipartFile> images;
 
