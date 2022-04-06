@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://${RDS_URL_DEV}/ADMIN_SITE_DB_DEV
+    url: jdbc:mysql://${RDS_URL_DEV}/ADMIN_SITE_DB_DEV?serverTimezone=Asia/Seoul
     username: ${RDS_USERNAME_DEV}
     password: ${RDS_PASSWORD_DEV}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -13,6 +13,7 @@ spring:
         format_sql: true
         default_batch_fetch_size: 100
     open-in-view: false
+    database-platform: org.hibernate.dialect.MySQL8Dialect
 
   servlet:
     multipart:
