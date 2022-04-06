@@ -7,6 +7,7 @@ import admin.adminsiteserver.qna.application.QnaService;
 import admin.adminsiteserver.qna.application.dto.AnswerDto;
 import admin.adminsiteserver.qna.application.dto.QnaResponse;
 import admin.adminsiteserver.qna.ui.dto.AnswerRequest;
+import admin.adminsiteserver.qna.ui.dto.AnswerUpdateRequest;
 import admin.adminsiteserver.qna.ui.dto.UpdateQnaRequest;
 import admin.adminsiteserver.qna.ui.dto.UploadQnaRequest;
 import lombok.RequiredArgsConstructor;
@@ -47,5 +48,11 @@ public class QnaController {
     public CommonResponse<AnswerDto> uploadAnswer(AnswerRequest request, @LoginUser LoginUserInfo loginUserInfo, @PathVariable Long qnaId) {
         AnswerDto answerDto = qnaService.uploadAnswer(loginUserInfo, qnaId, request);
         return CommonResponse.of(answerDto, ANSWER_UPLOAD_SUCCESS.getMessage());
+    }
+
+    @PutMapping("/{qnaId}/answer/{answerId}")
+    public CommonResponse<AnswerDto> updateAnswer(AnswerUpdateRequest request, @PathVariable Long qnaId, @PathVariable Long answerId) {
+        AnswerDto answerDto = qnaService.updateAnswer(request, qnaId, answerId);
+        return CommonResponse.of(answerDto, ANSWER_UPDATE_SUCCESS.getMessage());
     }
 }
