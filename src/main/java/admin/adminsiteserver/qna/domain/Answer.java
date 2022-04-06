@@ -38,6 +38,10 @@ public class Answer extends BaseTimeEntity {
         this.content = content;
     }
 
+    public void updateContent(String content) {
+        this.content = content;
+    }
+
     public void addImages(List<AnswerFilePath> images) {
         if (images == null) {
             return;
