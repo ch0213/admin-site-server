@@ -7,7 +7,9 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.*;
 
@@ -37,7 +39,21 @@ public class QnaResponse {
         this.answers = answers;
     }
 
-    public static QnaResponse of(Qna qna, List<FilePathDto> images) {
+    public static QnaResponse from(Qna qna) {
+        List<FilePathDto> filePathDtos = new ArrayList<>();
+        List<AnswerDto> answerDtos = new ArrayList<>();
+        if (qna.getImages() != null) {
+            filePathDtos = qna.getImages().stream()
+                    .map(FilePathDto::from)
+                    .collect(Collectors.toList());
+        }
+
+        if (qna.getAnswers() != null) {
+            answerDtos = qna.getAnswers().stream()
+                    .map(AnswerDto::from)
+                    .collect(Collectors.toList());
+        }
+
         return QnaResponse.builder()
                 .id(qna.getId())
                 .authorId(qna.getAuthorId())
@@ -46,11 +62,19 @@ public class QnaResponse {
                 .content(qna.getContent())
                 .createAt(qna.getCreatedAt())
                 .lastModifiedAt(qna.getModifiedAt())
-                .images(images)
+                .images(filePathDtos)
+                .answers(answerDtos)
                 .build();
     }
 
-    public static QnaResponse of(Qna qna, List<FilePathDto> images, List<AnswerDto> answers) {
+    public static QnaResponse toInstanceOfList(Qna qna) {
+        List<FilePathDto> filePathDtos = new ArrayList<>();
+        if (qna.getImages() != null) {
+            filePathDtos = qna.getImages().stream()
+                    .map(FilePathDto::from)
+                    .collect(Collectors.toList());
+        }
+
         return QnaResponse.builder()
                 .id(qna.getId())
                 .authorId(qna.getAuthorId())
@@ -59,8 +83,7 @@ public class QnaResponse {
                 .content(qna.getContent())
                 .createAt(qna.getCreatedAt())
                 .lastModifiedAt(qna.getModifiedAt())
-                .images(images)
-                .answers(answers)
+                .images(filePathDtos)
                 .build();
     }
 }
