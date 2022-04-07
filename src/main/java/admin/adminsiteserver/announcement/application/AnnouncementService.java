@@ -18,7 +18,9 @@ import admin.adminsiteserver.announcement.ui.dto.UploadAnnouncementRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -99,7 +101,8 @@ public class AnnouncementService {
     }
 
     public CommonResponse<List<AnnouncementResponse>> findAll(Pageable pageable) {
-        Page<AnnouncementResponse> announcements = announcementRepository.findAll(pageable)
+        PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("createdAt").descending());
+        Page<AnnouncementResponse> announcements = announcementRepository.findAll(pageRequest)
                 .map(AnnouncementResponse::from);
 
         return CommonResponse.of(announcements.getContent(), PageInfo.from(announcements), ANNOUNCEMENT_FIND_ALL_SUCCESS.getMessage());
