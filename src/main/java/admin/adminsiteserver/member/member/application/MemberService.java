@@ -2,6 +2,8 @@ package admin.adminsiteserver.member.member.application;
 
 import admin.adminsiteserver.common.aws.infrastructure.S3Uploader;
 import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
+import admin.adminsiteserver.common.dto.CommonResponse;
+import admin.adminsiteserver.common.dto.PageInfo;
 import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
 import admin.adminsiteserver.member.member.application.dto.MemberDto;
 import admin.adminsiteserver.member.member.domain.Member;
@@ -10,13 +12,20 @@ import admin.adminsiteserver.member.member.domain.MemberFilePathRepository;
 import admin.adminsiteserver.member.member.domain.MemberRepository;
 import admin.adminsiteserver.member.member.exception.AlreadyExistUserIDException;
 import admin.adminsiteserver.member.member.exception.NotExistMemberException;
+import admin.adminsiteserver.member.member.ui.MemberResponseMessage;
 import admin.adminsiteserver.member.member.ui.dto.SignUpRequest;
 import admin.adminsiteserver.member.member.ui.dto.UpdateMemberRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+
+import static admin.adminsiteserver.member.member.ui.MemberResponseMessage.INQUIRE_SUCCESS;
 
 @Service
 @RequiredArgsConstructor
@@ -74,5 +83,10 @@ public class MemberService {
         Member member = memberRepository.findByUserId(loginUserInfo.getUserId())
                 .orElseThrow(NotExistMemberException::new);
         return MemberDto.from(member);
+    }
+
+    public CommonResponse<List<MemberDto>> findMembers(Pageable pageable) {
+        Page<MemberDto> members = memberRepository.findMembers(pageable).map(MemberDto::from);
+        return CommonResponse.of(members.getContent(), PageInfo.from(members), INQUIRE_SUCCESS.getMessage());
     }
 }

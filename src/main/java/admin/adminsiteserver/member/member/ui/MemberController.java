@@ -9,10 +9,13 @@ import admin.adminsiteserver.member.member.ui.dto.SignUpRequest;
 import admin.adminsiteserver.member.member.ui.dto.UpdateMemberRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+
+import java.util.List;
 
 import static admin.adminsiteserver.member.member.ui.MemberResponseMessage.*;
 
@@ -55,5 +58,10 @@ public class MemberController {
     @GetMapping("/member")
     public CommonResponse<MemberDto> findMyself(@LoginUser LoginUserInfo loginUserInfo) {
         return CommonResponse.of(memberService.findMyself(loginUserInfo), INQUIRE_MYSELF_SUCCESS.getMessage());
+    }
+
+    @GetMapping("/members")
+    public CommonResponse<List<MemberDto>> findMembers(Pageable pageable) {
+        return memberService.findMembers(pageable);
     }
 }
