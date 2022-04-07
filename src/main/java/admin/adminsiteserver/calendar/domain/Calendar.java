@@ -25,11 +25,8 @@ public class Calendar {
 
     private LocalDate startDate;
 
-    public void updateTitle(String title) {
+    public void updateTitleAndStartDate(String title, LocalDate localDate) {
         this.title = title;
-    }
-
-    public void updateStartDate(LocalDate localDate) {
         this.startDate = localDate;
     }
 
