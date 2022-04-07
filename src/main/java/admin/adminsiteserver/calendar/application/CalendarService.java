@@ -25,7 +25,14 @@ public class CalendarService {
     public CalendarResponse updateCalendar(CalendarRequest calendarRequest, Long calendarId) {
         Calendar calendar = calendarRepository.findById(calendarId)
                 .orElseThrow(NotExistCalendarException::new);
-        calendar.updateTitleAndStartDate(calendarRequest.getTitle(), calendar.getStartDate());
+        calendar.updateTitleAndStartDate(calendarRequest.getTitle(), calendarRequest.getStartDate());
         return CalendarResponse.from(calendar);
+    }
+
+    @Transactional
+    public void deleteCalendar(Long calendarId) {
+        Calendar calendar = calendarRepository.findById(calendarId)
+                .orElseThrow(NotExistCalendarException::new);
+        calendarRepository.delete(calendar);
     }
 }
