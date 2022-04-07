@@ -49,10 +49,6 @@ public class MemberService {
     public void updateMember(UpdateMemberRequest updateMemberRequest, String userId) {
         Member member = memberRepository.findByUserId(userId)
                 .orElseThrow(NotExistMemberException::new);
-        if(updateMemberRequest.getImage() != null) {
-            FilePathDto filePathDto = s3Uploader.upload(updateMemberRequest.getImage(), MEMBER_IMAGE_PATH);
-            member.addProfileImage(filePathDto.toFilePath(MemberFilePath.class));
-        }
         member.update(updateMemberRequest.getEmail(),
                 updateMemberRequest.getName(),
                 updateMemberRequest.getStudentNumber(),
