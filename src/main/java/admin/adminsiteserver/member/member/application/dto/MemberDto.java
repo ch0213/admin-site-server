@@ -30,4 +30,17 @@ public class MemberDto {
                 filePathDto
         );
     }
+
+    public static MemberDto from (Member member) {
+        return new MemberDto(
+                member.getId(),
+                member.getUserId(),
+                member.getEmail(),
+                member.getName(),
+                member.getStudentNumber(),
+                member.getPhoneNumber(),
+                member.getRole().getDescription(),
+                null
+        );
+    }
 }
