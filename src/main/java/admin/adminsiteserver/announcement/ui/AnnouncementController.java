@@ -3,7 +3,6 @@ package admin.adminsiteserver.announcement.ui;
 import admin.adminsiteserver.common.dto.CommonResponse;
 import admin.adminsiteserver.member.auth.util.LoginUser;
 import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
-import admin.adminsiteserver.announcement.application.dto.AnnouncementDto;
 import admin.adminsiteserver.announcement.application.AnnouncementService;
 import admin.adminsiteserver.announcement.application.dto.AnnouncementResponse;
 import admin.adminsiteserver.announcement.ui.dto.UpdateAnnouncementRequest;
@@ -48,12 +47,12 @@ public class AnnouncementController {
     }
 
     @GetMapping("/{announcementId}")
-    public CommonResponse<AnnouncementDto> findAnnouncement(@PathVariable Long announcementId) {
+    public CommonResponse<AnnouncementResponse> findAnnouncement(@PathVariable Long announcementId) {
         return CommonResponse.of(announcementService.find(announcementId), ANNOUNCEMENT_FIND_SUCCESS.getMessage());
     }
 
     @GetMapping
-    public CommonResponse<List<AnnouncementDto>> findAllAnnouncement(Pageable pageable) {
+    public CommonResponse<List<AnnouncementResponse>> findAllAnnouncement(Pageable pageable) {
         return announcementService.findAll(pageable);
     }
 }

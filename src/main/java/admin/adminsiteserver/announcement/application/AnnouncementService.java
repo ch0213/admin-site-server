@@ -1,6 +1,5 @@
 package admin.adminsiteserver.announcement.application;
 
-import admin.adminsiteserver.announcement.application.dto.AnnouncementDto;
 import admin.adminsiteserver.announcement.exception.UnauthorizedForAnnouncementException;
 import admin.adminsiteserver.common.aws.infrastructure.S3Uploader;
 import admin.adminsiteserver.announcement.domain.AnnouncementFilePathRepository;
@@ -93,15 +92,15 @@ public class AnnouncementService {
         }
     }
 
-    public AnnouncementDto find(Long announcementId) {
+    public AnnouncementResponse find(Long announcementId) {
         Announcement announcement = announcementRepository.findById(announcementId)
                 .orElseThrow(NotExistAnnouncementException::new);
-        return AnnouncementDto.from(announcement);
+        return AnnouncementResponse.from(announcement);
     }
 
-    public CommonResponse<List<AnnouncementDto>> findAll(Pageable pageable) {
-        Page<AnnouncementDto> announcements = announcementRepository.findAll(pageable)
-                .map(AnnouncementDto::from);
+    public CommonResponse<List<AnnouncementResponse>> findAll(Pageable pageable) {
+        Page<AnnouncementResponse> announcements = announcementRepository.findAll(pageable)
+                .map(AnnouncementResponse::from);
 
         return CommonResponse.of(announcements.getContent(), PageInfo.from(announcements), ANNOUNCEMENT_FIND_ALL_SUCCESS.getMessage());
     }
