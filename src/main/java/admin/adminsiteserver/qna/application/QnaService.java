@@ -9,12 +9,15 @@ import admin.adminsiteserver.qna.application.dto.QnaResponse;
 import admin.adminsiteserver.qna.domain.*;
 import admin.adminsiteserver.qna.exception.NotExistAnswerException;
 import admin.adminsiteserver.qna.exception.NotExistQnaException;
+import admin.adminsiteserver.qna.exception.UnauthorizedForAnswerException;
+import admin.adminsiteserver.qna.exception.UnauthorizedForQnaException;
 import admin.adminsiteserver.qna.ui.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,10 +34,13 @@ public class QnaService {
 
     @Transactional
     public QnaResponse upload(UploadQnaRequest request, @LoginUser LoginUserInfo loginUserInfo) {
-        List<FilePathDto> filePathDtos = saveQuestionImages(request);
-        List<QuestionFilePath> imagePaths = getImagePathsFromDto(filePathDtos, QuestionFilePath.class);
         Qna qna = request.createQna(loginUserInfo);
-        qna.addQuestionImages(imagePaths);
+        List<FilePathDto> filePathDtos = new ArrayList<>();
+        if (request.getImages() != null) {
+            filePathDtos = saveQuestionImages(request);
+            List<QuestionFilePath> imagePaths = getImagePathsFromDto(filePathDtos, QuestionFilePath.class);
+            qna.addQuestionImages(imagePaths);
+        }
         qnaRepository.save(qna);
         return QnaResponse.of(qna, filePathDtos);
     }
@@ -43,7 +49,7 @@ public class QnaService {
     public QnaResponse update(UpdateQnaRequest request, LoginUserInfo loginUserInfo, Long qnaId) {
         Qna qna = qnaRepository.findById(qnaId).orElseThrow(NotExistQnaException::new);
         qna.updateContentAndTitle(request.getTitle(), request.getContent());
-
+        validateAuthorityForQna(loginUserInfo, qna);
         if (request.getImages() != null) {
             List<FilePathDto> filePathDtos = saveQuestionImages(request);
             qna.addQuestionImages(getImagePathsFromDto(filePathDtos, QuestionFilePath.class));
@@ -58,8 +64,9 @@ public class QnaService {
     }
 
     @Transactional
-    public void delete(Long qnaId) {
+    public void delete(LoginUserInfo loginUserInfo, Long qnaId) {
         Qna qna = qnaRepository.findById(qnaId).orElseThrow(NotExistQnaException::new);
+        validateAuthorityForQna(loginUserInfo, qna);
         List<String> deleteFileUrls = qna.getImages().stream()
                 .map(QuestionFilePath::getFileUrl)
                 .collect(Collectors.toList());
@@ -84,13 +91,14 @@ public class QnaService {
     }
 
     @Transactional
-    public AnswerDto updateAnswer(AnswerUpdateRequest request, Long qnaId, Long answerId) {
+    public AnswerDto updateAnswer(AnswerUpdateRequest request, LoginUserInfo loginUserInfo, Long qnaId, Long answerId) {
         Qna qna = qnaRepository.findById(qnaId)
                 .orElseThrow(NotExistQnaException::new);
         Answer findAnswer = qna.getAnswers().stream()
                 .filter(answer -> answer.getId().equals(answerId))
                 .findAny()
                 .orElseThrow(NotExistAnswerException::new);
+        validateAuthorityForAnswer(loginUserInfo, findAnswer);
         findAnswer.updateContent(request.getContent());
 
         if (request.getImages() != null) {
@@ -104,6 +112,30 @@ public class QnaService {
         }
 
         return AnswerDto.of(findAnswer, getImagePathDtosFromAnswer(findAnswer));
+    }
+
+    @Transactional
+    public void deleteAnswer(LoginUserInfo loginUserInfo, Long qnaId, Long answerId) {
+        Qna qna = qnaRepository.findById(qnaId)
+                .orElseThrow(NotExistQnaException::new);
+        Answer findAnswer = qna.getAnswers().stream()
+                .filter(answer -> answer.getId().equals(answerId))
+                .findAny()
+                .orElseThrow(NotExistAnswerException::new);
+        validateAuthorityForAnswer(loginUserInfo, findAnswer);
+        answerRepository.delete(findAnswer);
+    }
+
+    private void validateAuthorityForAnswer(LoginUserInfo loginUserInfo, Answer findAnswer) {
+        if (!loginUserInfo.getUserId().equals(findAnswer.getAuthorId())) {
+            throw new UnauthorizedForAnswerException();
+        }
+    }
+
+    private void validateAuthorityForQna(LoginUserInfo loginUserInfo, Qna qna) {
+        if (!loginUserInfo.getUserId().equals(qna.getAuthorId())) {
+            throw new UnauthorizedForQnaException();
+        }
     }
 
     private List<FilePathDto> saveQuestionImages(BaseQnaRequest request) {
@@ -136,16 +168,5 @@ public class QnaService {
         return imagePathDtos.stream()
                 .map(filePathDto -> filePathDto.toFilePath(clazz))
                 .collect(Collectors.toList());
-    }
-
-    @Transactional
-    public void deleteAnswer(Long qnaId, Long answerId) {
-        Qna qna = qnaRepository.findById(qnaId)
-                .orElseThrow(NotExistQnaException::new);
-        Answer findAnswer = qna.getAnswers().stream()
-                .filter(answer -> answer.getId().equals(answerId))
-                .findAny()
-                .orElseThrow(NotExistAnswerException::new);
-        answerRepository.delete(findAnswer);
     }
 }

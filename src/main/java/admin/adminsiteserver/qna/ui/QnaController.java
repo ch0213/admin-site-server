@@ -40,7 +40,7 @@ public class QnaController {
 
     @DeleteMapping("/{qnaId}")
     public CommonResponse<Void> deleteQna(@LoginUser LoginUserInfo loginUserInfo, @PathVariable Long qnaId) {
-        qnaService.delete(qnaId);
+        qnaService.delete(loginUserInfo, qnaId);
         return CommonResponse.from(QNA_DELETE_SUCCESS.getMessage());
     }
 
@@ -51,14 +51,23 @@ public class QnaController {
     }
 
     @PutMapping("/{qnaId}/answer/{answerId}")
-    public CommonResponse<AnswerDto> updateAnswer(AnswerUpdateRequest request, @PathVariable Long qnaId, @PathVariable Long answerId) {
-        AnswerDto answerDto = qnaService.updateAnswer(request, qnaId, answerId);
+    public CommonResponse<AnswerDto> updateAnswer(
+            AnswerUpdateRequest request,
+            @LoginUser LoginUserInfo loginUserInfo,
+            @PathVariable Long qnaId,
+            @PathVariable Long answerId
+    ) {
+        AnswerDto answerDto = qnaService.updateAnswer(request, loginUserInfo, qnaId, answerId);
         return CommonResponse.of(answerDto, ANSWER_UPDATE_SUCCESS.getMessage());
     }
     
     @DeleteMapping("/{qnaId}/answer/{answerId}")
-    public CommonResponse<Void> deleteAnswer(@PathVariable Long qnaId, @PathVariable Long answerId) {
-        qnaService.deleteAnswer(qnaId, answerId);
+    public CommonResponse<Void> deleteAnswer(
+            @LoginUser LoginUserInfo loginUserInfo,
+            @PathVariable Long qnaId,
+            @PathVariable Long answerId
+    ) {
+        qnaService.deleteAnswer(loginUserInfo, qnaId, answerId);
         return CommonResponse.from(ANSWER_DELETE_SUCCESS.getMessage());
     }
 
