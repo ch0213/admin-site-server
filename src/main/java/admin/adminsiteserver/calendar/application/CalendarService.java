@@ -5,9 +5,13 @@ import admin.adminsiteserver.calendar.domain.Calendar;
 import admin.adminsiteserver.calendar.domain.CalendarRepository;
 import admin.adminsiteserver.calendar.exception.NotExistCalendarException;
 import admin.adminsiteserver.calendar.ui.dto.CalendarRequest;
+import admin.adminsiteserver.calendar.ui.dto.InquireCalendarRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,5 +38,11 @@ public class CalendarService {
         Calendar calendar = calendarRepository.findById(calendarId)
                 .orElseThrow(NotExistCalendarException::new);
         calendarRepository.delete(calendar);
+    }
+
+    public List<CalendarResponse> findCalendars(InquireCalendarRequest request) {
+        return calendarRepository.findCalendarByYearAndMonth(request.getYear(), request.getMonth())
+                .stream().map(CalendarResponse::from)
+                .collect(Collectors.toList());
     }
 }
