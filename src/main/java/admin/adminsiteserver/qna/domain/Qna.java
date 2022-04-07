@@ -24,6 +24,8 @@ public class Qna extends BaseTimeEntity {
     private String authorId;
     private String authorName;
     private String title;
+
+    @Lob
     private String content;
 
     @OneToMany(cascade = ALL, orphanRemoval = true)

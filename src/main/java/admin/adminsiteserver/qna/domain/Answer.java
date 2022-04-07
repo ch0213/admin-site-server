@@ -26,6 +26,7 @@ public class Answer extends BaseTimeEntity {
 
     private String authorName;
 
+    @Lob
     private String content;
 
     @OneToMany(cascade = ALL, orphanRemoval = true)

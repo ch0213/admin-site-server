@@ -24,6 +24,8 @@ public class Announcement extends BaseTimeEntity {
     private String authorId;
     private String authorName;
     private String title;
+
+    @Lob
     private String content;
 
     @OneToMany(mappedBy = "announcement", cascade = ALL, orphanRemoval = true)
