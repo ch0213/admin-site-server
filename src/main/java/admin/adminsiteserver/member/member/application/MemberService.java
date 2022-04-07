@@ -2,6 +2,7 @@ package admin.adminsiteserver.member.member.application;
 
 import admin.adminsiteserver.common.aws.infrastructure.S3Uploader;
 import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
+import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
 import admin.adminsiteserver.member.member.application.dto.MemberDto;
 import admin.adminsiteserver.member.member.domain.Member;
 import admin.adminsiteserver.member.member.domain.MemberFilePath;
@@ -67,5 +68,11 @@ public class MemberService {
     @Transactional
     public void deleteMember(String userId) {
         memberRepository.deleteByUserId(userId);
+    }
+
+    public MemberDto findMyself(LoginUserInfo loginUserInfo) {
+        Member member = memberRepository.findByUserId(loginUserInfo.getUserId())
+                .orElseThrow(NotExistMemberException::new);
+        return MemberDto.from(member);
     }
 }

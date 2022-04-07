@@ -51,4 +51,9 @@ public class MemberController {
         memberService.deleteMember(loginUserInfo.getUserId());
         return CommonResponse.from(DELETE_SUCCESS.getMessage());
     }
+
+    @GetMapping("/member")
+    public CommonResponse<MemberDto> findMyself(@LoginUser LoginUserInfo loginUserInfo) {
+        return CommonResponse.of(memberService.findMyself(loginUserInfo), INQUIRE_MYSELF_SUCCESS.getMessage());
+    }
 }
