@@ -12,7 +12,6 @@ import admin.adminsiteserver.member.member.domain.MemberFilePathRepository;
 import admin.adminsiteserver.member.member.domain.MemberRepository;
 import admin.adminsiteserver.member.member.exception.AlreadyExistUserIDException;
 import admin.adminsiteserver.member.member.exception.NotExistMemberException;
-import admin.adminsiteserver.member.member.ui.MemberResponseMessage;
 import admin.adminsiteserver.member.member.ui.dto.SignUpRequest;
 import admin.adminsiteserver.member.member.ui.dto.UpdateMemberRequest;
 import lombok.RequiredArgsConstructor;
@@ -86,7 +85,7 @@ public class MemberService {
     }
 
     public CommonResponse<List<MemberDto>> findMembers(Pageable pageable) {
-        Page<MemberDto> members = memberRepository.findMembers(pageable).map(MemberDto::from);
+        Page<MemberDto> members = memberRepository.findAll(pageable).map(MemberDto::from);
         return CommonResponse.of(members.getContent(), PageInfo.from(members), INQUIRE_SUCCESS.getMessage());
     }
 }
