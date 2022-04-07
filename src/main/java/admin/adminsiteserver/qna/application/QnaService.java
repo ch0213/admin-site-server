@@ -2,6 +2,8 @@ package admin.adminsiteserver.qna.application;
 
 import admin.adminsiteserver.common.aws.infrastructure.S3Uploader;
 import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
+import admin.adminsiteserver.common.dto.CommonResponse;
+import admin.adminsiteserver.common.dto.PageInfo;
 import admin.adminsiteserver.member.auth.util.LoginUser;
 import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
 import admin.adminsiteserver.qna.application.dto.AnswerDto;
@@ -11,15 +13,21 @@ import admin.adminsiteserver.qna.exception.NotExistAnswerException;
 import admin.adminsiteserver.qna.exception.NotExistQnaException;
 import admin.adminsiteserver.qna.exception.UnauthorizedForAnswerException;
 import admin.adminsiteserver.qna.exception.UnauthorizedForQnaException;
+import admin.adminsiteserver.qna.ui.QnaResponseMessage;
 import admin.adminsiteserver.qna.ui.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static admin.adminsiteserver.qna.ui.QnaResponseMessage.INQUIRE_QNA_LIST_SUCCESS;
 
 @Slf4j
 @Service
@@ -42,7 +50,7 @@ public class QnaService {
             qna.addQuestionImages(imagePaths);
         }
         qnaRepository.save(qna);
-        return QnaResponse.of(qna, filePathDtos);
+        return QnaResponse.from(qna);
     }
 
     @Transactional
@@ -60,7 +68,7 @@ public class QnaService {
             s3Uploader.delete(request.getDeleteFileUrls());
         }
 
-        return QnaResponse.of(qna, getImagePathDtosFromQna(qna));
+        return QnaResponse.from(qna);
     }
 
     @Transactional
@@ -124,6 +132,17 @@ public class QnaService {
                 .orElseThrow(NotExistAnswerException::new);
         validateAuthorityForAnswer(loginUserInfo, findAnswer);
         answerRepository.delete(findAnswer);
+    }
+
+    public QnaResponse findOne(Long qnaId) {
+        Qna qna = qnaRepository.findById(qnaId)
+                .orElseThrow(NotExistQnaException::new);
+        return QnaResponse.from(qna);
+    }
+
+    public CommonResponse<List<QnaResponse>> findQnas(Pageable pageable) {
+        Page<QnaResponse> qnas = qnaRepository.findAll(pageable).map(QnaResponse::toInstanceOfList);
+        return CommonResponse.of(qnas.getContent(), PageInfo.from(qnas), INQUIRE_QNA_LIST_SUCCESS.getMessage());
     }
 
     private void validateAuthorityForAnswer(LoginUserInfo loginUserInfo, Answer findAnswer) {

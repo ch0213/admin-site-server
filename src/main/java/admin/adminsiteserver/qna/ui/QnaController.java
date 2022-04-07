@@ -11,7 +11,10 @@ import admin.adminsiteserver.qna.ui.dto.AnswerUpdateRequest;
 import admin.adminsiteserver.qna.ui.dto.UpdateQnaRequest;
 import admin.adminsiteserver.qna.ui.dto.UploadQnaRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static admin.adminsiteserver.qna.ui.QnaResponseMessage.*;
 
@@ -71,4 +74,13 @@ public class QnaController {
         return CommonResponse.from(ANSWER_DELETE_SUCCESS.getMessage());
     }
 
+    @GetMapping("/{qnaId}")
+    public CommonResponse<QnaResponse> findOne(@PathVariable Long qnaId) {
+        return CommonResponse.of(qnaService.findOne(qnaId), INQUIRE_QNA_SUCCESS.getMessage());
+    }
+
+    @GetMapping
+    public CommonResponse<List<QnaResponse>> findQnaList(Pageable pageable) {
+        return qnaService.findQnas(pageable);
+    }
 }
