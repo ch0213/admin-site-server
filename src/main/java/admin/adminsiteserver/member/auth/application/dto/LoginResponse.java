@@ -10,6 +10,8 @@ public class LoginResponse {
     private String userId;
     private String email;
     private String name;
+    private String studentNumber;
+    private String phoneNumber;
     private String role;
     private JwtTokenDto tokens;
 
@@ -18,6 +20,8 @@ public class LoginResponse {
                 member.getUserId(),
                 member.getEmail(),
                 member.getName(),
+                member.getStudentNumber(),
+                member.getPhoneNumber(), 
                 member.getRole().getRole(),
                 tokens);
     }
