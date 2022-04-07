@@ -33,7 +33,7 @@ public class MemberController {
             @RequestBody UpdateMemberRequest updateMemberRequest,
             @LoginUser LoginUserInfo loginUserInfo
     ) {
-        memberService.updateMember(updateMemberRequest, loginUserInfo.getUserId(), loginUserInfo);
+        memberService.updateMember(updateMemberRequest, loginUserInfo.getUserId());
         return CommonResponse.from(UPDATE_SUCCESS.getMessage());
     }
 
@@ -48,7 +48,7 @@ public class MemberController {
 
     @DeleteMapping("/member")
     public CommonResponse<Void> deleteMember(@LoginUser LoginUserInfo loginUserInfo) {
-        memberService.deleteMember(loginUserInfo.getUserId(), loginUserInfo);
+        memberService.deleteMember(loginUserInfo.getUserId());
         return CommonResponse.from(DELETE_SUCCESS.getMessage());
     }
 }

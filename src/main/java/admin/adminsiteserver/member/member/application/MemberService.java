@@ -2,8 +2,6 @@ package admin.adminsiteserver.member.member.application;
 
 import admin.adminsiteserver.common.aws.infrastructure.S3Uploader;
 import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
-import admin.adminsiteserver.member.auth.util.LoginUser;
-import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
 import admin.adminsiteserver.member.member.application.dto.MemberDto;
 import admin.adminsiteserver.member.member.domain.Member;
 import admin.adminsiteserver.member.member.domain.MemberFilePath;
@@ -11,8 +9,6 @@ import admin.adminsiteserver.member.member.domain.MemberFilePathRepository;
 import admin.adminsiteserver.member.member.domain.MemberRepository;
 import admin.adminsiteserver.member.member.exception.AlreadyExistUserIDException;
 import admin.adminsiteserver.member.member.exception.NotExistMemberException;
-import admin.adminsiteserver.member.member.exception.NotPossibleDeleteOtherException;
-import admin.adminsiteserver.member.member.exception.NotPossibleUpdateOtherException;
 import admin.adminsiteserver.member.member.ui.dto.SignUpRequest;
 import admin.adminsiteserver.member.member.ui.dto.UpdateMemberRequest;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -52,12 +46,9 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateMember(UpdateMemberRequest updateMemberRequest, String userId, LoginUserInfo loginUserInfo) {
+    public void updateMember(UpdateMemberRequest updateMemberRequest, String userId) {
         Member member = memberRepository.findByUserId(userId)
                 .orElseThrow(NotExistMemberException::new);
-        if (!Objects.equals(userId, loginUserInfo.getUserId())) {
-            throw new NotPossibleUpdateOtherException();
-        }
         if(updateMemberRequest.getImage() != null) {
             FilePathDto filePathDto = s3Uploader.upload(updateMemberRequest.getImage(), MEMBER_IMAGE_PATH);
             member.addProfileImage(filePathDto.toFilePath(MemberFilePath.class));
@@ -78,10 +69,7 @@ public class MemberService {
     }
 
     @Transactional
-    public void deleteMember(String userId, LoginUserInfo loginUserInfo) {
-        if (!Objects.equals(userId, loginUserInfo.getUserId())) {
-            throw new NotPossibleDeleteOtherException();
-        }
+    public void deleteMember(String userId) {
         memberRepository.deleteByUserId(userId);
     }
 }
