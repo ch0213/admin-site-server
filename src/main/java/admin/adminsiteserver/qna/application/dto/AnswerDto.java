@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @AllArgsConstructor
@@ -15,6 +16,18 @@ public class AnswerDto {
     private String authorName;
     private String content;
     private List<FilePathDto> images;
+
+    public static AnswerDto from(Answer answer) {
+        return new AnswerDto(
+                answer.getId(),
+                answer.getAuthorId(),
+                answer.getAuthorName(),
+                answer.getContent(),
+                answer.getImages().stream()
+                        .map(FilePathDto::from)
+                        .collect(Collectors.toList())
+        );
+    }
 
     public static AnswerDto of(Answer answer, List<FilePathDto> images) {
         return new AnswerDto(
