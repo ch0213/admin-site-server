@@ -1,6 +1,7 @@
 package admin.adminsiteserver.announcement.application;
 
 import admin.adminsiteserver.announcement.application.dto.AnnouncementDto;
+import admin.adminsiteserver.announcement.exception.UnauthorizedForAnnouncementException;
 import admin.adminsiteserver.common.aws.infrastructure.S3Uploader;
 import admin.adminsiteserver.announcement.domain.AnnouncementFilePathRepository;
 import admin.adminsiteserver.common.dto.CommonResponse;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,10 +42,13 @@ public class AnnouncementService {
 
     @Transactional
     public AnnouncementResponse upload(UploadAnnouncementRequest request, LoginUserInfo loginUserInfo) {
-        List<FilePathDto> filePathDtos = saveFiles(request);
-        List<AnnouncementFilePath> imagePaths = getImagePathsFromDto(filePathDtos);
         Announcement announcement = request.createAnnouncement(loginUserInfo);
-        announcement.addImages(imagePaths);
+        List<FilePathDto> filePathDtos = new ArrayList<>();
+        if (request.getImages() != null) {
+            filePathDtos = saveFiles(request);
+            List<AnnouncementFilePath> imagePaths = getImagePathsFromDto(filePathDtos);
+            announcement.addImages(imagePaths);
+        }
         announcementRepository.save(announcement);
         return AnnouncementResponse.of(announcement, filePathDtos);
     }
@@ -52,6 +57,7 @@ public class AnnouncementService {
     public AnnouncementResponse update(UpdateAnnouncementRequest request, LoginUserInfo loginUserInfo, Long id) {
         Announcement announcement = announcementRepository.findById(id)
                 .orElseThrow(NotExistAnnouncementException::new);
+        validateAuthorityForAnnouncement(loginUserInfo, announcement);
         announcement.updateTitleAndContent(request.getTitle(), request.getContent());
 
         if (request.getImages() != null) {
@@ -69,16 +75,22 @@ public class AnnouncementService {
     }
 
     @Transactional
-    public void delete(Long announcementId) {
+    public void delete(Long announcementId, LoginUserInfo loginUserInfo) {
         Announcement announcement = announcementRepository.findById(announcementId)
                 .orElseThrow(NotExistAnnouncementException::new);
-
+        validateAuthorityForAnnouncement(loginUserInfo, announcement);
         List<String> deleteFileURls = announcement.getImages().stream()
                 .map(AnnouncementFilePath::getFileUrl)
                 .collect(Collectors.toList());
         s3Uploader.delete(deleteFileURls);
 
         announcementRepository.delete(announcement);
+    }
+
+    private void validateAuthorityForAnnouncement(LoginUserInfo loginUserInfo, Announcement announcement) {
+        if (!loginUserInfo.getUserId().equals(announcement.getAuthorId())) {
+            throw new UnauthorizedForAnnouncementException();
+        }
     }
 
     public AnnouncementDto find(Long announcementId) {

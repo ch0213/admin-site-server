@@ -43,7 +43,7 @@ public class AnnouncementController {
 
     @DeleteMapping("/{announcementId}")
     public CommonResponse<Void> deleteAnnouncement(@LoginUser LoginUserInfo loginUserInfo, @PathVariable Long announcementId) {
-        announcementService.delete(announcementId);
+        announcementService.delete(announcementId, loginUserInfo);
         return CommonResponse.from(ANNOUNCEMENT_DELETE_SUCCESS.getMessage());
     }
 
