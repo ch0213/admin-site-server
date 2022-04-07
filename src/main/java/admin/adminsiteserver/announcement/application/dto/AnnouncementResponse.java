@@ -7,10 +7,12 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @AllArgsConstructor
 public class AnnouncementResponse {
+    private Long id;
     private String authorId;
     private String authorName;
     private String title;
@@ -21,6 +23,7 @@ public class AnnouncementResponse {
 
     public static AnnouncementResponse of(Announcement announcement, List<FilePathDto> image) {
         return new AnnouncementResponse(
+                announcement.getId(),
                 announcement.getAuthorId(),
                 announcement.getAuthorName(),
                 announcement.getTitle(),
@@ -28,6 +31,21 @@ public class AnnouncementResponse {
                 announcement.getCreatedAt(),
                 announcement.getModifiedAt(),
                 image
+        );
+    }
+
+    public static AnnouncementResponse from(Announcement announcement) {
+        return new AnnouncementResponse(
+                announcement.getId(),
+                announcement.getAuthorId(),
+                announcement.getAuthorName(),
+                announcement.getTitle(),
+                announcement.getContent(),
+                announcement.getCreatedAt(),
+                announcement.getModifiedAt(),
+                announcement.getImages().stream()
+                        .map(FilePathDto::from)
+                        .collect(Collectors.toList())
         );
     }
 }
