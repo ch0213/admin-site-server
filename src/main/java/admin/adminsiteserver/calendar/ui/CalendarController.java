@@ -30,4 +30,10 @@ public class CalendarController {
         CalendarResponse calendarResponse = calendarService.updateCalendar(calendarRequest, calendarId);
         return CommonResponse.of(calendarResponse, CALENDAR_UPDATE_SUCCESS.getMessage());
     }
+
+    @DeleteMapping("/{calendarId}")
+    public CommonResponse<Void> deleteCalendar(@PathVariable Long calendarId) {
+        calendarService.deleteCalendar(calendarId);
+        return CommonResponse.from(CALENDAR_DELETE_SUCCESS.getMessage());
+    }
 }
