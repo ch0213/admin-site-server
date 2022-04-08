@@ -10,14 +10,16 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class LevelUpResponse {
 
+    private Long id;
     private String name;
     private String registerRoleType;
     private LocalDateTime registerAt;
 
     public static LevelUpResponse from(LevelUp levelUp) {
         return new LevelUpResponse(
+                levelUp.getId(),
                 levelUp.getMember().getName(),
-                levelUp.getRole().getDescription(),
+                levelUp.getRole(),
                 levelUp.getCreatedAt()
         );
     }

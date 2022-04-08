@@ -20,10 +20,11 @@ public class LevelUpRequest {
         return new LevelUp(findRoleType(), false, member);
     }
 
-    private RoleType findRoleType() {
+    private String findRoleType() {
         return Arrays.stream(RoleType.values()).sequential()
                 .filter(roleType -> roleType.getDescription().equals(role))
                 .findAny()
-                .orElseThrow(NotExistRoleException::new);
+                .orElseThrow(NotExistRoleException::new)
+                .getDescription();
     }
 }
