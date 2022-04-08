@@ -3,6 +3,7 @@ package admin.adminsiteserver.levelup.application;
 import admin.adminsiteserver.levelup.application.dto.LevelUpResponse;
 import admin.adminsiteserver.levelup.domain.LevelUp;
 import admin.adminsiteserver.levelup.domain.LevelUpRepository;
+import admin.adminsiteserver.levelup.exception.NotExistLevelUpException;
 import admin.adminsiteserver.levelup.ui.dto.LevelUpRequest;
 import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
 import admin.adminsiteserver.member.member.domain.Member;
@@ -26,5 +27,13 @@ public class LevelUpService {
                 .orElseThrow(NotExistMemberException::new);
         LevelUp savedLevelUp = levelUpRepository.save(request.from(member));
         return LevelUpResponse.from(savedLevelUp);
+    }
+
+    @Transactional
+    public LevelUpResponse updateLevelUp(LoginUserInfo loginUserInfo, LevelUpRequest request, Long levelUpId) {
+        LevelUp levelUp = levelUpRepository.findById(levelUpId)
+                .orElseThrow(NotExistLevelUpException::new);
+        levelUp.updateRole(request.getRole());
+        return LevelUpResponse.from(levelUp);
     }
 }
