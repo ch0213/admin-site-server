@@ -3,6 +3,7 @@ package admin.adminsiteserver.levelup.application;
 import admin.adminsiteserver.levelup.application.dto.LevelUpResponse;
 import admin.adminsiteserver.levelup.domain.LevelUp;
 import admin.adminsiteserver.levelup.domain.LevelUpRepository;
+import admin.adminsiteserver.levelup.exception.NotAuthorizationLevelUpException;
 import admin.adminsiteserver.levelup.exception.NotExistLevelUpException;
 import admin.adminsiteserver.levelup.ui.dto.LevelUpRequest;
 import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
@@ -33,7 +34,24 @@ public class LevelUpService {
     public LevelUpResponse updateLevelUp(LoginUserInfo loginUserInfo, LevelUpRequest request, Long levelUpId) {
         LevelUp levelUp = levelUpRepository.findById(levelUpId)
                 .orElseThrow(NotExistLevelUpException::new);
+        validateAuthorization(loginUserInfo, levelUp);
         levelUp.updateRole(request.getRole());
         return LevelUpResponse.from(levelUp);
+    }
+
+    @Transactional
+    public void deleteLevelUp(LoginUserInfo loginUserInfo, Long levelUpId) {
+        LevelUp levelUp = levelUpRepository.findById(levelUpId)
+                .orElseThrow(NotExistLevelUpException::new);
+        validateAuthorization(loginUserInfo, levelUp);
+        levelUpRepository.delete(levelUp);
+    }
+
+    private void validateAuthorization(LoginUserInfo loginUserInfo, LevelUp levelUp) {
+        String requestUserId = loginUserInfo.getUserId();
+        String authorUserId = levelUp.getMember().getUserId();
+        if (!requestUserId.equals(authorUserId)) {
+            throw new NotAuthorizationLevelUpException();
+        }
     }
 }
