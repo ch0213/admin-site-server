@@ -22,7 +22,7 @@ public class LoginResponse {
                 member.getName(),
                 member.getStudentNumber(),
                 member.getPhoneNumber(), 
-                member.getRole().getRole(),
+                member.getRole().getDescription(),
                 tokens);
     }
 }
