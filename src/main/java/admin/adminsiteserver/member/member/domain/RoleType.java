@@ -6,9 +6,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum RoleType {
-    PRESIDENT("PRESIDENT", "회장"),
-    OFFICER("OFFICER", "임원"),
-    MEMBER("MEMBER", "회원");
+    ADMIN("ROLE_ADMIN", "관리자"),
+    PRESIDENT("ROLE_PRESIDENT", "회장"),
+    OFFICER("ROLE_OFFICER", "임원"),
+    MEMBER("ROLE_MEMBER", "회원");
 
     private String role;
     private String description;
