@@ -3,8 +3,10 @@ package admin.adminsiteserver.levelup.application;
 import admin.adminsiteserver.levelup.application.dto.LevelUpResponse;
 import admin.adminsiteserver.levelup.domain.LevelUp;
 import admin.adminsiteserver.levelup.domain.LevelUpRepository;
+import admin.adminsiteserver.levelup.exception.AlreadyExistLevelUpException;
 import admin.adminsiteserver.levelup.exception.NotAuthorizationLevelUpException;
 import admin.adminsiteserver.levelup.exception.NotExistLevelUpException;
+import admin.adminsiteserver.levelup.ui.dto.LevelUpProcessRequest;
 import admin.adminsiteserver.levelup.ui.dto.LevelUpRequest;
 import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
 import admin.adminsiteserver.member.member.domain.Member;
@@ -13,6 +15,9 @@ import admin.adminsiteserver.member.member.exception.NotExistMemberException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +31,10 @@ public class LevelUpService {
     public LevelUpResponse registerLevelUp(LoginUserInfo loginUserInfo, LevelUpRequest request) {
         Member member = memberRepository.findByUserId(loginUserInfo.getUserId())
                 .orElseThrow(NotExistMemberException::new);
+        levelUpRepository.findByUserId(loginUserInfo.getUserId())
+                .ifPresent(levelUp -> {
+                    throw new AlreadyExistLevelUpException();
+                });
         LevelUp savedLevelUp = levelUpRepository.save(request.from(member));
         return LevelUpResponse.from(savedLevelUp);
     }
@@ -47,11 +56,47 @@ public class LevelUpService {
         levelUpRepository.delete(levelUp);
     }
 
+    public List<LevelUpResponse> findAll() {
+        return levelUpRepository.findByProcessedIsFalse().stream()
+                .map(LevelUpResponse::from)
+                .collect(Collectors.toList());
+    }
+
     private void validateAuthorization(LoginUserInfo loginUserInfo, LevelUp levelUp) {
         String requestUserId = loginUserInfo.getUserId();
         String authorUserId = levelUp.getMember().getUserId();
         if (!requestUserId.equals(authorUserId)) {
             throw new NotAuthorizationLevelUpException();
+        }
+    }
+
+    @Transactional
+    public void updateMemberPosition(Long levelUpId) {
+        LevelUp levelUp = levelUpRepository.findById(levelUpId)
+                .orElseThrow(NotExistLevelUpException::new);
+        levelUp.approve();
+    }
+
+    @Transactional
+    public void updateMembersPosition(LevelUpProcessRequest request) {
+        List<LevelUp> existLevelUp = levelUpRepository.findAllById(request.getLevelUpIds());
+        for (LevelUp levelUp : existLevelUp) {
+            updateMemberPosition(levelUp.getId());
+        }
+    }
+
+    @Transactional
+    public void rejectMemberPosition(Long levelUpId) {
+        LevelUp levelUp = levelUpRepository.findById(levelUpId)
+                .orElseThrow(NotExistLevelUpException::new);
+        levelUp.reject();
+    }
+
+    @Transactional
+    public void rejectMembersPosition(LevelUpProcessRequest request) {
+        List<LevelUp> existLevelUp = levelUpRepository.findAllById(request.getLevelUpIds());
+        for (LevelUp levelUp : existLevelUp) {
+            rejectMemberPosition(levelUp.getId());
         }
     }
 }
