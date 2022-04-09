@@ -21,6 +21,8 @@ public class LevelUp extends BaseTimeEntity {
     @Id @GeneratedValue
     private Long id;
 
+    private String userId;
+
     private String role;
 
     private boolean processed;
@@ -29,7 +31,8 @@ public class LevelUp extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    public LevelUp(String role, boolean processed, Member member) {
+    public LevelUp(String userId, String role, boolean processed, Member member) {
+        this.userId = userId;
         this.role = role;
         this.processed = processed;
         this.member = member;
@@ -41,5 +44,14 @@ public class LevelUp extends BaseTimeEntity {
                 .findAny()
                 .orElseThrow(NotExistRoleException::new)
                 .getDescription();
+    }
+
+    public void approve() {
+        this.getMember().updateRole(role);
+        this.processed = true;
+    }
+
+    public void reject() {
+        this.processed = true;
     }
 }
