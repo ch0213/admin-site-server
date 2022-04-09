@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public class LevelUpResponse {
 
     private Long id;
+    private String userId;
     private String name;
     private String registerRoleType;
     private LocalDateTime registerAt;
@@ -18,6 +19,7 @@ public class LevelUpResponse {
     public static LevelUpResponse from(LevelUp levelUp) {
         return new LevelUpResponse(
                 levelUp.getId(),
+                levelUp.getUserId(),
                 levelUp.getMember().getName(),
                 levelUp.getRole(),
                 levelUp.getCreatedAt()

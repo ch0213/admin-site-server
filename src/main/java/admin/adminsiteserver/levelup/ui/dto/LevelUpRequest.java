@@ -17,7 +17,7 @@ public class LevelUpRequest {
     private String role;
 
     public LevelUp from(Member member) {
-        return new LevelUp(findRoleType(), false, member);
+        return new LevelUp(member.getUserId(), findRoleType(), false, member);
     }
 
     private String findRoleType() {
