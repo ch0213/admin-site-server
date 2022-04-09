@@ -14,9 +14,9 @@ public class CalendarRepositoryImpl implements CalendarCustomRepository{
     private final JPAQueryFactory factory;
 
     @Override
-    public List<Calendar> findCalendarByYearAndMonth(int year, int month) {
-        LocalDate lowerBound = LocalDate.of(year, month, 1).minusDays(1);
-        LocalDate upperBound = LocalDate.of(year, month, 1).plusMonths(1);
+    public List<Calendar> findCalendarByYearAndMonth(int year) {
+        LocalDate lowerBound = LocalDate.of(year, 1, 1).minusDays(1);
+        LocalDate upperBound = LocalDate.of(year, 12, 31).plusDays(1);
         return factory.selectFrom(calendar)
                 .where(calendar.startDate.after(lowerBound), calendar.startDate.before(upperBound))
                 .orderBy(calendar.startDate.asc())

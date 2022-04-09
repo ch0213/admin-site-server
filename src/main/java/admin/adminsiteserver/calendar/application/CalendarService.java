@@ -41,7 +41,7 @@ public class CalendarService {
     }
 
     public List<CalendarResponse> findCalendars(InquireCalendarRequest request) {
-        return calendarRepository.findCalendarByYearAndMonth(request.getYear(), request.getMonth())
+        return calendarRepository.findCalendarByYearAndMonth(request.getYear())
                 .stream().map(CalendarResponse::from)
                 .collect(Collectors.toList());
     }

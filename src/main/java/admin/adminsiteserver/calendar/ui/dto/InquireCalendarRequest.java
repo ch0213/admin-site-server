@@ -7,5 +7,4 @@ import lombok.Getter;
 @AllArgsConstructor
 public class InquireCalendarRequest {
     private int year;
-    private int month;
 }
