@@ -1,11 +1,11 @@
 package admin.adminsiteserver.common.aws.ui.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter
-@NoArgsConstructor
+@AllArgsConstructor
 public class FileUploadRequest {
     private MultipartFile image;
 }
