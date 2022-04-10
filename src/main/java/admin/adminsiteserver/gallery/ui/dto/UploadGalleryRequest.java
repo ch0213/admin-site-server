@@ -9,8 +9,8 @@ import java.util.List;
 
 @Getter
 public class UploadGalleryRequest extends BaseGalleryRequest {
-    public UploadGalleryRequest(String title, String content, List<MultipartFile> images) {
-        super(title, content, images);
+    public UploadGalleryRequest(String title, String content, List<MultipartFile> files) {
+        super(title, content, files);
     }
 
     public Gallery createGallery(LoginUserInfo loginUserInfo) {

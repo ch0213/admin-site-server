@@ -43,7 +43,7 @@ public class AnnouncementResponse {
                 announcement.getContent(),
                 announcement.getCreatedAt(),
                 announcement.getModifiedAt(),
-                announcement.getImages().stream()
+                announcement.getFiles().stream()
                         .map(FilePathDto::from)
                         .collect(Collectors.toList())
         );

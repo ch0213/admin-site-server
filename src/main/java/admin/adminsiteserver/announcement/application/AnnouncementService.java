@@ -39,16 +39,16 @@ public class AnnouncementService {
     private final AnnouncementRepository announcementRepository;
     private final AnnouncementFilePathRepository filePathRepository;
     private final S3Uploader s3Uploader;
-    private static final String ANNOUNCEMENT_IMAGE_PATH = "announcement/";
+    private static final String ANNOUNCEMENT_FILE_PATH = "announcement/";
 
     @Transactional
     public AnnouncementResponse upload(UploadAnnouncementRequest request, LoginUserInfo loginUserInfo) {
         Announcement announcement = request.createAnnouncement(loginUserInfo);
         List<FilePathDto> filePathDtos = new ArrayList<>();
-        if (request.getImages() != null) {
+        if (request.getFiles() != null) {
             filePathDtos = saveFiles(request);
-            List<AnnouncementFilePath> imagePaths = getImagePathsFromDto(filePathDtos);
-            announcement.addImages(imagePaths);
+            List<AnnouncementFilePath> filePaths = getFilePathsFromDto(filePathDtos);
+            announcement.addFiles(filePaths);
         }
         announcementRepository.save(announcement);
         return AnnouncementResponse.of(announcement, filePathDtos);
@@ -61,18 +61,18 @@ public class AnnouncementService {
         validateAuthorityForAnnouncement(loginUserInfo, announcement);
         announcement.updateTitleAndContent(request.getTitle(), request.getContent());
 
-        if (request.getImages() != null) {
+        if (request.getFiles() != null) {
             List<FilePathDto> filePathDtos = saveFiles(request);
-            List<AnnouncementFilePath> filePaths = filePathRepository.saveAll(getImagePathsFromDto(filePathDtos));
-            announcement.addImages(filePaths);
+            List<AnnouncementFilePath> filePaths = filePathRepository.saveAll(getFilePathsFromDto(filePathDtos));
+            announcement.addFiles(filePaths);
         }
 
         if (request.getDeleteFileUrls() != null) {
-            announcement.deleteImages(request.getDeleteFileUrls());
+            announcement.deleteFiles(request.getDeleteFileUrls());
             s3Uploader.delete(request.getDeleteFileUrls());
         }
 
-        return AnnouncementResponse.of(announcement, getImagePathDtosFromAnnouncement(announcement));
+        return AnnouncementResponse.of(announcement, getFilePathDtosFromAnnouncement(announcement));
     }
 
     @Transactional
@@ -80,7 +80,7 @@ public class AnnouncementService {
         Announcement announcement = announcementRepository.findById(announcementId)
                 .orElseThrow(NotExistAnnouncementException::new);
         validateAuthorityForAnnouncement(loginUserInfo, announcement);
-        List<String> deleteFileURls = announcement.getImages().stream()
+        List<String> deleteFileURls = announcement.getFiles().stream()
                 .map(AnnouncementFilePath::getFileUrl)
                 .collect(Collectors.toList());
         s3Uploader.delete(deleteFileURls);
@@ -108,21 +108,21 @@ public class AnnouncementService {
         return CommonResponse.of(announcements.getContent(), PageInfo.from(announcements), ANNOUNCEMENT_FIND_ALL_SUCCESS.getMessage());
     }
 
-    private List<FilePathDto> getImagePathDtosFromAnnouncement(Announcement announcement) {
-        return announcement.getImages().stream()
+    private List<FilePathDto> getFilePathDtosFromAnnouncement(Announcement announcement) {
+        return announcement.getFiles().stream()
                 .map(FilePathDto::from)
                 .collect(Collectors.toList());
     }
 
     private List<FilePathDto> saveFiles(BaseAnnouncementRequest request) {
-        if (request.getImages() == null) {
+        if (request.getFiles() == null) {
             return null;
         }
-        return s3Uploader.upload(request.getImages(), ANNOUNCEMENT_IMAGE_PATH);
+        return s3Uploader.upload(request.getFiles(), ANNOUNCEMENT_FILE_PATH);
     }
 
-    private List<AnnouncementFilePath> getImagePathsFromDto(List<FilePathDto> imagePathDtos) {
-        return imagePathDtos.stream()
+    private List<AnnouncementFilePath> getFilePathsFromDto(List<FilePathDto> filePathDtos) {
+        return filePathDtos.stream()
                 .map(filePathDto -> filePathDto.toFilePath(AnnouncementFilePath.class))
                 .collect(Collectors.toList());
     }

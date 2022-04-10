@@ -11,5 +11,5 @@ import java.util.List;
 public abstract class BaseAnnouncementRequest {
     private String title;
     private String content;
-    private List<MultipartFile> images;
+    private List<MultipartFile> files;
 }

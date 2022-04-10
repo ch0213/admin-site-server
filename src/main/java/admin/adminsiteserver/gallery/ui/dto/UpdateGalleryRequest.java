@@ -9,8 +9,8 @@ import java.util.List;
 public class UpdateGalleryRequest extends BaseGalleryRequest {
     private List<String> deleteFileUrls;
 
-    public UpdateGalleryRequest(String title, String content, List<MultipartFile> images, List<String> deleteFileUrls) {
-        super(title, content, images);
+    public UpdateGalleryRequest(String title, String content, List<MultipartFile> files, List<String> deleteFileUrls) {
+        super(title, content, files);
         this.deleteFileUrls = deleteFileUrls;
     }
 }

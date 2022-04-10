@@ -29,7 +29,7 @@ public class Announcement extends BaseTimeEntity {
     private String content;
 
     @OneToMany(mappedBy = "announcement", cascade = ALL, orphanRemoval = true)
-    private List<AnnouncementFilePath> images = new ArrayList<>();
+    private List<AnnouncementFilePath> files = new ArrayList<>();
 
     @Builder
     public Announcement(String authorId, String authorName, String title, String content) {
@@ -44,21 +44,21 @@ public class Announcement extends BaseTimeEntity {
         this.content = content;
     }
 
-    public void addImages(List<AnnouncementFilePath> newFilePaths) {
+    public void addFiles(List<AnnouncementFilePath> newFilePaths) {
         if (newFilePaths == null) {
             return;
         }
 
         for (AnnouncementFilePath newFilePath : newFilePaths) {
             newFilePath.includedToAnnouncement(this);
-            this.images.add(newFilePath);
+            this.files.add(newFilePath);
         }
     }
 
-    public void deleteImages(List<String> deleteFileUrls) {
+    public void deleteFiles(List<String> deleteFileUrls) {
         if (deleteFileUrls == null) {
             return;
         }
-        images.removeIf(filePath -> deleteFileUrls.contains(filePath.getFileUrl()));
+        files.removeIf(filePath -> deleteFileUrls.contains(filePath.getFileUrl()));
     }
 }

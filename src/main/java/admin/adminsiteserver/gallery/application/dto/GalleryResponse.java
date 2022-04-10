@@ -19,9 +19,9 @@ public class GalleryResponse {
     private String content;
     private LocalDateTime createAt;
     private LocalDateTime lastModifiedAt;
-    private List<FilePathDto> image;
+    private List<FilePathDto> files;
 
-    public static GalleryResponse of(Gallery gallery, List<FilePathDto> image) {
+    public static GalleryResponse of(Gallery gallery, List<FilePathDto> files) {
         return new GalleryResponse(
                 gallery.getId(),
                 gallery.getAuthorId(),
@@ -30,7 +30,7 @@ public class GalleryResponse {
                 gallery.getContent(),
                 gallery.getCreatedAt(),
                 gallery.getModifiedAt(),
-                image
+                files
         );
     }
 
@@ -43,7 +43,7 @@ public class GalleryResponse {
                 gallery.getContent(),
                 gallery.getCreatedAt(),
                 gallery.getModifiedAt(),
-                gallery.getImages().stream()
+                gallery.getFiles().stream()
                         .map(FilePathDto::from)
                         .collect(Collectors.toList())
         );

@@ -39,16 +39,16 @@ public class GalleryService {
     private final GalleryRepository galleryRepository;
     private final GalleryFilePathRepository filePathRepository;
     private final S3Uploader s3Uploader;
-    private static final String GALLERY_IMAGE_PATH = "gallery/";
+    private static final String GALLERY_FILE_PATH = "gallery/";
 
     @Transactional
     public GalleryResponse upload(UploadGalleryRequest request, LoginUserInfo loginUserInfo) {
         Gallery gallery = request.createGallery(loginUserInfo);
         List<FilePathDto> filePathDtos = new ArrayList<>();
-        if (request.getImages() != null) {
+        if (request.getFiles() != null) {
             filePathDtos = saveFiles(request);
-            List<GalleryFilePath> imagePaths = getImagePathsFromDto(filePathDtos);
-            gallery.addImages(imagePaths);
+            List<GalleryFilePath> filePaths = getFilePathsFromDto(filePathDtos);
+            gallery.addFiles(filePaths);
         }
         galleryRepository.save(gallery);
         return GalleryResponse.of(gallery, filePathDtos);
@@ -61,18 +61,18 @@ public class GalleryService {
         validateAuthorityForGallery(loginUserInfo, gallery);
         gallery.updateTitleAndContent(request.getTitle(), request.getContent());
 
-        if (request.getImages() != null) {
+        if (request.getFiles() != null) {
             List<FilePathDto> filePathDtos = saveFiles(request);
-            List<GalleryFilePath> filePaths = filePathRepository.saveAll(getImagePathsFromDto(filePathDtos));
-            gallery.addImages(filePaths);
+            List<GalleryFilePath> filePaths = filePathRepository.saveAll(getFilePathsFromDto(filePathDtos));
+            gallery.addFiles(filePaths);
         }
 
         if (request.getDeleteFileUrls() != null) {
-            gallery.deleteImages(request.getDeleteFileUrls());
+            gallery.deleteFiles(request.getDeleteFileUrls());
             s3Uploader.delete(request.getDeleteFileUrls());
         }
 
-        return GalleryResponse.of(gallery, getImagePathDtosFromGallery(gallery));
+        return GalleryResponse.of(gallery, getFilePathDtosFromGallery(gallery));
     }
 
     @Transactional
@@ -80,7 +80,7 @@ public class GalleryService {
         Gallery gallery = galleryRepository.findById(galleryId)
                 .orElseThrow(NotExistGalleryException::new);
         validateAuthorityForGallery(loginUserInfo, gallery);
-        List<String> deleteFileURls = gallery.getImages().stream()
+        List<String> deleteFileURls = gallery.getFiles().stream()
                 .map(GalleryFilePath::getFileUrl)
                 .collect(Collectors.toList());
         s3Uploader.delete(deleteFileURls);
@@ -108,21 +108,21 @@ public class GalleryService {
         return CommonResponse.of(gallerys.getContent(), PageInfo.from(gallerys), GALLERY_FIND_ALL_SUCCESS.getMessage());
     }
 
-    private List<FilePathDto> getImagePathDtosFromGallery(Gallery gallery) {
-        return gallery.getImages().stream()
+    private List<FilePathDto> getFilePathDtosFromGallery(Gallery gallery) {
+        return gallery.getFiles().stream()
                 .map(FilePathDto::from)
                 .collect(Collectors.toList());
     }
 
     private List<FilePathDto> saveFiles(BaseGalleryRequest request) {
-        if (request.getImages() == null) {
+        if (request.getFiles() == null) {
             return null;
         }
-        return s3Uploader.upload(request.getImages(), GALLERY_IMAGE_PATH);
+        return s3Uploader.upload(request.getFiles(), GALLERY_FILE_PATH);
     }
 
-    private List<GalleryFilePath> getImagePathsFromDto(List<FilePathDto> imagePathDtos) {
-        return imagePathDtos.stream()
+    private List<GalleryFilePath> getFilePathsFromDto(List<FilePathDto> filePathDtos) {
+        return filePathDtos.stream()
                 .map(filePathDto -> filePathDto.toFilePath(GalleryFilePath.class))
                 .collect(Collectors.toList());
     }

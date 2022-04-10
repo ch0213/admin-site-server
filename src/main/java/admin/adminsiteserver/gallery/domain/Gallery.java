@@ -32,7 +32,7 @@ public class Gallery extends BaseTimeEntity {
     private String content;
 
     @OneToMany(mappedBy = "gallery", cascade = ALL, orphanRemoval = true)
-    private List<GalleryFilePath> images = new ArrayList<>();
+    private List<GalleryFilePath> files = new ArrayList<>();
 
     @Builder
     public Gallery(String authorId, String authorName, String title, String content) {
@@ -47,21 +47,21 @@ public class Gallery extends BaseTimeEntity {
         this.content = content;
     }
 
-    public void addImages(List<GalleryFilePath> newFilePaths) {
+    public void addFiles(List<GalleryFilePath> newFilePaths) {
         if (newFilePaths == null) {
             return;
         }
 
         for (GalleryFilePath newFilePath : newFilePaths) {
             newFilePath.includedToGallery(this);
-            this.images.add(newFilePath);
+            this.files.add(newFilePath);
         }
     }
 
-    public void deleteImages(List<String> deleteFileUrls) {
+    public void deleteFiles(List<String> deleteFileUrls) {
         if (deleteFileUrls == null) {
             return;
         }
-        images.removeIf(filePath -> deleteFileUrls.contains(filePath.getFileUrl()));
+        files.removeIf(filePath -> deleteFileUrls.contains(filePath.getFileUrl()));
     }
 }
