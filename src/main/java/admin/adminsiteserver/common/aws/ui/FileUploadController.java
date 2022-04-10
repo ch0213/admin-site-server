@@ -1,6 +1,6 @@
 package admin.adminsiteserver.common.aws.ui;
 
-import admin.adminsiteserver.common.aws.infrastructure.S3Uploader;
+import admin.adminsiteserver.common.aws.appliaction.FileUploadService;
 import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
 import admin.adminsiteserver.common.aws.ui.dto.FileUploadRequest;
 import admin.adminsiteserver.common.dto.CommonResponse;
@@ -15,13 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class FileUploadController {
 
-    private final S3Uploader s3Uploader;
-    private static final String IMAGE_PATH = "image/";
+    private final FileUploadService fileUploadService;
     private static final String IMAGE_UPLOAD_MESSAGE = "이미지 업로드 성공";
 
     @PostMapping
     public CommonResponse<FilePathDto> uploadImage(@RequestBody FileUploadRequest request) {
-        FilePathDto filePathDto = s3Uploader.upload(request.getImage(), IMAGE_PATH);
+        FilePathDto filePathDto = fileUploadService.uploadImage(request);
         return CommonResponse.of(filePathDto, IMAGE_UPLOAD_MESSAGE);
     }
 }
