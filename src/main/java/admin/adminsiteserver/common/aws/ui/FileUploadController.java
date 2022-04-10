@@ -19,7 +19,7 @@ public class FileUploadController {
     private static final String IMAGE_UPLOAD_MESSAGE = "이미지 업로드 성공";
 
     @PostMapping
-    public CommonResponse<FilePathDto> uploadImage(@RequestBody FileUploadRequest request) {
+    public CommonResponse<FilePathDto> uploadImage(FileUploadRequest request) {
         FilePathDto filePathDto = fileUploadService.uploadImage(request);
         return CommonResponse.of(filePathDto, IMAGE_UPLOAD_MESSAGE);
     }
