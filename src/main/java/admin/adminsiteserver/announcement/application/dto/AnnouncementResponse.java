@@ -19,9 +19,9 @@ public class AnnouncementResponse {
     private String content;
     private LocalDateTime createAt;
     private LocalDateTime lastModifiedAt;
-    private List<FilePathDto> image;
+    private List<FilePathDto> files;
 
-    public static AnnouncementResponse of(Announcement announcement, List<FilePathDto> image) {
+    public static AnnouncementResponse of(Announcement announcement, List<FilePathDto> files) {
         return new AnnouncementResponse(
                 announcement.getId(),
                 announcement.getAuthorId(),
@@ -30,7 +30,7 @@ public class AnnouncementResponse {
                 announcement.getContent(),
                 announcement.getCreatedAt(),
                 announcement.getModifiedAt(),
-                image
+                files
         );
     }
 
