@@ -26,7 +26,7 @@ public class QnaController {
     private final QnaService qnaService;
 
     @PostMapping
-    public CommonResponse<QnaResponse> uploadQna(UploadQnaRequest request, @LoginUser LoginUserInfo loginUserInfo) {
+    public CommonResponse<QnaResponse> uploadQna(@RequestBody UploadQnaRequest request, @LoginUser LoginUserInfo loginUserInfo) {
         QnaResponse response = qnaService.upload(request, loginUserInfo);
         return CommonResponse.of(response, QNA_UPLOAD_SUCCESS.getMessage());
     }
@@ -48,14 +48,14 @@ public class QnaController {
     }
 
     @PostMapping("/{qnaId}/answer")
-    public CommonResponse<AnswerDto> uploadAnswer(AnswerUploadRequest request, @LoginUser LoginUserInfo loginUserInfo, @PathVariable Long qnaId) {
+    public CommonResponse<AnswerDto> uploadAnswer(@RequestBody AnswerUploadRequest request, @LoginUser LoginUserInfo loginUserInfo, @PathVariable Long qnaId) {
         AnswerDto answerDto = qnaService.uploadAnswer(loginUserInfo, qnaId, request);
         return CommonResponse.of(answerDto, ANSWER_UPLOAD_SUCCESS.getMessage());
     }
 
     @PutMapping("/{qnaId}/answer/{answerId}")
     public CommonResponse<AnswerDto> updateAnswer(
-            AnswerUpdateRequest request,
+            @RequestBody AnswerUpdateRequest request,
             @LoginUser LoginUserInfo loginUserInfo,
             @PathVariable Long qnaId,
             @PathVariable Long answerId
