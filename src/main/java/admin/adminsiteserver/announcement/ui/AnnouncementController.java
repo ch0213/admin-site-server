@@ -8,6 +8,7 @@ import admin.adminsiteserver.announcement.application.dto.AnnouncementResponse;
 import admin.adminsiteserver.announcement.ui.dto.UpdateAnnouncementRequest;
 import admin.adminsiteserver.announcement.ui.dto.UploadAnnouncementRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,7 @@ import java.util.List;
 
 import static admin.adminsiteserver.announcement.ui.AnnouncementResponseMessage.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/announcement")
 @RequiredArgsConstructor
@@ -23,7 +25,7 @@ public class AnnouncementController {
     private final AnnouncementService announcementService;
 
     @PostMapping
-    public CommonResponse<AnnouncementResponse> uploadAnnouncement(UploadAnnouncementRequest request,
+    public CommonResponse<AnnouncementResponse> uploadAnnouncement(@RequestBody UploadAnnouncementRequest request,
                                                                    @LoginUser LoginUserInfo loginUserInfo) {
         AnnouncementResponse response = announcementService.upload(request, loginUserInfo);
         return CommonResponse.of(response, ANNOUNCEMENT_UPLOAD_SUCCESS.getMessage());
@@ -31,7 +33,7 @@ public class AnnouncementController {
 
     @PutMapping("/{announcementId}")
     public CommonResponse<AnnouncementResponse> updateAnnouncement(
-            UpdateAnnouncementRequest request,
+            @RequestBody UpdateAnnouncementRequest request,
             @LoginUser LoginUserInfo loginUserInfo,
             @PathVariable Long announcementId
     )
