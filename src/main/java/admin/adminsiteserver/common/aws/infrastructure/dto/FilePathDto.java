@@ -2,13 +2,13 @@ package admin.adminsiteserver.common.aws.infrastructure.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import lombok.NoArgsConstructor;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
-@Slf4j
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 public class FilePathDto {
     private String fileName;
