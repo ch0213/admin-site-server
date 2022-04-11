@@ -4,12 +4,14 @@ import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
 import admin.adminsiteserver.gallery.domain.Gallery;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 public class GalleryResponse {
     private Long id;
