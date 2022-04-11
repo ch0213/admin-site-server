@@ -23,16 +23,8 @@ public class AnnouncementFilePath {
     private String fileName;
     private String fileUrl;
 
-    @ManyToOne
-    @JoinColumn(name = "announcement_id")
-    private Announcement announcement;
-
     public AnnouncementFilePath(String fileName, String fileUrl) {
         this.fileName = fileName;
         this.fileUrl = fileUrl;
-    }
-
-    public void includedToAnnouncement(Announcement announcement) {
-        this.announcement = announcement;
     }
 }
