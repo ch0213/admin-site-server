@@ -23,7 +23,7 @@ public class AnswerDto {
                 answer.getAuthorId(),
                 answer.getAuthorName(),
                 answer.getContent(),
-                answer.getImages().stream()
+                answer.getFiles().stream()
                         .map(FilePathDto::from)
                         .collect(Collectors.toList())
         );
