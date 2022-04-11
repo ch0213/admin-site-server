@@ -48,14 +48,14 @@ public class S3Uploader {
         return FilePathDto.of(multipartFile.getOriginalFilename(), cloudfront + fileName);
     }
 
-    public void delete(List<String> fileUrls) {
-        for (String fileUrl : fileUrls) {
-            delete(fileUrl);
+    public void delete(List<FilePathDto> filePathDtos) {
+        for (FilePathDto filePathDto : filePathDtos) {
+            delete(filePathDto);
         }
     }
 
-    public void delete(String fileUrl) {
-        String fileName = fileUrl.replace(cloudfront, "");
+    public void delete(FilePathDto filePathDto) {
+        String fileName = filePathDto.getFileUrl().replace(cloudfront, "");
         if (amazonS3.doesObjectExist(bucketName, fileName)) {
             amazonS3.deleteObject(new DeleteObjectRequest(bucketName, fileName));
         }

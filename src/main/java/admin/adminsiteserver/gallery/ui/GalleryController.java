@@ -8,6 +8,7 @@ import admin.adminsiteserver.gallery.ui.dto.UploadGalleryRequest;
 import admin.adminsiteserver.member.auth.util.LoginUser;
 import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,7 @@ import java.util.List;
 
 import static admin.adminsiteserver.gallery.ui.GalleryResponseMessage.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/gallery")
 @RequiredArgsConstructor
@@ -23,7 +25,7 @@ public class GalleryController {
     private final GalleryService galleryService;
 
     @PostMapping
-    public CommonResponse<GalleryResponse> uploadGallery(UploadGalleryRequest request,
+    public CommonResponse<GalleryResponse> uploadGallery(@RequestBody UploadGalleryRequest request,
                                                          @LoginUser LoginUserInfo loginUserInfo) {
         GalleryResponse response = galleryService.upload(request, loginUserInfo);
         return CommonResponse.of(response, GALLERY_UPLOAD_SUCCESS.getMessage());
@@ -31,7 +33,7 @@ public class GalleryController {
 
     @PutMapping("/{galleryId}")
     public CommonResponse<GalleryResponse> updateGallery(
-            UpdateGalleryRequest request,
+            @RequestBody UpdateGalleryRequest request,
             @LoginUser LoginUserInfo loginUserInfo,
             @PathVariable Long galleryId
     )

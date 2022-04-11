@@ -42,8 +42,8 @@ public class QnaResponse {
     public static QnaResponse from(Qna qna) {
         List<FilePathDto> filePathDtos = new ArrayList<>();
         List<AnswerDto> answerDtos = new ArrayList<>();
-        if (qna.getImages() != null) {
-            filePathDtos = qna.getImages().stream()
+        if (qna.getFiles() != null) {
+            filePathDtos = qna.getFiles().stream()
                     .map(FilePathDto::from)
                     .collect(Collectors.toList());
         }
@@ -69,8 +69,8 @@ public class QnaResponse {
 
     public static QnaResponse toInstanceOfList(Qna qna) {
         List<FilePathDto> filePathDtos = new ArrayList<>();
-        if (qna.getImages() != null) {
-            filePathDtos = qna.getImages().stream()
+        if (qna.getFiles() != null) {
+            filePathDtos = qna.getFiles().stream()
                     .map(FilePathDto::from)
                     .collect(Collectors.toList());
         }

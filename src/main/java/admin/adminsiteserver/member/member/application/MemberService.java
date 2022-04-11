@@ -68,13 +68,16 @@ public class MemberService {
     public void updateMemberImage(MultipartFile multipartFile, String userId) {
         Member member = memberRepository.findByUserId(userId)
                 .orElseThrow(NotExistMemberException::new);
-        s3Uploader.delete(member.getFilePath().getFileUrl());
+        s3Uploader.delete(FilePathDto.from(member.getFilePath()));
         MemberFilePath filePath = filePathRepository.save(s3Uploader.upload(multipartFile, MEMBER_IMAGE_PATH).toFilePath(MemberFilePath.class));
         member.addProfileImage(filePath);
     }
 
     @Transactional
     public void deleteMember(String userId) {
+        Member member = memberRepository.findByUserId(userId)
+                .orElseThrow(NotExistMemberException::new);
+        s3Uploader.delete(FilePathDto.from(member.getFilePath()));
         memberRepository.deleteByUserId(userId);
     }
 

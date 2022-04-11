@@ -21,16 +21,8 @@ public class GalleryFilePath {
     private String fileName;
     private String fileUrl;
 
-    @ManyToOne
-    @JoinColumn(name = "gallery_id")
-    private Gallery gallery;
-
     public GalleryFilePath(String fileName, String fileUrl) {
         this.fileName = fileName;
         this.fileUrl = fileUrl;
-    }
-
-    public void includedToGallery(Gallery gallery) {
-        this.gallery = gallery;
     }
 }

@@ -21,10 +21,6 @@ public class AnswerFilePath {
     private String fileName;
     private String fileUrl;
 
-    @ManyToOne
-    @JoinColumn(name = "answer_id")
-    private Answer answer;
-
     public AnswerFilePath(String fileName, String fileUrl) {
         this.fileName = fileName;
         this.fileUrl = fileUrl;

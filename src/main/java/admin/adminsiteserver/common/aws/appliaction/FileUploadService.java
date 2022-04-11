@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 public class FileUploadService {
 
     private final S3Uploader s3Uploader;
-    private static final String IMAGE_PATH = "image/";
+    private static final String FILE_STORAGE_PATH = "file/";
 
     public FilePathDto uploadImage(FileUploadRequest request) {
-        return s3Uploader.upload(request.getImage(), IMAGE_PATH);
+        return s3Uploader.upload(request.getFile(), FILE_STORAGE_PATH);
     }
 }
