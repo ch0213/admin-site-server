@@ -104,7 +104,7 @@ public class QnaController {
         return CommonResponse.of(response, QNA_COMMENT_UPDATE_SUCCESS.getMessage());
     }
 
-    @PostMapping("/{qnaId}/comment/{commentId}")
+    @DeleteMapping("/{qnaId}/comment/{commentId}")
     public CommonResponse<Void> deleteQuestionComment(
             @PathVariable Long qnaId,
             @PathVariable Long commentId,
@@ -137,7 +137,7 @@ public class QnaController {
         return CommonResponse.of(response, QNA_COMMENT_UPDATE_SUCCESS.getMessage());
     }
 
-    @PostMapping("/{qnaId}/answer/{answerId}/comment/{commentId}")
+    @DeleteMapping("/{qnaId}/answer/{answerId}/comment/{commentId}")
     public CommonResponse<Void> deleteAnswerComment(
             @PathVariable Long qnaId,
             @PathVariable Long answerId,
