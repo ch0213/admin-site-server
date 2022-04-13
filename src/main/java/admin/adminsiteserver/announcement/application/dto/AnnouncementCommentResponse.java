@@ -1,4 +1,4 @@
-package admin.adminsiteserver.announcement.ui.dto;
+package admin.adminsiteserver.announcement.application.dto;
 
 import admin.adminsiteserver.announcement.domain.AnnouncementComment;
 import lombok.AllArgsConstructor;

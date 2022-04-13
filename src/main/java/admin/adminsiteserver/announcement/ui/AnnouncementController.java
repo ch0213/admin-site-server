@@ -1,7 +1,7 @@
 package admin.adminsiteserver.announcement.ui;
 
 import admin.adminsiteserver.announcement.ui.dto.AnnouncementCommentRequest;
-import admin.adminsiteserver.announcement.ui.dto.AnnouncementCommentResponse;
+import admin.adminsiteserver.announcement.application.dto.AnnouncementCommentResponse;
 import admin.adminsiteserver.common.dto.CommonResponse;
 import admin.adminsiteserver.member.auth.util.LoginUser;
 import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
