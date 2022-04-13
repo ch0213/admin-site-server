@@ -1,5 +1,6 @@
 package admin.adminsiteserver.qna.domain;
 
+import admin.adminsiteserver.announcement.domain.AnnouncementComment;
 import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
 import admin.adminsiteserver.common.domain.BaseTimeEntity;
 import lombok.Builder;
@@ -38,6 +39,10 @@ public class Qna extends BaseTimeEntity {
     @JoinColumn(name = "qna_id")
     private List<Answer> answers = new ArrayList<>();
 
+    @OneToMany(cascade = ALL, orphanRemoval = true)
+    @JoinColumn(name = "qna_id")
+    private List<QuestionComment> comments = new ArrayList<>();
+
     @Builder
     public Qna(Long id, String authorId, String authorName, String title, String content, List<QuestionFilePath> files) {
         this.id = id;
@@ -61,5 +66,9 @@ public class Qna extends BaseTimeEntity {
         files.removeIf(filePath -> deleteFileUrls.stream().map(FilePathDto::getFileUrl)
                 .collect(Collectors.toList())
                 .contains(filePath.getFileUrl()));
+    }
+
+    public void addComment(QuestionComment comment) {
+        this.comments.add(comment);
     }
 }
