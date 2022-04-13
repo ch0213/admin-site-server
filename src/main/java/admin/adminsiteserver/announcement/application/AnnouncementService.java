@@ -5,7 +5,7 @@ import admin.adminsiteserver.announcement.exception.NotExistAnnouncementCommentE
 import admin.adminsiteserver.announcement.exception.UnauthorizedForAnnouncementCommentException;
 import admin.adminsiteserver.announcement.exception.UnauthorizedForAnnouncementException;
 import admin.adminsiteserver.announcement.ui.dto.AnnouncementCommentRequest;
-import admin.adminsiteserver.announcement.ui.dto.AnnouncementCommentResponse;
+import admin.adminsiteserver.announcement.application.dto.AnnouncementCommentResponse;
 import admin.adminsiteserver.common.aws.infrastructure.S3Uploader;
 import admin.adminsiteserver.common.dto.CommonResponse;
 import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
