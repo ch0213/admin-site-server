@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 
+import java.util.Optional;
+
 import static admin.adminsiteserver.member.member.domain.RoleType.*;
 
 @Service
@@ -56,7 +58,8 @@ public class AuthService {
     }
 
     @Transactional
-    public void saveAdmin(Member admin) {
-        memberRepository.save(admin);
+    public void saveAdmin(Member member) {
+        Optional<Member> admin = memberRepository.findByUserId("admin");
+        if (admin.isEmpty()) memberRepository.save(member);
     }
 }
