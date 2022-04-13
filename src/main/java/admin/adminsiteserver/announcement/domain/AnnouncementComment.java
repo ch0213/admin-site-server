@@ -29,4 +29,8 @@ public class AnnouncementComment extends BaseTimeEntity {
         this.authorName = authorName;
         this.comment = comment;
     }
+
+    public void updateComment(String comment) {
+        this.comment = comment;
+    }
 }

@@ -1,6 +1,8 @@
 package admin.adminsiteserver.announcement.application;
 
 import admin.adminsiteserver.announcement.domain.AnnouncementComment;
+import admin.adminsiteserver.announcement.exception.NotExistAnnouncementCommentException;
+import admin.adminsiteserver.announcement.exception.UnauthorizedForAnnouncementCommentException;
 import admin.adminsiteserver.announcement.exception.UnauthorizedForAnnouncementException;
 import admin.adminsiteserver.announcement.ui.dto.AnnouncementCommentRequest;
 import admin.adminsiteserver.announcement.ui.dto.AnnouncementCommentResponse;
@@ -26,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static admin.adminsiteserver.announcement.ui.AnnouncementResponseMessage.*;
@@ -84,9 +87,28 @@ public class AnnouncementService {
         return AnnouncementCommentResponse.from(comment);
     }
 
+    @Transactional
+    public AnnouncementCommentResponse updateComment(Long announcementId, Long commentId, AnnouncementCommentRequest request, LoginUserInfo loginUserInfo) {
+        Announcement announcement = announcementRepository.findById(announcementId)
+                .orElseThrow(NotExistAnnouncementException::new);
+        AnnouncementComment updateComment = announcement.getComments().stream()
+                .filter(comment -> comment.getId().equals(commentId))
+                .findAny()
+                .orElseThrow(NotExistAnnouncementCommentException::new);
+        validateAuthorityForComment(loginUserInfo, updateComment);
+        updateComment.updateComment(request.getComment());
+        return AnnouncementCommentResponse.from(updateComment);
+    }
+
     private void validateAuthorityForAnnouncement(LoginUserInfo loginUserInfo, Announcement announcement) {
         if (!loginUserInfo.getUserId().equals(announcement.getAuthorId())) {
             throw new UnauthorizedForAnnouncementException();
+        }
+    }
+
+    private void validateAuthorityForComment(LoginUserInfo loginUserInfo, AnnouncementComment comment) {
+        if (!loginUserInfo.getUserId().equals(comment.getAuthorId())) {
+            throw new UnauthorizedForAnnouncementCommentException();
         }
     }
 
