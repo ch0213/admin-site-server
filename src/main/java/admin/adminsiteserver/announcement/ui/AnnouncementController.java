@@ -80,4 +80,14 @@ public class AnnouncementController {
         AnnouncementCommentResponse response = announcementService.updateComment(announcementId, commentId, request, loginUserInfo);
         return CommonResponse.of(response, COMMENT_UPDATE_SUCCESS.getMessage());
     }
+
+    @DeleteMapping("/{announcementId}/comment/{commentId}")
+    public CommonResponse<Void> deleteComment(
+            @PathVariable Long announcementId,
+            @PathVariable Long commentId,
+            @LoginUser LoginUserInfo loginUserInfo
+    ) {
+        announcementService.deleteComment(announcementId, commentId, loginUserInfo);
+        return CommonResponse.from(COMMENT_DELETE_SUCCESS.getMessage());
+    }
 }

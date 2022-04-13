@@ -28,7 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static admin.adminsiteserver.announcement.ui.AnnouncementResponseMessage.*;
@@ -98,6 +97,18 @@ public class AnnouncementService {
         validateAuthorityForComment(loginUserInfo, updateComment);
         updateComment.updateComment(request.getComment());
         return AnnouncementCommentResponse.from(updateComment);
+    }
+
+    @Transactional
+    public void deleteComment(Long announcementId, Long commentId, LoginUserInfo loginUserInfo) {
+        Announcement announcement = announcementRepository.findById(announcementId)
+                .orElseThrow(NotExistAnnouncementException::new);
+        AnnouncementComment deleteComment = announcement.getComments().stream()
+                .filter(comment -> comment.getId().equals(commentId))
+                .findAny()
+                .orElseThrow(NotExistAnnouncementCommentException::new);
+        validateAuthorityForComment(loginUserInfo, deleteComment);
+        announcement.getComments().remove(deleteComment);
     }
 
     private void validateAuthorityForAnnouncement(LoginUserInfo loginUserInfo, Announcement announcement) {
