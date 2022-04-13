@@ -69,4 +69,15 @@ public class AnnouncementController {
         AnnouncementCommentResponse response = announcementService.addComment(announcementId, request, loginUserInfo);
         return CommonResponse.of(response, COMMENT_UPLOAD_SUCCESS.getMessage());
     }
+
+    @PutMapping("/{announcementId}/comment/{commentId}")
+    public CommonResponse<AnnouncementCommentResponse> updateComment(
+            @PathVariable Long announcementId,
+            @PathVariable Long commentId,
+            @RequestBody AnnouncementCommentRequest request,
+            @LoginUser LoginUserInfo loginUserInfo
+    ) {
+        AnnouncementCommentResponse response = announcementService.updateComment(announcementId, commentId, request, loginUserInfo);
+        return CommonResponse.of(response, COMMENT_UPDATE_SUCCESS.getMessage());
+    }
 }

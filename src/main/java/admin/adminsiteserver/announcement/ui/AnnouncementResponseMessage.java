@@ -9,7 +9,8 @@ public enum AnnouncementResponseMessage {
     ANNOUNCEMENT_DELETE_SUCCESS("공지사항 삭제 성공"),
     ANNOUNCEMENT_FIND_SUCCESS("공지사항 조회 성공"),
     ANNOUNCEMENT_FIND_ALL_SUCCESS("공지사항 목록 조회 성공"),
-    COMMENT_UPLOAD_SUCCESS("댓글 등록 성공");
+    COMMENT_UPLOAD_SUCCESS("댓글 등록 성공"),
+    COMMENT_UPDATE_SUCCESS("댓글 등록 성공");
 
     private final String message;
 
