@@ -5,7 +5,7 @@ import admin.adminsiteserver.member.auth.util.LoginUser;
 import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
 import admin.adminsiteserver.qna.application.QnaService;
 import admin.adminsiteserver.qna.application.dto.AnswerCommentResponse;
-import admin.adminsiteserver.qna.application.dto.AnswerDto;
+import admin.adminsiteserver.qna.application.dto.AnswerResponse;
 import admin.adminsiteserver.qna.application.dto.QnaResponse;
 import admin.adminsiteserver.qna.application.dto.QuestionCommentResponse;
 import admin.adminsiteserver.qna.ui.dto.*;
@@ -47,19 +47,19 @@ public class QnaController {
     }
 
     @PostMapping("/{qnaId}/answer")
-    public CommonResponse<AnswerDto> uploadAnswer(@RequestBody AnswerUploadRequest request, @LoginUser LoginUserInfo loginUserInfo, @PathVariable Long qnaId) {
-        AnswerDto answerDto = qnaService.uploadAnswer(loginUserInfo, qnaId, request);
+    public CommonResponse<AnswerResponse> uploadAnswer(@RequestBody AnswerUploadRequest request, @LoginUser LoginUserInfo loginUserInfo, @PathVariable Long qnaId) {
+        AnswerResponse answerDto = qnaService.uploadAnswer(loginUserInfo, qnaId, request);
         return CommonResponse.of(answerDto, ANSWER_UPLOAD_SUCCESS.getMessage());
     }
 
     @PutMapping("/{qnaId}/answer/{answerId}")
-    public CommonResponse<AnswerDto> updateAnswer(
+    public CommonResponse<AnswerResponse> updateAnswer(
             @RequestBody AnswerUpdateRequest request,
             @LoginUser LoginUserInfo loginUserInfo,
             @PathVariable Long qnaId,
             @PathVariable Long answerId
     ) {
-        AnswerDto answerDto = qnaService.updateAnswer(request, loginUserInfo, qnaId, answerId);
+        AnswerResponse answerDto = qnaService.updateAnswer(request, loginUserInfo, qnaId, answerId);
         return CommonResponse.of(answerDto, ANSWER_UPDATE_SUCCESS.getMessage());
     }
     

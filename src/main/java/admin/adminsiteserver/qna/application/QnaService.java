@@ -1,6 +1,5 @@
 package admin.adminsiteserver.qna.application;
 
-import admin.adminsiteserver.announcement.domain.AnnouncementFilePath;
 import admin.adminsiteserver.common.aws.infrastructure.S3Uploader;
 import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
 import admin.adminsiteserver.common.dto.CommonResponse;
@@ -8,7 +7,7 @@ import admin.adminsiteserver.common.dto.PageInfo;
 import admin.adminsiteserver.member.auth.util.LoginUser;
 import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
 import admin.adminsiteserver.qna.application.dto.AnswerCommentResponse;
-import admin.adminsiteserver.qna.application.dto.AnswerDto;
+import admin.adminsiteserver.qna.application.dto.AnswerResponse;
 import admin.adminsiteserver.qna.application.dto.QnaResponse;
 import admin.adminsiteserver.qna.application.dto.QuestionCommentResponse;
 import admin.adminsiteserver.qna.domain.*;
@@ -106,16 +105,16 @@ public class QnaService {
     }
 
     @Transactional
-    public AnswerDto uploadAnswer(LoginUserInfo loginUserInfo, Long qnaId, AnswerUploadRequest request) {
+    public AnswerResponse uploadAnswer(LoginUserInfo loginUserInfo, Long qnaId, AnswerUploadRequest request) {
         Qna qna = qnaRepository.findById(qnaId).orElseThrow(NotExistQnaException::new);
         Answer answer = request.createAnswer(loginUserInfo);
         answerRepository.save(answer);
         qna.addAnswer(answer);
-        return AnswerDto.from(answer);
+        return AnswerResponse.from(answer);
     }
 
     @Transactional
-    public AnswerDto updateAnswer(AnswerUpdateRequest request, LoginUserInfo loginUserInfo, Long qnaId, Long answerId) {
+    public AnswerResponse updateAnswer(AnswerUpdateRequest request, LoginUserInfo loginUserInfo, Long qnaId, Long answerId) {
         Answer findAnswer = findAnswer(qnaId, answerId);
         validateAuthorityForAnswer(loginUserInfo, findAnswer);
         findAnswer.updateContent(request.getContent());
@@ -127,7 +126,7 @@ public class QnaService {
         findAnswer.deleteFiles(request.getDeleteFileUrls());
         s3Uploader.delete(request.getDeleteFileUrls());
 
-        return AnswerDto.from(findAnswer);
+        return AnswerResponse.from(findAnswer);
     }
 
     @Transactional

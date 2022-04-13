@@ -23,11 +23,12 @@ public class QnaResponse {
     private String content;
     private LocalDateTime createAt;
     private LocalDateTime lastModifiedAt;
-    private List<FilePathDto> images;
-    private List<AnswerDto> answers;
+    private List<FilePathDto> files;
+    private List<AnswerResponse> answers;
+    private List<QuestionCommentResponse> comments;
 
     @Builder
-    public QnaResponse(Long id, String authorId, String authorName, String title, String content, LocalDateTime createAt, LocalDateTime lastModifiedAt, List<FilePathDto> images, List<AnswerDto> answers) {
+    public QnaResponse(Long id, String authorId, String authorName, String title, String content, LocalDateTime createAt, LocalDateTime lastModifiedAt, List<FilePathDto> images, List<AnswerResponse> answers, List<QuestionCommentResponse> comments) {
         this.id = id;
         this.authorId = authorId;
         this.authorName = authorName;
@@ -35,13 +36,15 @@ public class QnaResponse {
         this.content = content;
         this.createAt = createAt;
         this.lastModifiedAt = lastModifiedAt;
-        this.images = images;
+        this.files = images;
         this.answers = answers;
+        this.comments = comments;
     }
 
     public static QnaResponse from(Qna qna) {
         List<FilePathDto> filePathDtos = new ArrayList<>();
-        List<AnswerDto> answerDtos = new ArrayList<>();
+        List<AnswerResponse> answerResponses = new ArrayList<>();
+        List<QuestionCommentResponse> commentResponses = new ArrayList<>();
         if (qna.getFiles() != null) {
             filePathDtos = qna.getFiles().stream()
                     .map(FilePathDto::from)
@@ -49,8 +52,14 @@ public class QnaResponse {
         }
 
         if (qna.getAnswers() != null) {
-            answerDtos = qna.getAnswers().stream()
-                    .map(AnswerDto::from)
+            answerResponses = qna.getAnswers().stream()
+                    .map(AnswerResponse::from)
+                    .collect(Collectors.toList());
+        }
+
+        if (qna.getComments() != null) {
+            commentResponses = qna.getComments().stream()
+                    .map(QuestionCommentResponse::from)
                     .collect(Collectors.toList());
         }
 
@@ -63,7 +72,8 @@ public class QnaResponse {
                 .createAt(qna.getCreatedAt())
                 .lastModifiedAt(qna.getModifiedAt())
                 .images(filePathDtos)
-                .answers(answerDtos)
+                .answers(answerResponses)
+                .comments(commentResponses)
                 .build();
     }
 
