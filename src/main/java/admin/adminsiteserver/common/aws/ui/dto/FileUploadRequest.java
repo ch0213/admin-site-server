@@ -9,5 +9,5 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class FileUploadRequest {
-    private List<MultipartFile> files;
+    private MultipartFile file;
 }

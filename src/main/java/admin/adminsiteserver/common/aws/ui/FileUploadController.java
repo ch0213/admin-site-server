@@ -20,9 +20,9 @@ public class FileUploadController {
     private static final String FILE_DELETE_MESSAGE = "파일 삭제 성공";
 
     @PostMapping
-    public CommonResponse<List<FilePathDto>> uploadFile(FileUploadRequest request) {
-        List<FilePathDto> filePathDtos = fileUploadService.uploadFile(request);
-        return CommonResponse.of(filePathDtos, FILE_UPLOAD_MESSAGE);
+    public CommonResponse<FilePathDto> uploadFile(FileUploadRequest request) {
+        FilePathDto filePathDto = fileUploadService.uploadFile(request);
+        return CommonResponse.of(filePathDto, FILE_UPLOAD_MESSAGE);
     }
 
     @DeleteMapping
