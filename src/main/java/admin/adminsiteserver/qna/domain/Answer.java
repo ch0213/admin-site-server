@@ -1,6 +1,5 @@
 package admin.adminsiteserver.qna.domain;
 
-import admin.adminsiteserver.announcement.domain.AnnouncementComment;
 import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
 import admin.adminsiteserver.common.domain.BaseTimeEntity;
 import lombok.AllArgsConstructor;

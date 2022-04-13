@@ -7,13 +7,12 @@ import admin.adminsiteserver.common.dto.CommonResponse;
 import admin.adminsiteserver.common.dto.PageInfo;
 import admin.adminsiteserver.member.auth.util.LoginUser;
 import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
+import admin.adminsiteserver.qna.application.dto.AnswerCommentResponse;
 import admin.adminsiteserver.qna.application.dto.AnswerDto;
 import admin.adminsiteserver.qna.application.dto.QnaResponse;
+import admin.adminsiteserver.qna.application.dto.QuestionCommentResponse;
 import admin.adminsiteserver.qna.domain.*;
-import admin.adminsiteserver.qna.exception.NotExistAnswerException;
-import admin.adminsiteserver.qna.exception.NotExistQnaException;
-import admin.adminsiteserver.qna.exception.UnauthorizedForAnswerException;
-import admin.adminsiteserver.qna.exception.UnauthorizedForQnaException;
+import admin.adminsiteserver.qna.exception.*;
 import admin.adminsiteserver.qna.ui.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,14 +36,14 @@ public class QnaService {
     private final S3Uploader s3Uploader;
 
     @Transactional
-    public QnaResponse upload(UploadQnaRequest request, @LoginUser LoginUserInfo loginUserInfo) {
+    public QnaResponse uploadQna(UploadQnaRequest request, @LoginUser LoginUserInfo loginUserInfo) {
         Qna qna = request.createQna(loginUserInfo);
         qnaRepository.save(qna);
         return QnaResponse.from(qna);
     }
 
     @Transactional
-    public QnaResponse update(UpdateQnaRequest request, LoginUserInfo loginUserInfo, Long qnaId) {
+    public QnaResponse updateQna(UpdateQnaRequest request, LoginUserInfo loginUserInfo, Long qnaId) {
         Qna qna = qnaRepository.findById(qnaId).orElseThrow(NotExistQnaException::new);
         validateAuthorityForQna(loginUserInfo, qna);
         qna.updateContentAndTitle(request.getTitle(), request.getContent());
@@ -60,7 +59,7 @@ public class QnaService {
     }
 
     @Transactional
-    public void delete(LoginUserInfo loginUserInfo, Long qnaId) {
+    public void deleteQna(LoginUserInfo loginUserInfo, Long qnaId) {
         Qna qna = qnaRepository.findById(qnaId).orElseThrow(NotExistQnaException::new);
         validateAuthorityForQna(loginUserInfo, qna);
         List<FilePathDto> deleteFileUrls = qna.getFiles().stream()
@@ -70,6 +69,40 @@ public class QnaService {
 //        qna.getAnswers().stream().map() answer도 file 삭제
         s3Uploader.delete(deleteFileUrls);
         qnaRepository.delete(qna);
+    }
+
+    @Transactional
+    public QuestionCommentResponse addQuestionComment(Long questionId, QuestionCommentRequest request, LoginUserInfo loginUserInfo) {
+        Qna qna = qnaRepository.findById(questionId)
+                .orElseThrow(NotExistQnaException::new);
+        QuestionComment comment = request.toQuestionComment(loginUserInfo);
+        qna.addComment(comment);
+        return QuestionCommentResponse.from(comment);
+    }
+
+    @Transactional
+    public QuestionCommentResponse updateQuestionComment(Long questionId, Long commentId, QuestionCommentRequest request, LoginUserInfo loginUserInfo) {
+        Qna qna = qnaRepository.findById(questionId)
+                .orElseThrow(NotExistQnaException::new);
+        QuestionComment updateComment = qna.getComments().stream()
+                .filter(comment -> comment.getId().equals(commentId))
+                .findAny()
+                .orElseThrow(NotExistQuestionCommentException::new);
+        validateAuthorityForQuestionComment(loginUserInfo, updateComment);
+        updateComment.updateComment(request.getComment());
+        return QuestionCommentResponse.from(updateComment);
+    }
+
+    @Transactional
+    public void deleteQuestionComment(Long questionId, Long commentId, LoginUserInfo loginUserInfo) {
+        Qna qna = qnaRepository.findById(questionId)
+                .orElseThrow(NotExistQnaException::new);
+        QuestionComment deleteComment = qna.getComments().stream()
+                .filter(comment -> comment.getId().equals(commentId))
+                .findAny()
+                .orElseThrow(NotExistQuestionCommentException::new);
+        validateAuthorityForQuestionComment(loginUserInfo, deleteComment);
+        qna.getComments().remove(deleteComment);
     }
 
     @Transactional
@@ -83,12 +116,7 @@ public class QnaService {
 
     @Transactional
     public AnswerDto updateAnswer(AnswerUpdateRequest request, LoginUserInfo loginUserInfo, Long qnaId, Long answerId) {
-        Qna qna = qnaRepository.findById(qnaId)
-                .orElseThrow(NotExistQnaException::new);
-        Answer findAnswer = qna.getAnswers().stream()
-                .filter(answer -> answer.getId().equals(answerId))
-                .findAny()
-                .orElseThrow(NotExistAnswerException::new);
+        Answer findAnswer = findAnswer(qnaId, answerId);
         validateAuthorityForAnswer(loginUserInfo, findAnswer);
         findAnswer.updateContent(request.getContent());
 
@@ -104,19 +132,59 @@ public class QnaService {
 
     @Transactional
     public void deleteAnswer(LoginUserInfo loginUserInfo, Long qnaId, Long answerId) {
-        Qna qna = qnaRepository.findById(qnaId)
-                .orElseThrow(NotExistQnaException::new);
-        Answer findAnswer = qna.getAnswers().stream()
-                .filter(answer -> answer.getId().equals(answerId))
-                .findAny()
-                .orElseThrow(NotExistAnswerException::new);
+        Answer findAnswer = findAnswer(qnaId, answerId);
         validateAuthorityForAnswer(loginUserInfo, findAnswer);
 
         List<FilePathDto> deleteFileURls = findAnswer.getFiles().stream()
-                .map(announcementFilePath -> FilePathDto.from(AnnouncementFilePath.class))
+                .map(answerFilePath -> FilePathDto.from(AnswerFilePath.class))
                 .collect(Collectors.toList());
         s3Uploader.delete(deleteFileURls);
         answerRepository.delete(findAnswer);
+    }
+
+    @Transactional
+    public AnswerCommentResponse addAnswerComment(Long questionId, Long answerId, AnswerCommentRequest request, LoginUserInfo loginUserInfo) {
+        Answer addCommentAnswer = findAnswer(questionId, answerId);
+        AnswerComment comment = request.toAnswerComment(loginUserInfo);
+        addCommentAnswer.getComments().add(comment);
+        return AnswerCommentResponse.from(comment);
+    }
+
+    @Transactional
+    public AnswerCommentResponse updateAnswerComment(Long questionId, Long answerId, Long commentId, AnswerCommentRequest request, LoginUserInfo loginUserInfo) {
+        Answer updateAnswer = findAnswer(questionId, answerId);
+        AnswerComment updateComment = updateAnswer.getComments().stream()
+                .filter(comment -> comment.getId().equals(commentId))
+                .findAny()
+                .orElseThrow(NotExistAnswerCommentException::new);
+        validateAuthorityForAnswerComment(loginUserInfo, updateComment);
+        updateComment.updateComment(request.getComment());
+        return AnswerCommentResponse.from(updateComment);
+    }
+
+    @Transactional
+    public void deleteAnswerComment(Long questionId, Long answerId, Long commentId, LoginUserInfo loginUserInfo) {
+        Qna qna = qnaRepository.findById(questionId)
+                .orElseThrow(NotExistQnaException::new);
+        Answer deleteCommentAnswer = qna.getAnswers().stream()
+                .filter(answer -> answer.getId().equals(answerId))
+                .findAny()
+                .orElseThrow(NotExistAnswerException::new);
+        AnswerComment deleteComment = deleteCommentAnswer.getComments().stream()
+                .filter(comment -> comment.getId().equals(commentId))
+                .findAny()
+                .orElseThrow(NotExistAnswerCommentException::new);
+        validateAuthorityForAnswerComment(loginUserInfo, deleteComment);
+        deleteCommentAnswer.getComments().remove(deleteComment);
+    }
+
+    private Answer findAnswer(Long questionId, Long answerId) {
+        Qna qna = qnaRepository.findById(questionId)
+                .orElseThrow(NotExistQnaException::new);
+        return qna.getAnswers().stream()
+                .filter(answer -> answer.getId().equals(answerId))
+                .findAny()
+                .orElseThrow(NotExistAnswerException::new);
     }
 
     public QnaResponse findOne(Long qnaId) {
@@ -136,9 +204,21 @@ public class QnaService {
         }
     }
 
+    private void validateAuthorityForQuestionComment(LoginUserInfo loginUserInfo, QuestionComment comment) {
+        if (!loginUserInfo.getUserId().equals(comment.getAuthorId())) {
+            throw new UnauthorizedForQuestionCommentException();
+        }
+    }
+
     private void validateAuthorityForQna(LoginUserInfo loginUserInfo, Qna qna) {
         if (!loginUserInfo.getUserId().equals(qna.getAuthorId())) {
             throw new UnauthorizedForQnaException();
+        }
+    }
+
+    private void validateAuthorityForAnswerComment(LoginUserInfo loginUserInfo, AnswerComment comment) {
+        if (!loginUserInfo.getUserId().equals(comment.getAuthorId())) {
+            throw new UnauthorizedForAnswerCommentException();
         }
     }
 }
