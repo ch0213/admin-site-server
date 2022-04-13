@@ -34,6 +34,10 @@ public class Announcement extends BaseTimeEntity {
     @JoinColumn(name = "announcement_id")
     private List<AnnouncementFilePath> files = new ArrayList<>();
 
+    @OneToMany(cascade = ALL, orphanRemoval = true)
+    @JoinColumn(name = "announcement_id")
+    private List<AnnouncementComment> comments = new ArrayList<>();
+
     @Builder
     public Announcement(String authorId, String authorName, String title, String content, List<AnnouncementFilePath> files) {
         this.authorId = authorId;
@@ -52,5 +56,9 @@ public class Announcement extends BaseTimeEntity {
         files.removeIf(filePath -> deleteFileUrls.stream().map(FilePathDto::getFileUrl)
                 .collect(Collectors.toList())
                 .contains(filePath.getFileUrl()));
+    }
+
+    public void addComment(AnnouncementComment comment) {
+        this.comments.add(comment);
     }
 }

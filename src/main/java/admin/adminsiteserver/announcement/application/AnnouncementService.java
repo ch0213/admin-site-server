@@ -1,6 +1,9 @@
 package admin.adminsiteserver.announcement.application;
 
+import admin.adminsiteserver.announcement.domain.AnnouncementComment;
 import admin.adminsiteserver.announcement.exception.UnauthorizedForAnnouncementException;
+import admin.adminsiteserver.announcement.ui.dto.AnnouncementCommentRequest;
+import admin.adminsiteserver.announcement.ui.dto.AnnouncementCommentResponse;
 import admin.adminsiteserver.common.aws.infrastructure.S3Uploader;
 import admin.adminsiteserver.common.dto.CommonResponse;
 import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
@@ -70,6 +73,15 @@ public class AnnouncementService {
                 .collect(Collectors.toList());
         s3Uploader.delete(deleteFileURls);
         announcementRepository.delete(announcement);
+    }
+
+    @Transactional
+    public AnnouncementCommentResponse addComment(Long announcementId, AnnouncementCommentRequest request, LoginUserInfo loginUserInfo) {
+        Announcement announcement = announcementRepository.findById(announcementId)
+                .orElseThrow(NotExistAnnouncementException::new);
+        AnnouncementComment comment = request.toAnnouncementComment(loginUserInfo);
+        announcement.addComment(comment);
+        return AnnouncementCommentResponse.from(comment);
     }
 
     private void validateAuthorityForAnnouncement(LoginUserInfo loginUserInfo, Announcement announcement) {
