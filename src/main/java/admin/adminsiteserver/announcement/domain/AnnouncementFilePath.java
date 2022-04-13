@@ -1,7 +1,5 @@
 package admin.adminsiteserver.announcement.domain;
 
-import admin.adminsiteserver.member.member.domain.Member;
-import admin.adminsiteserver.announcement.domain.Announcement;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

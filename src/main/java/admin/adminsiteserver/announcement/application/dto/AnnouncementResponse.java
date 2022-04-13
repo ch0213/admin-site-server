@@ -1,5 +1,6 @@
 package admin.adminsiteserver.announcement.application.dto;
 
+import admin.adminsiteserver.announcement.ui.dto.AnnouncementCommentResponse;
 import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
 import admin.adminsiteserver.announcement.domain.Announcement;
 import lombok.AllArgsConstructor;
@@ -22,19 +23,7 @@ public class AnnouncementResponse {
     private LocalDateTime createAt;
     private LocalDateTime lastModifiedAt;
     private List<FilePathDto> files;
-
-    public static AnnouncementResponse of(Announcement announcement, List<FilePathDto> files) {
-        return new AnnouncementResponse(
-                announcement.getId(),
-                announcement.getAuthorId(),
-                announcement.getAuthorName(),
-                announcement.getTitle(),
-                announcement.getContent(),
-                announcement.getCreatedAt(),
-                announcement.getModifiedAt(),
-                files
-        );
-    }
+    private List<AnnouncementCommentResponse> comments;
 
     public static AnnouncementResponse from(Announcement announcement) {
         return new AnnouncementResponse(
@@ -47,6 +36,9 @@ public class AnnouncementResponse {
                 announcement.getModifiedAt(),
                 announcement.getFiles().stream()
                         .map(FilePathDto::from)
+                        .collect(Collectors.toList()),
+                announcement.getComments().stream()
+                        .map(AnnouncementCommentResponse::from)
                         .collect(Collectors.toList())
         );
     }

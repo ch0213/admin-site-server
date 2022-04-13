@@ -1,5 +1,7 @@
 package admin.adminsiteserver.announcement.ui;
 
+import admin.adminsiteserver.announcement.ui.dto.AnnouncementCommentRequest;
+import admin.adminsiteserver.announcement.ui.dto.AnnouncementCommentResponse;
 import admin.adminsiteserver.common.dto.CommonResponse;
 import admin.adminsiteserver.member.auth.util.LoginUser;
 import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
@@ -56,5 +58,15 @@ public class AnnouncementController {
     @GetMapping
     public CommonResponse<List<AnnouncementResponse>> findAllAnnouncement(Pageable pageable) {
         return announcementService.findAll(pageable);
+    }
+
+    @PostMapping("/{announcementId}/comment")
+    public CommonResponse<AnnouncementCommentResponse> uploadComment(
+            @PathVariable Long announcementId,
+            @RequestBody AnnouncementCommentRequest request,
+            @LoginUser LoginUserInfo loginUserInfo
+    ) {
+        AnnouncementCommentResponse response = announcementService.addComment(announcementId, request, loginUserInfo);
+        return CommonResponse.of(response, COMMENT_UPLOAD_SUCCESS.getMessage());
     }
 }
