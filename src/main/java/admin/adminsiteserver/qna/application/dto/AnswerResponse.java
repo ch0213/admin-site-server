@@ -5,6 +5,7 @@ import admin.adminsiteserver.qna.domain.Answer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,6 +16,8 @@ public class AnswerResponse {
     private String authorId;
     private String authorName;
     private String content;
+    private LocalDateTime createAt;
+    private LocalDateTime lastModifiedAt;
     private List<FilePathDto> files;
     private List<AnswerCommentResponse> comments;
 
@@ -24,6 +27,8 @@ public class AnswerResponse {
                 answer.getAuthorId(),
                 answer.getAuthorName(),
                 answer.getContent(),
+                answer.getCreatedAt(),
+                answer.getModifiedAt(),
                 answer.getFiles().stream()
                         .map(FilePathDto::from)
                         .collect(Collectors.toList()),
