@@ -2,6 +2,7 @@ package admin.adminsiteserver.gallery.application.dto;
 
 import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
 import admin.adminsiteserver.gallery.domain.Gallery;
+import admin.adminsiteserver.gallery.domain.GalleryComment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,19 +23,7 @@ public class GalleryResponse {
     private LocalDateTime createAt;
     private LocalDateTime lastModifiedAt;
     private List<FilePathDto> files;
-
-    public static GalleryResponse of(Gallery gallery, List<FilePathDto> files) {
-        return new GalleryResponse(
-                gallery.getId(),
-                gallery.getAuthorId(),
-                gallery.getAuthorName(),
-                gallery.getTitle(),
-                gallery.getContent(),
-                gallery.getCreatedAt(),
-                gallery.getModifiedAt(),
-                files
-        );
-    }
+    private List<GalleryCommentResponse> comments;
 
     public static GalleryResponse from(Gallery gallery) {
         return new GalleryResponse(
@@ -47,6 +36,9 @@ public class GalleryResponse {
                 gallery.getModifiedAt(),
                 gallery.getFiles().stream()
                         .map(FilePathDto::from)
+                        .collect(Collectors.toList()),
+                gallery.getComments().stream()
+                        .map(GalleryCommentResponse::from)
                         .collect(Collectors.toList())
         );
     }
