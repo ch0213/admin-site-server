@@ -16,7 +16,9 @@ import admin.adminsiteserver.qna.ui.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -189,7 +191,8 @@ public class QnaService {
     }
 
     public CommonResponse<List<QnaResponse>> findQnas(Pageable pageable) {
-        Page<QnaResponse> qnas = qnaRepository.findAll(pageable).map(QnaResponse::toInstanceOfList);
+        PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("createdAt").descending());
+        Page<QnaResponse> qnas = qnaRepository.findAll(pageRequest).map(QnaResponse::toInstanceOfList);
         return CommonResponse.of(qnas.getContent(), PageInfo.from(qnas), INQUIRE_QNA_LIST_SUCCESS.getMessage());
     }
 
