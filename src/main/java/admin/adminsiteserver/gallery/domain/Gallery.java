@@ -1,5 +1,6 @@
 package admin.adminsiteserver.gallery.domain;
 
+import admin.adminsiteserver.announcement.domain.AnnouncementComment;
 import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
 import admin.adminsiteserver.common.domain.BaseTimeEntity;
 import lombok.AllArgsConstructor;
@@ -37,6 +38,10 @@ public class Gallery extends BaseTimeEntity {
     @JoinColumn(name = "gallery_id")
     private List<GalleryFilePath> files = new ArrayList<>();
 
+    @OneToMany(cascade = ALL, orphanRemoval = true)
+    @JoinColumn(name = "gallery_id")
+    private List<GalleryComment> comments = new ArrayList<>();
+
     @Builder
     public Gallery(String authorId, String authorName, String title, String content, List<GalleryFilePath> files) {
         this.authorId = authorId;
@@ -55,5 +60,9 @@ public class Gallery extends BaseTimeEntity {
         files.removeIf(filePath -> deleteFileUrls.stream().map(FilePathDto::getFileUrl)
                 .collect(Collectors.toList())
                 .contains(filePath.getFileUrl()));
+    }
+
+    public void addComment(GalleryComment comment) {
+        this.comments.add(comment);
     }
 }
