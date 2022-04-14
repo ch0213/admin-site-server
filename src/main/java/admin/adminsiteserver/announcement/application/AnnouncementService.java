@@ -58,8 +58,8 @@ public class AnnouncementService {
                 .map(filePathDto -> filePathDto.toFilePath(AnnouncementFilePath.class))
                 .collect(Collectors.toList()));
 
-       announcement.deleteFiles(request.getDeleteFileUrls());
-       s3Uploader.delete(request.getDeleteFileUrls());
+        announcement.deleteFiles(request.getDeleteFileUrls());
+        s3Uploader.delete(request.getDeleteFileUrls());
 
         return AnnouncementResponse.from(announcement);
     }
