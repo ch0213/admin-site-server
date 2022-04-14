@@ -3,6 +3,7 @@ package admin.adminsiteserver.gallery.ui;
 import admin.adminsiteserver.common.dto.CommonResponse;
 import admin.adminsiteserver.gallery.application.GalleryService;
 import admin.adminsiteserver.gallery.application.dto.GalleryResponse;
+import admin.adminsiteserver.gallery.ui.dto.GalleryCommentRequest;
 import admin.adminsiteserver.gallery.ui.dto.UpdateGalleryRequest;
 import admin.adminsiteserver.gallery.ui.dto.UploadGalleryRequest;
 import admin.adminsiteserver.member.auth.util.LoginUser;
@@ -56,5 +57,36 @@ public class GalleryController {
     @GetMapping
     public CommonResponse<List<GalleryResponse>> findAllGallery(Pageable pageable) {
         return galleryService.findAll(pageable);
+    }
+
+    @PostMapping("/{galleryId}/comment")
+    public CommonResponse<Void> uploadComment(
+            @PathVariable Long galleryId,
+            @RequestBody GalleryCommentRequest request,
+            @LoginUser LoginUserInfo loginUserInfo
+    ) {
+        galleryService.addComment(galleryId, request, loginUserInfo);
+        return CommonResponse.from(COMMENT_UPLOAD_SUCCESS.getMessage());
+    }
+
+    @PutMapping("/{galleryId}/comment/{commentId}")
+    public CommonResponse<Void> updateComment(
+            @PathVariable Long galleryId,
+            @PathVariable Long commentId,
+            @RequestBody GalleryCommentRequest request,
+            @LoginUser LoginUserInfo loginUserInfo
+    ) {
+        galleryService.updateComment(galleryId, commentId, request, loginUserInfo);
+        return CommonResponse.from(COMMENT_UPDATE_SUCCESS.getMessage());
+    }
+
+    @DeleteMapping("/{galleryId}/comment/{commentId}")
+    public CommonResponse<Void> deleteComment(
+            @PathVariable Long galleryId,
+            @PathVariable Long commentId,
+            @LoginUser LoginUserInfo loginUserInfo
+    ) {
+        galleryService.deleteComment(galleryId, commentId, loginUserInfo);
+        return CommonResponse.from(COMMENT_DELETE_SUCCESS.getMessage());
     }
 }
