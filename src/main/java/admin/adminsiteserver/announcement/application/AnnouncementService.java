@@ -52,8 +52,8 @@ public class AnnouncementService {
         Announcement announcement = announcementRepository.findById(id)
                 .orElseThrow(NotExistAnnouncementException::new);
         validateAuthorityForAnnouncement(loginUserInfo, announcement);
-        announcement.updateTitleAndContent(request.getTitle(), request.getContent());
 
+        announcement.updateTitleAndContent(request.getTitle(), request.getContent());
         announcement.getFiles().addAll(request.getFiles().stream()
                 .map(filePathDto -> filePathDto.toFilePath(AnnouncementFilePath.class))
                 .collect(Collectors.toList()));
