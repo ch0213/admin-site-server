@@ -71,16 +71,15 @@ public class QnaService {
     }
 
     @Transactional
-    public QuestionCommentResponse addQuestionComment(Long questionId, QuestionCommentRequest request, LoginUserInfo loginUserInfo) {
+    public void addQuestionComment(Long questionId, QuestionCommentRequest request, LoginUserInfo loginUserInfo) {
         Qna qna = qnaRepository.findById(questionId)
                 .orElseThrow(NotExistQnaException::new);
         QuestionComment comment = request.toQuestionComment(loginUserInfo);
         qna.addComment(comment);
-        return QuestionCommentResponse.from(comment);
     }
 
     @Transactional
-    public QuestionCommentResponse updateQuestionComment(Long questionId, Long commentId, QuestionCommentRequest request, LoginUserInfo loginUserInfo) {
+    public void updateQuestionComment(Long questionId, Long commentId, QuestionCommentRequest request, LoginUserInfo loginUserInfo) {
         Qna qna = qnaRepository.findById(questionId)
                 .orElseThrow(NotExistQnaException::new);
         QuestionComment updateComment = qna.getComments().stream()
@@ -89,7 +88,6 @@ public class QnaService {
                 .orElseThrow(NotExistQuestionCommentException::new);
         validateAuthorityForQuestionComment(loginUserInfo, updateComment);
         updateComment.updateComment(request.getComment());
-        return QuestionCommentResponse.from(updateComment);
     }
 
     @Transactional
@@ -142,15 +140,14 @@ public class QnaService {
     }
 
     @Transactional
-    public AnswerCommentResponse addAnswerComment(Long questionId, Long answerId, AnswerCommentRequest request, LoginUserInfo loginUserInfo) {
+    public void addAnswerComment(Long questionId, Long answerId, AnswerCommentRequest request, LoginUserInfo loginUserInfo) {
         Answer addCommentAnswer = findAnswer(questionId, answerId);
         AnswerComment comment = request.toAnswerComment(loginUserInfo);
         addCommentAnswer.getComments().add(comment);
-        return AnswerCommentResponse.from(comment);
     }
 
     @Transactional
-    public AnswerCommentResponse updateAnswerComment(Long questionId, Long answerId, Long commentId, AnswerCommentRequest request, LoginUserInfo loginUserInfo) {
+    public void updateAnswerComment(Long questionId, Long answerId, Long commentId, AnswerCommentRequest request, LoginUserInfo loginUserInfo) {
         Answer updateAnswer = findAnswer(questionId, answerId);
         AnswerComment updateComment = updateAnswer.getComments().stream()
                 .filter(comment -> comment.getId().equals(commentId))
@@ -158,7 +155,6 @@ public class QnaService {
                 .orElseThrow(NotExistAnswerCommentException::new);
         validateAuthorityForAnswerComment(loginUserInfo, updateComment);
         updateComment.updateComment(request.getComment());
-        return AnswerCommentResponse.from(updateComment);
     }
 
     @Transactional

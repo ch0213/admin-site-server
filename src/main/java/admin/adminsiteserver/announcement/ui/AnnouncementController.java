@@ -61,24 +61,24 @@ public class AnnouncementController {
     }
 
     @PostMapping("/{announcementId}/comment")
-    public CommonResponse<AnnouncementCommentResponse> uploadComment(
+    public CommonResponse<Void> uploadComment(
             @PathVariable Long announcementId,
             @RequestBody AnnouncementCommentRequest request,
             @LoginUser LoginUserInfo loginUserInfo
     ) {
-        AnnouncementCommentResponse response = announcementService.addComment(announcementId, request, loginUserInfo);
-        return CommonResponse.of(response, COMMENT_UPLOAD_SUCCESS.getMessage());
+        announcementService.addComment(announcementId, request, loginUserInfo);
+        return CommonResponse.from(COMMENT_UPLOAD_SUCCESS.getMessage());
     }
 
     @PutMapping("/{announcementId}/comment/{commentId}")
-    public CommonResponse<AnnouncementCommentResponse> updateComment(
+    public CommonResponse<Void> updateComment(
             @PathVariable Long announcementId,
             @PathVariable Long commentId,
             @RequestBody AnnouncementCommentRequest request,
             @LoginUser LoginUserInfo loginUserInfo
     ) {
-        AnnouncementCommentResponse response = announcementService.updateComment(announcementId, commentId, request, loginUserInfo);
-        return CommonResponse.of(response, COMMENT_UPDATE_SUCCESS.getMessage());
+        announcementService.updateComment(announcementId, commentId, request, loginUserInfo);
+        return CommonResponse.from(COMMENT_UPDATE_SUCCESS.getMessage());
     }
 
     @DeleteMapping("/{announcementId}/comment/{commentId}")

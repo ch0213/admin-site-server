@@ -89,8 +89,8 @@ public class QnaController {
             @RequestBody QuestionCommentRequest request,
             @LoginUser LoginUserInfo loginUserInfo
     ) {
-        QuestionCommentResponse response = qnaService.addQuestionComment(qnaId, request, loginUserInfo);
-        return CommonResponse.of(response, QNA_COMMENT_UPLOAD_SUCCESS.getMessage());
+        qnaService.addQuestionComment(qnaId, request, loginUserInfo);
+        return CommonResponse.from(QNA_COMMENT_UPLOAD_SUCCESS.getMessage());
     }
 
     @PutMapping("/{qnaId}/comment/{commentId}")
@@ -100,8 +100,8 @@ public class QnaController {
             @RequestBody QuestionCommentRequest request,
             @LoginUser LoginUserInfo loginUserInfo
     ) {
-        QuestionCommentResponse response = qnaService.updateQuestionComment(qnaId, commentId, request, loginUserInfo);
-        return CommonResponse.of(response, QNA_COMMENT_UPDATE_SUCCESS.getMessage());
+        qnaService.updateQuestionComment(qnaId, commentId, request, loginUserInfo);
+        return CommonResponse.from(QNA_COMMENT_UPDATE_SUCCESS.getMessage());
     }
 
     @DeleteMapping("/{qnaId}/comment/{commentId}")
@@ -121,8 +121,8 @@ public class QnaController {
             @RequestBody AnswerCommentRequest request,
             @LoginUser LoginUserInfo loginUserInfo
     ) {
-        AnswerCommentResponse response = qnaService.addAnswerComment(qnaId, answerId, request, loginUserInfo);
-        return CommonResponse.of(response, QNA_COMMENT_UPLOAD_SUCCESS.getMessage());
+        qnaService.addAnswerComment(qnaId, answerId, request, loginUserInfo);
+        return CommonResponse.from(QNA_COMMENT_UPLOAD_SUCCESS.getMessage());
     }
 
     @PutMapping("/{qnaId}/answer/{answerId}/comment/{commentId}")
@@ -133,8 +133,8 @@ public class QnaController {
             @RequestBody AnswerCommentRequest request,
             @LoginUser LoginUserInfo loginUserInfo
     ) {
-        AnswerCommentResponse response = qnaService.updateAnswerComment(qnaId, answerId, commentId, request, loginUserInfo);
-        return CommonResponse.of(response, QNA_COMMENT_UPDATE_SUCCESS.getMessage());
+        qnaService.updateAnswerComment(qnaId, answerId, commentId, request, loginUserInfo);
+        return CommonResponse.from(QNA_COMMENT_UPDATE_SUCCESS.getMessage());
     }
 
     @DeleteMapping("/{qnaId}/answer/{answerId}/comment/{commentId}")

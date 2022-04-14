@@ -5,7 +5,6 @@ import admin.adminsiteserver.announcement.exception.NotExistAnnouncementCommentE
 import admin.adminsiteserver.announcement.exception.UnauthorizedForAnnouncementCommentException;
 import admin.adminsiteserver.announcement.exception.UnauthorizedForAnnouncementException;
 import admin.adminsiteserver.announcement.ui.dto.AnnouncementCommentRequest;
-import admin.adminsiteserver.announcement.application.dto.AnnouncementCommentResponse;
 import admin.adminsiteserver.common.aws.infrastructure.S3Uploader;
 import admin.adminsiteserver.common.dto.CommonResponse;
 import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
@@ -78,16 +77,15 @@ public class AnnouncementService {
     }
 
     @Transactional
-    public AnnouncementCommentResponse addComment(Long announcementId, AnnouncementCommentRequest request, LoginUserInfo loginUserInfo) {
+    public void addComment(Long announcementId, AnnouncementCommentRequest request, LoginUserInfo loginUserInfo) {
         Announcement announcement = announcementRepository.findById(announcementId)
                 .orElseThrow(NotExistAnnouncementException::new);
         AnnouncementComment comment = request.toAnnouncementComment(loginUserInfo);
         announcement.addComment(comment);
-        return AnnouncementCommentResponse.from(comment);
     }
 
     @Transactional
-    public AnnouncementCommentResponse updateComment(Long announcementId, Long commentId, AnnouncementCommentRequest request, LoginUserInfo loginUserInfo) {
+    public void updateComment(Long announcementId, Long commentId, AnnouncementCommentRequest request, LoginUserInfo loginUserInfo) {
         Announcement announcement = announcementRepository.findById(announcementId)
                 .orElseThrow(NotExistAnnouncementException::new);
         AnnouncementComment updateComment = announcement.getComments().stream()
@@ -96,7 +94,6 @@ public class AnnouncementService {
                 .orElseThrow(NotExistAnnouncementCommentException::new);
         validateAuthorityForComment(loginUserInfo, updateComment);
         updateComment.updateComment(request.getComment());
-        return AnnouncementCommentResponse.from(updateComment);
     }
 
     @Transactional
