@@ -6,11 +6,14 @@ import admin.adminsiteserver.common.dto.CommonResponse;
 import admin.adminsiteserver.common.dto.PageInfo;
 import admin.adminsiteserver.gallery.application.dto.GalleryResponse;
 import admin.adminsiteserver.gallery.domain.Gallery;
+import admin.adminsiteserver.gallery.domain.GalleryComment;
 import admin.adminsiteserver.gallery.domain.GalleryFilePath;
 import admin.adminsiteserver.gallery.domain.GalleryRepository;
+import admin.adminsiteserver.gallery.exception.NotExistGalleryCommentException;
 import admin.adminsiteserver.gallery.exception.NotExistGalleryException;
+import admin.adminsiteserver.gallery.exception.UnauthorizedForGalleryCommentException;
 import admin.adminsiteserver.gallery.exception.UnauthorizedForGalleryException;
-import admin.adminsiteserver.gallery.ui.GalleryResponseMessage;
+import admin.adminsiteserver.gallery.ui.dto.GalleryCommentRequest;
 import admin.adminsiteserver.gallery.ui.dto.UpdateGalleryRequest;
 import admin.adminsiteserver.gallery.ui.dto.UploadGalleryRequest;
 import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
@@ -73,9 +76,46 @@ public class GalleryService {
         galleryRepository.delete(gallery);
     }
 
+    @Transactional
+    public void addComment(Long galleryId, GalleryCommentRequest request, LoginUserInfo loginUserInfo) {
+        Gallery gallery = galleryRepository.findById(galleryId)
+                .orElseThrow(NotExistGalleryException::new);
+        gallery.addComment(request.toGalleryComment(loginUserInfo));
+    }
+
+    @Transactional
+    public void updateComment(Long galleryId, Long commentId, GalleryCommentRequest request, LoginUserInfo loginUserInfo) {
+        Gallery gallery = galleryRepository.findById(galleryId)
+                .orElseThrow(NotExistGalleryException::new);
+        GalleryComment updateComment = gallery.getComments().stream()
+                .filter(comment -> comment.getId().equals(commentId))
+                .findAny()
+                .orElseThrow(NotExistGalleryCommentException::new);
+        validateAuthorityForComment(loginUserInfo, updateComment);
+        updateComment.updateComment(request.getComment());
+    }
+
+    @Transactional
+    public void deleteComment(Long galleryId, Long commentId, LoginUserInfo loginUserInfo) {
+        Gallery gallery = galleryRepository.findById(galleryId)
+                .orElseThrow(NotExistGalleryException::new);
+        GalleryComment deleteComment = gallery.getComments().stream()
+                .filter(comment -> comment.getId().equals(commentId))
+                .findAny()
+                .orElseThrow(NotExistGalleryCommentException::new);
+        validateAuthorityForComment(loginUserInfo, deleteComment);
+        gallery.getComments().remove(deleteComment);
+    }
+
     private void validateAuthorityForGallery(LoginUserInfo loginUserInfo, Gallery gallery) {
         if (!loginUserInfo.getUserId().equals(gallery.getAuthorId())) {
             throw new UnauthorizedForGalleryException();
+        }
+    }
+
+    private void validateAuthorityForComment(LoginUserInfo loginUserInfo, GalleryComment comment) {
+        if (!loginUserInfo.getUserId().equals(comment.getAuthorId())) {
+            throw new UnauthorizedForGalleryCommentException();
         }
     }
 
