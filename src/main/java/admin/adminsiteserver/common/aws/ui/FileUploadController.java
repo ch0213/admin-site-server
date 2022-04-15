@@ -25,7 +25,7 @@ public class FileUploadController {
         return CommonResponse.of(filePathDto, FILE_UPLOAD_MESSAGE);
     }
 
-    @DeleteMapping
+    @PostMapping("/delete")
     public CommonResponse<Void> deleteFile(@RequestBody FileDeleteRequest request) {
         fileUploadService.deleteFile(request);
         return CommonResponse.from(FILE_DELETE_MESSAGE);
