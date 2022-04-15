@@ -7,6 +7,8 @@ import admin.adminsiteserver.common.aws.ui.dto.FileUploadRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class FileUploadService {
@@ -14,8 +16,8 @@ public class FileUploadService {
     private final S3Uploader s3Uploader;
     private static final String FILE_STORAGE_PATH = "file/";
 
-    public FilePathDto uploadFile(FileUploadRequest request) {
-        return s3Uploader.upload(request.getFile(), FILE_STORAGE_PATH);
+    public List<FilePathDto> uploadFile(FileUploadRequest request) {
+        return s3Uploader.upload(request.getFiles(), FILE_STORAGE_PATH);
     }
 
     public void deleteFile(FileDeleteRequest request) {
