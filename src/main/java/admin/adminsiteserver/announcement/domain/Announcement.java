@@ -44,7 +44,7 @@ public class Announcement extends BaseTimeEntity {
         this.authorName = authorName;
         this.title = title;
         this.content = content;
-        this.files = files;
+        this.files = (files != null) ? files : new ArrayList<>();
     }
 
     public void updateTitleAndContent(String title, String content) {
