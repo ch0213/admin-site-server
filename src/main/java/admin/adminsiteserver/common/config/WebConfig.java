@@ -16,15 +16,6 @@ public class WebConfig implements WebMvcConfigurer {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOriginPatterns("*")
-                .allowedMethods("*")
-                .allowedHeaders("*")
-                .allowCredentials(true);
-    }
-
-    @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new JwtTokenArgumentResolver(jwtTokenProvider));
     }
