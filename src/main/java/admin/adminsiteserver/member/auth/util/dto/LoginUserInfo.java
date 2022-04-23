@@ -19,6 +19,10 @@ public class LoginUserInfo {
     private String name;
     private String role;
 
+    public boolean isNotEqualUser(String userId) {
+        return !this.userId.equals(userId);
+    }
+
     public static LoginUserInfo from(Claims claims) {
         return new LoginUserInfo(
                 (String) claims.get(USER_ID),
