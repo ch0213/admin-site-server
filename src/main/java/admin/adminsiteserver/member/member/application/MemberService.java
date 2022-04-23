@@ -40,18 +40,20 @@ public class MemberService {
     @Transactional
     public MemberDto signUp(SignUpRequest signUpRequest) {
         Member member = signUpRequest.toMember(passwordEncoder);
-        memberRepository.findByUserId(member.getUserId())
-                .ifPresent(m -> {
-                    throw new AlreadyExistUserIDException();
-                });
+        checkAlreadySignUp(member);
         Member signupMember = memberRepository.save(member);
 
-        if (signUpRequest.getImage() != null) {
+        if (signUpRequest.hasImage()) {
             FilePathDto filePathDto = s3Uploader.upload(signUpRequest.getImage(), MEMBER_IMAGE_PATH);
             signupMember.addProfileImage(filePathDto.toFilePath(MemberFilePath.class));
             return MemberDto.of(signupMember, filePathDto);
         }
         return MemberDto.from(signupMember);
+    }
+
+    private void checkAlreadySignUp(Member member) {
+        memberRepository.findByUserId(member.getUserId())
+                .ifPresent(m -> {throw new AlreadyExistUserIDException();});
     }
 
     @Transactional
