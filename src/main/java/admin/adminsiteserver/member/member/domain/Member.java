@@ -1,6 +1,5 @@
 package admin.adminsiteserver.member.member.domain;
 
-import admin.adminsiteserver.announcement.domain.AnnouncementFilePath;
 import admin.adminsiteserver.levelup.exception.NotExistRoleException;
 import lombok.Builder;
 import lombok.Getter;
