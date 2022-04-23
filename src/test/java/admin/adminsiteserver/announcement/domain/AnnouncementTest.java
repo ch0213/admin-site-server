@@ -52,7 +52,7 @@ class AnnouncementTest {
             deleteFilePathDots.add(new FilePathDto("테스트 파일명" + i, "테스트 파일 URL" + i));
         }
 
-        announcement.deleteFiles(deleteFilePathDots);
+        announcement.deleteFilePaths(deleteFilePathDots);
 
         assertThat(announcement.getFiles()).hasSize(2);
     }
@@ -63,7 +63,7 @@ class AnnouncementTest {
         List<FilePathDto> filePathDtos = new ArrayList<>();
         filePathDtos.add(new FilePathDto("테스트 파일명", "테스트 파일 URL"));
 
-        announcement.deleteFiles(filePathDtos);
+        announcement.deleteFilePaths(filePathDtos);
 
         assertThat(announcement.getFiles()).hasSize(0);
     }
