@@ -19,6 +19,10 @@ public class SignUpRequest {
     private String phoneNumber;
     private MultipartFile image;
 
+    public boolean hasImage() {
+        return image != null;
+    }
+
     public Member toMember(PasswordEncoder passwordEncoder) {
         return Member.builder()
                 .userId(userId)
