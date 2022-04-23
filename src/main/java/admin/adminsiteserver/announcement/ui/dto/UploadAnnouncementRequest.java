@@ -31,7 +31,6 @@ public class UploadAnnouncementRequest extends BaseAnnouncementRequest{
                 .authorName(loginUserInfo.getName())
                 .title(getTitle())
                 .content(getContent())
-                .files(filePaths)
                 .build();
     }
 }
