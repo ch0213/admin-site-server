@@ -13,7 +13,7 @@ import java.util.List;
 import static admin.adminsiteserver.calendar.ui.CalendarResponseMessage.*;
 
 @RestController
-@RequestMapping("/calendar")
+@RequestMapping("/calendars")
 @RequiredArgsConstructor
 public class CalendarController {
 

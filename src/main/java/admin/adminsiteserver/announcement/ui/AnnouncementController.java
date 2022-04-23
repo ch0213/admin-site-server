@@ -20,7 +20,7 @@ import static admin.adminsiteserver.announcement.ui.AnnouncementResponseMessage.
 
 @Slf4j
 @RestController
-@RequestMapping("/announcement")
+@RequestMapping("/announcements")
 @RequiredArgsConstructor
 public class AnnouncementController {
 
@@ -60,7 +60,7 @@ public class AnnouncementController {
         return announcementService.findAll(pageable);
     }
 
-    @PostMapping("/{announcementId}/comment")
+    @PostMapping("/{announcementId}/comments")
     public CommonResponse<Void> uploadComment(
             @PathVariable Long announcementId,
             @RequestBody AnnouncementCommentRequest request,
@@ -70,7 +70,7 @@ public class AnnouncementController {
         return CommonResponse.from(COMMENT_UPLOAD_SUCCESS.getMessage());
     }
 
-    @PutMapping("/{announcementId}/comment/{commentId}")
+    @PutMapping("/{announcementId}/comments/{commentId}")
     public CommonResponse<Void> updateComment(
             @PathVariable Long announcementId,
             @PathVariable Long commentId,
@@ -81,7 +81,7 @@ public class AnnouncementController {
         return CommonResponse.from(COMMENT_UPDATE_SUCCESS.getMessage());
     }
 
-    @DeleteMapping("/{announcementId}/comment/{commentId}")
+    @DeleteMapping("/{announcementId}/comments/{commentId}")
     public CommonResponse<Void> deleteComment(
             @PathVariable Long announcementId,
             @PathVariable Long commentId,

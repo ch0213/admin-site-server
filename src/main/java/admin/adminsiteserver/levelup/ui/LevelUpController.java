@@ -15,7 +15,7 @@ import java.util.List;
 import static admin.adminsiteserver.levelup.ui.LevelUpResponseMessage.*;
 
 @RestController
-@RequestMapping("/levelup")
+@RequestMapping("/levelups")
 @RequiredArgsConstructor
 public class LevelUpController {
 

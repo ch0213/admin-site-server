@@ -19,7 +19,7 @@ import static admin.adminsiteserver.gallery.ui.GalleryResponseMessage.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/gallery")
+@RequestMapping("/gallerys")
 @RequiredArgsConstructor
 public class GalleryController {
 
@@ -59,7 +59,7 @@ public class GalleryController {
         return galleryService.findAll(pageable);
     }
 
-    @PostMapping("/{galleryId}/comment")
+    @PostMapping("/{galleryId}/comments")
     public CommonResponse<Void> uploadComment(
             @PathVariable Long galleryId,
             @RequestBody GalleryCommentRequest request,
@@ -69,7 +69,7 @@ public class GalleryController {
         return CommonResponse.from(COMMENT_UPLOAD_SUCCESS.getMessage());
     }
 
-    @PutMapping("/{galleryId}/comment/{commentId}")
+    @PutMapping("/{galleryId}/comments/{commentId}")
     public CommonResponse<Void> updateComment(
             @PathVariable Long galleryId,
             @PathVariable Long commentId,
@@ -80,7 +80,7 @@ public class GalleryController {
         return CommonResponse.from(COMMENT_UPDATE_SUCCESS.getMessage());
     }
 
-    @DeleteMapping("/{galleryId}/comment/{commentId}")
+    @DeleteMapping("/{galleryId}/comments/{commentId}")
     public CommonResponse<Void> deleteComment(
             @PathVariable Long galleryId,
             @PathVariable Long commentId,
