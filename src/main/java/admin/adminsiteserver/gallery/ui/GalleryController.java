@@ -3,6 +3,7 @@ package admin.adminsiteserver.gallery.ui;
 import admin.adminsiteserver.common.dto.CommonResponse;
 import admin.adminsiteserver.gallery.application.GalleryService;
 import admin.adminsiteserver.gallery.application.dto.GalleryResponse;
+import admin.adminsiteserver.gallery.application.dto.GallerySimpleResponse;
 import admin.adminsiteserver.gallery.ui.dto.GalleryCommentRequest;
 import admin.adminsiteserver.gallery.ui.dto.UpdateGalleryRequest;
 import admin.adminsiteserver.gallery.ui.dto.UploadGalleryRequest;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static admin.adminsiteserver.gallery.ui.GalleryResponseMessage.*;
@@ -26,7 +28,7 @@ public class GalleryController {
     private final GalleryService galleryService;
 
     @PostMapping
-    public CommonResponse<GalleryResponse> uploadGallery(@RequestBody UploadGalleryRequest request,
+    public CommonResponse<GalleryResponse> uploadGallery(@Valid @RequestBody UploadGalleryRequest request,
                                                          @LoginUser LoginUserInfo loginUserInfo) {
         GalleryResponse response = galleryService.upload(request, loginUserInfo);
         return CommonResponse.of(response, GALLERY_UPLOAD_SUCCESS.getMessage());
@@ -34,7 +36,7 @@ public class GalleryController {
 
     @PutMapping("/{galleryId}")
     public CommonResponse<GalleryResponse> updateGallery(
-            @RequestBody UpdateGalleryRequest request,
+            @Valid @RequestBody UpdateGalleryRequest request,
             @LoginUser LoginUserInfo loginUserInfo,
             @PathVariable Long galleryId
     )
@@ -55,14 +57,14 @@ public class GalleryController {
     }
 
     @GetMapping
-    public CommonResponse<List<GalleryResponse>> findAllGallery(Pageable pageable) {
+    public CommonResponse<List<GallerySimpleResponse>> findAllGallery(Pageable pageable) {
         return galleryService.findAll(pageable);
     }
 
     @PostMapping("/{galleryId}/comments")
     public CommonResponse<Void> uploadComment(
             @PathVariable Long galleryId,
-            @RequestBody GalleryCommentRequest request,
+            @Valid @RequestBody GalleryCommentRequest request,
             @LoginUser LoginUserInfo loginUserInfo
     ) {
         galleryService.addComment(galleryId, request, loginUserInfo);
@@ -73,7 +75,7 @@ public class GalleryController {
     public CommonResponse<Void> updateComment(
             @PathVariable Long galleryId,
             @PathVariable Long commentId,
-            @RequestBody GalleryCommentRequest request,
+            @Valid @RequestBody GalleryCommentRequest request,
             @LoginUser LoginUserInfo loginUserInfo
     ) {
         galleryService.updateComment(galleryId, commentId, request, loginUserInfo);
