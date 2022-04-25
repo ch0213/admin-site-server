@@ -29,6 +29,7 @@ public class AnnouncementFilePaths {
     }
 
     public void deleteFiles(List<FilePathDto> deleteFileUrls) {
+        if (deleteFileUrls == null) return;
         files.removeIf(filePath -> deleteFileUrls.stream().map(FilePathDto::getFileUrl)
                 .collect(Collectors.toList())
                 .contains(filePath.getFileUrl()));
