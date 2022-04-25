@@ -29,19 +29,17 @@ public class LevelUpService {
 
     @Transactional
     public LevelUpResponse registerLevelUp(LoginUserInfo loginUserInfo, LevelUpRequest request) {
-        Member member = memberRepository.findByUserId(loginUserInfo.getUserId())
+        Member member = memberRepository.findByEmail(loginUserInfo.getEmail())
                 .orElseThrow(NotExistMemberException::new);
-        levelUpRepository.findByUserId(loginUserInfo.getUserId())
-                .ifPresent(levelUp -> {
-                    throw new AlreadyExistLevelUpException();
-                });
+        levelUpRepository.findByUserEmailAndProcessedIsFalse(loginUserInfo.getEmail())
+                .ifPresent(levelUp -> {throw new AlreadyExistLevelUpException();});
         LevelUp savedLevelUp = levelUpRepository.save(request.from(member));
         return LevelUpResponse.from(savedLevelUp);
     }
 
     @Transactional
     public LevelUpResponse updateLevelUp(LoginUserInfo loginUserInfo, LevelUpRequest request, Long levelUpId) {
-        LevelUp levelUp = levelUpRepository.findById(levelUpId)
+        LevelUp levelUp = levelUpRepository.findByIdAndProcessedIsFalse(levelUpId)
                 .orElseThrow(NotExistLevelUpException::new);
         validateAuthorization(loginUserInfo, levelUp);
         levelUp.updateRole(request.getRole());
@@ -50,22 +48,20 @@ public class LevelUpService {
 
     @Transactional
     public void deleteLevelUp(LoginUserInfo loginUserInfo, Long levelUpId) {
-        LevelUp levelUp = levelUpRepository.findById(levelUpId)
+        LevelUp levelUp = levelUpRepository.findByIdAndProcessedIsFalse(levelUpId)
                 .orElseThrow(NotExistLevelUpException::new);
         validateAuthorization(loginUserInfo, levelUp);
         levelUpRepository.delete(levelUp);
     }
 
     public List<LevelUpResponse> findAll() {
-        return levelUpRepository.findByProcessedIsFalse().stream()
+        return levelUpRepository.findAllByProcessedIsFalse().stream()
                 .map(LevelUpResponse::from)
                 .collect(Collectors.toList());
     }
 
     private void validateAuthorization(LoginUserInfo loginUserInfo, LevelUp levelUp) {
-        String requestUserId = loginUserInfo.getUserId();
-        String authorUserId = levelUp.getMember().getUserId();
-        if (!requestUserId.equals(authorUserId)) {
+        if (loginUserInfo.isNotEqualUser(levelUp.registerUserId())) {
             throw new NotAuthorizationLevelUpException();
         }
     }
