@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class UpdateAnnouncementRequest extends BaseAnnouncementRequest{
+public class UpdateAnnouncementRequest extends BaseAnnouncementRequest {
     private List<FilePathDto> deleteFileUrls;
 
     public UpdateAnnouncementRequest(String title, String content, List<FilePathDto> files, List<FilePathDto> deleteFileUrls) {
