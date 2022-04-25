@@ -22,7 +22,7 @@ public class GalleryCommentResponse {
     public static GalleryCommentResponse from(GalleryComment galleryComment) {
         return new GalleryCommentResponse(
                 galleryComment.getId(),
-                galleryComment.getAuthorId(),
+                galleryComment.getAuthorEmail(),
                 galleryComment.getAuthorName(),
                 galleryComment.getComment(),
                 galleryComment.getCreatedAt(),
