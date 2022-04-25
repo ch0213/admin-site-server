@@ -1,6 +1,5 @@
 package admin.adminsiteserver.qna.domain.answer;
 
-import admin.adminsiteserver.qna.domain.answer.AnswerComment;
 import admin.adminsiteserver.qna.exception.NotExistAnswerCommentException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
