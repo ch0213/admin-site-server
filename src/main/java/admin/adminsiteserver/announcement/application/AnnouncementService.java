@@ -1,5 +1,6 @@
 package admin.adminsiteserver.announcement.application;
 
+import admin.adminsiteserver.announcement.application.dto.AnnouncementSimpleResponse;
 import admin.adminsiteserver.announcement.domain.AnnouncementComment;
 import admin.adminsiteserver.announcement.exception.UnauthorizedForAnnouncementCommentException;
 import admin.adminsiteserver.announcement.exception.UnauthorizedForAnnouncementException;
@@ -71,8 +72,7 @@ public class AnnouncementService {
     public void addComment(Long announcementId, AnnouncementCommentRequest request, LoginUserInfo loginUserInfo) {
         Announcement announcement = announcementRepository.findById(announcementId)
                 .orElseThrow(NotExistAnnouncementException::new);
-        AnnouncementComment comment = request.toAnnouncementComment(loginUserInfo);
-        announcement.addComment(comment);
+        announcement.addComment(request.toAnnouncementComment(loginUserInfo));
     }
 
     @Transactional
@@ -94,13 +94,13 @@ public class AnnouncementService {
     }
 
     private void validateAuthorityForAnnouncement(LoginUserInfo loginUserInfo, Announcement announcement) {
-        if (loginUserInfo.isNotEqualUser(announcement.getAuthorId())) {
+        if (loginUserInfo.isNotEqualUser(announcement.getAuthorEmail())) {
             throw new UnauthorizedForAnnouncementException();
         }
     }
 
     private void validateAuthorityForComment(LoginUserInfo loginUserInfo, AnnouncementComment comment) {
-        if (loginUserInfo.isNotEqualUser(comment.getAuthorId())) {
+        if (loginUserInfo.isNotEqualUser(comment.getAuthorEmail())) {
             throw new UnauthorizedForAnnouncementCommentException();
         }
     }
@@ -111,10 +111,10 @@ public class AnnouncementService {
         return AnnouncementResponse.from(announcement);
     }
 
-    public CommonResponse<List<AnnouncementResponse>> findAll(Pageable pageable) {
+    public CommonResponse<List<AnnouncementSimpleResponse>> findAll(Pageable pageable) {
         PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("createdAt").descending());
-        Page<AnnouncementResponse> announcements = announcementRepository.findAll(pageRequest)
-                .map(AnnouncementResponse::from);
+        Page<AnnouncementSimpleResponse> announcements = announcementRepository.findAll(pageRequest)
+                .map(AnnouncementSimpleResponse::from);
 
         return CommonResponse.of(announcements.getContent(), PageInfo.from(announcements), ANNOUNCEMENT_FIND_ALL_SUCCESS.getMessage());
     }
