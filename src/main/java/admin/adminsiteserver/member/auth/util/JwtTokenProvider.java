@@ -49,8 +49,7 @@ public class JwtTokenProvider {
     }
 
     public String createToken(Member member, String encodingKey, long validTime) {
-        Claims claims = Jwts.claims().setSubject(member.getUserId());
-        claims.put("userId", member.getUserId());
+        Claims claims = Jwts.claims().setSubject(member.getEmail());
         claims.put("email", member.getEmail());
         claims.put("name", member.getName());
         claims.put("role", member.getRole().getDescription());

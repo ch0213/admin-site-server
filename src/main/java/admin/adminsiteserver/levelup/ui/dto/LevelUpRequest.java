@@ -8,16 +8,18 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
 import java.util.Arrays;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class LevelUpRequest {
+    @NotBlank(message = "역할을 입력해주세요.")
     private String role;
 
     public LevelUp from(Member member) {
-        return new LevelUp(member.getUserId(), findRoleType(), false, member);
+        return new LevelUp(member.getEmail(), findRoleType(), false, member);
     }
 
     private String findRoleType() {

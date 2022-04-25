@@ -1,6 +1,5 @@
 package admin.adminsiteserver.member.auth.application;
 
-import admin.adminsiteserver.member.auth.application.dto.JwtTokenDto;
 import admin.adminsiteserver.member.auth.application.dto.LoginResponse;
 import admin.adminsiteserver.member.auth.exception.NotExistMemberException;
 import admin.adminsiteserver.member.auth.exception.WrongPasswordException;
@@ -8,8 +7,8 @@ import admin.adminsiteserver.member.auth.ui.dto.LoginRequest;
 import admin.adminsiteserver.member.auth.util.JwtTokenProvider;
 import admin.adminsiteserver.member.member.domain.Member;
 import admin.adminsiteserver.member.member.domain.MemberRepository;
-import admin.adminsiteserver.member.member.domain.RoleType;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +19,7 @@ import java.util.Optional;
 
 import static admin.adminsiteserver.member.member.domain.RoleType.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -29,29 +29,26 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
 
     public LoginResponse login(LoginRequest loginRequest) {
-        Member member = memberRepository.findByUserId(loginRequest.getUserId())
+        Member member = memberRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(NotExistMemberException::new);
-
-        if (isWrongPassword(loginRequest, member)) {
-            throw new WrongPasswordException();
-        }
-
-        JwtTokenDto tokens = jwtTokenProvider.createTokens(member);
-        return LoginResponse.of(member, tokens);
+        validatePassword(loginRequest, member);
+        return LoginResponse.of(member, jwtTokenProvider.createTokens(member));
     }
 
-    private boolean isWrongPassword(LoginRequest loginRequest, Member member) {
-        return !passwordEncoder.matches(loginRequest.getPassword(), member.getPassword());
+    private void validatePassword(LoginRequest loginRequest, Member member) {
+        if (!passwordEncoder.matches(loginRequest.getPassword(), member.getPassword())) {
+            throw new WrongPasswordException();
+        }
     }
 
     @PostConstruct
     public void createAdmin() {
         Member admin = Member.builder()
-                .userId("admin")
+                .email("admin@admin.com")
                 .password(passwordEncoder.encode("admin"))
                 .role(ADMIN)
                 .name("관리자")
-                .studentNumber("000000000")
+                .studentNumber("201600000")
                 .phoneNumber("010-0000-0000")
                 .build();
         saveAdmin(admin);
@@ -59,7 +56,7 @@ public class AuthService {
 
     @Transactional
     public void saveAdmin(Member member) {
-        Optional<Member> admin = memberRepository.findByUserId("admin");
+        Optional<Member> admin = memberRepository.findByEmail("admin");
         if (admin.isEmpty()) memberRepository.save(member);
     }
 }
