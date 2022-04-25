@@ -1,4 +1,4 @@
-package admin.adminsiteserver.qna.application.dto.answer;
+package admin.adminsiteserver.qna.domain.answer;
 
 import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
 import admin.adminsiteserver.qna.domain.answer.AnswerFilePath;

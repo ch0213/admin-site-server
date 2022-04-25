@@ -1,4 +1,4 @@
-package admin.adminsiteserver.qna.application.dto.answer;
+package admin.adminsiteserver.qna.domain.answer;
 
 import admin.adminsiteserver.qna.domain.answer.AnswerComment;
 import admin.adminsiteserver.qna.exception.NotExistAnswerCommentException;
