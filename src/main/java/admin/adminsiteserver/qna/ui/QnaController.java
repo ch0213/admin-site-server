@@ -4,35 +4,38 @@ import admin.adminsiteserver.common.dto.CommonResponse;
 import admin.adminsiteserver.member.auth.util.LoginUser;
 import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
 import admin.adminsiteserver.qna.application.QnaService;
-import admin.adminsiteserver.qna.application.dto.AnswerCommentResponse;
-import admin.adminsiteserver.qna.application.dto.AnswerResponse;
-import admin.adminsiteserver.qna.application.dto.QnaResponse;
-import admin.adminsiteserver.qna.application.dto.QuestionCommentResponse;
+import admin.adminsiteserver.qna.application.dto.*;
+import admin.adminsiteserver.qna.application.dto.answer.AnswerCommentResponse;
+import admin.adminsiteserver.qna.application.dto.answer.AnswerResponse;
 import admin.adminsiteserver.qna.ui.dto.*;
+import admin.adminsiteserver.qna.ui.dto.answer.AnswerCommentRequest;
+import admin.adminsiteserver.qna.ui.dto.answer.AnswerUpdateRequest;
+import admin.adminsiteserver.qna.ui.dto.answer.AnswerUploadRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static admin.adminsiteserver.qna.ui.QnaResponseMessage.*;
 
 @RestController
-@RequestMapping("/qna")
+@RequestMapping("/qnas")
 @RequiredArgsConstructor
 public class QnaController {
 
     private final QnaService qnaService;
 
     @PostMapping
-    public CommonResponse<QnaResponse> uploadQna(@RequestBody UploadQnaRequest request, @LoginUser LoginUserInfo loginUserInfo) {
+    public CommonResponse<QnaResponse> uploadQna(@Valid @RequestBody UploadQnaRequest request, @LoginUser LoginUserInfo loginUserInfo) {
         QnaResponse response = qnaService.uploadQna(request, loginUserInfo);
         return CommonResponse.of(response, QNA_UPLOAD_SUCCESS.getMessage());
     }
 
     @PutMapping("/{qnaId}")
     public CommonResponse<QnaResponse> updateQna(
-            UpdateQnaRequest request,
+            @Valid @RequestBody UpdateQnaRequest request,
             @LoginUser LoginUserInfo loginUserInfo,
             @PathVariable Long qnaId
     ) {
@@ -46,24 +49,24 @@ public class QnaController {
         return CommonResponse.from(QNA_DELETE_SUCCESS.getMessage());
     }
 
-    @PostMapping("/{qnaId}/answer")
-    public CommonResponse<AnswerResponse> uploadAnswer(@RequestBody AnswerUploadRequest request, @LoginUser LoginUserInfo loginUserInfo, @PathVariable Long qnaId) {
-        AnswerResponse answerDto = qnaService.uploadAnswer(loginUserInfo, qnaId, request);
-        return CommonResponse.of(answerDto, ANSWER_UPLOAD_SUCCESS.getMessage());
+    @PostMapping("/{qnaId}/answers")
+    public CommonResponse<Void> uploadAnswer(@Valid @RequestBody AnswerUploadRequest request, @LoginUser LoginUserInfo loginUserInfo, @PathVariable Long qnaId) {
+        qnaService.uploadAnswer(loginUserInfo, qnaId, request);
+        return CommonResponse.from(ANSWER_UPLOAD_SUCCESS.getMessage());
     }
 
-    @PutMapping("/{qnaId}/answer/{answerId}")
-    public CommonResponse<AnswerResponse> updateAnswer(
-            @RequestBody AnswerUpdateRequest request,
+    @PutMapping("/{qnaId}/answers/{answerId}")
+    public CommonResponse<Void> updateAnswer(
+            @Valid @RequestBody AnswerUpdateRequest request,
             @LoginUser LoginUserInfo loginUserInfo,
             @PathVariable Long qnaId,
             @PathVariable Long answerId
     ) {
-        AnswerResponse answerDto = qnaService.updateAnswer(request, loginUserInfo, qnaId, answerId);
-        return CommonResponse.of(answerDto, ANSWER_UPDATE_SUCCESS.getMessage());
+        qnaService.updateAnswer(request, loginUserInfo, qnaId, answerId);
+        return CommonResponse.from(ANSWER_UPDATE_SUCCESS.getMessage());
     }
     
-    @DeleteMapping("/{qnaId}/answer/{answerId}")
+    @DeleteMapping("/{qnaId}/answers/{answerId}")
     public CommonResponse<Void> deleteAnswer(
             @LoginUser LoginUserInfo loginUserInfo,
             @PathVariable Long qnaId,
@@ -79,32 +82,32 @@ public class QnaController {
     }
 
     @GetMapping
-    public CommonResponse<List<QnaResponse>> findQnaList(Pageable pageable) {
+    public CommonResponse<List<QnaSimpleResponse>> findQnaList(Pageable pageable) {
         return qnaService.findQnas(pageable);
     }
 
-    @PostMapping("/{qnaId}/comment")
+    @PostMapping("/{qnaId}/comments")
     public CommonResponse<QuestionCommentResponse> addQuestionComment(
             @PathVariable Long qnaId,
-            @RequestBody QuestionCommentRequest request,
+            @Valid @RequestBody QuestionCommentRequest request,
             @LoginUser LoginUserInfo loginUserInfo
     ) {
         qnaService.addQuestionComment(qnaId, request, loginUserInfo);
         return CommonResponse.from(QNA_COMMENT_UPLOAD_SUCCESS.getMessage());
     }
 
-    @PutMapping("/{qnaId}/comment/{commentId}")
+    @PutMapping("/{qnaId}/comments/{commentId}")
     public CommonResponse<QuestionCommentResponse> updateQuestionComment(
             @PathVariable Long qnaId,
             @PathVariable Long commentId,
-            @RequestBody QuestionCommentRequest request,
+            @Valid @RequestBody QuestionCommentRequest request,
             @LoginUser LoginUserInfo loginUserInfo
     ) {
         qnaService.updateQuestionComment(qnaId, commentId, request, loginUserInfo);
         return CommonResponse.from(QNA_COMMENT_UPDATE_SUCCESS.getMessage());
     }
 
-    @DeleteMapping("/{qnaId}/comment/{commentId}")
+    @DeleteMapping("/{qnaId}/comments/{commentId}")
     public CommonResponse<Void> deleteQuestionComment(
             @PathVariable Long qnaId,
             @PathVariable Long commentId,
@@ -114,30 +117,30 @@ public class QnaController {
         return CommonResponse.from(QNA_COMMENT_DELETE_SUCCESS.getMessage());
     }
 
-    @PostMapping("/{qnaId}/answer/{answerId}/comment")
+    @PostMapping("/{qnaId}/answers/{answerId}/comments")
     public CommonResponse<AnswerCommentResponse> addAnswerComment(
             @PathVariable Long qnaId,
             @PathVariable Long answerId,
-            @RequestBody AnswerCommentRequest request,
+            @Valid @RequestBody AnswerCommentRequest request,
             @LoginUser LoginUserInfo loginUserInfo
     ) {
         qnaService.addAnswerComment(qnaId, answerId, request, loginUserInfo);
         return CommonResponse.from(QNA_COMMENT_UPLOAD_SUCCESS.getMessage());
     }
 
-    @PutMapping("/{qnaId}/answer/{answerId}/comment/{commentId}")
+    @PutMapping("/{qnaId}/answers/{answerId}/comments/{commentId}")
     public CommonResponse<AnswerCommentResponse> updateAnswerComment(
             @PathVariable Long qnaId,
             @PathVariable Long answerId,
             @PathVariable Long commentId,
-            @RequestBody AnswerCommentRequest request,
+            @Valid @RequestBody AnswerCommentRequest request,
             @LoginUser LoginUserInfo loginUserInfo
     ) {
         qnaService.updateAnswerComment(qnaId, answerId, commentId, request, loginUserInfo);
         return CommonResponse.from(QNA_COMMENT_UPDATE_SUCCESS.getMessage());
     }
 
-    @DeleteMapping("/{qnaId}/answer/{answerId}/comment/{commentId}")
+    @DeleteMapping("/{qnaId}/answers/{answerId}/comments/{commentId}")
     public CommonResponse<Void> deleteAnswerComment(
             @PathVariable Long qnaId,
             @PathVariable Long answerId,
