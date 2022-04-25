@@ -2,7 +2,6 @@ package admin.adminsiteserver.gallery.application.dto;
 
 import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
 import admin.adminsiteserver.gallery.domain.Gallery;
-import admin.adminsiteserver.gallery.domain.GalleryComment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,16 +27,16 @@ public class GalleryResponse {
     public static GalleryResponse from(Gallery gallery) {
         return new GalleryResponse(
                 gallery.getId(),
-                gallery.getAuthorId(),
+                gallery.getAuthorEmail(),
                 gallery.getAuthorName(),
                 gallery.getTitle(),
                 gallery.getContent(),
                 gallery.getCreatedAt(),
                 gallery.getModifiedAt(),
-                gallery.getFiles().stream()
+                gallery.getFiles().getFiles().stream()
                         .map(FilePathDto::from)
                         .collect(Collectors.toList()),
-                gallery.getComments().stream()
+                gallery.getComments().getComments().stream()
                         .map(GalleryCommentResponse::from)
                         .collect(Collectors.toList())
         );
