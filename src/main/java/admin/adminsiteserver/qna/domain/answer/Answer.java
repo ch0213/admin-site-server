@@ -2,8 +2,6 @@ package admin.adminsiteserver.qna.domain.answer;
 
 import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
 import admin.adminsiteserver.common.domain.BaseTimeEntity;
-import admin.adminsiteserver.qna.application.dto.answer.AnswerComments;
-import admin.adminsiteserver.qna.application.dto.answer.AnswerFilePaths;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
