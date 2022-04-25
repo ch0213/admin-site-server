@@ -19,9 +19,9 @@ public class LevelUpResponse {
     public static LevelUpResponse from(LevelUp levelUp) {
         return new LevelUpResponse(
                 levelUp.getId(),
-                levelUp.getUserId(),
+                levelUp.getUserEmail(),
                 levelUp.getMember().getName(),
-                levelUp.getRole(),
+                levelUp.getRole().getDescription(),
                 levelUp.getCreatedAt()
         );
     }

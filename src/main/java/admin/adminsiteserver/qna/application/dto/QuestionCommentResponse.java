@@ -22,7 +22,7 @@ public class QuestionCommentResponse {
     public static QuestionCommentResponse from(QuestionComment questionComment) {
         return new QuestionCommentResponse(
                 questionComment.getId(),
-                questionComment.getAuthorId(),
+                questionComment.getAuthorEmail(),
                 questionComment.getAuthorName(),
                 questionComment.getComment(),
                 questionComment.getCreatedAt(),

@@ -5,7 +5,7 @@ import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
 import admin.adminsiteserver.common.dto.CommonResponse;
 import admin.adminsiteserver.common.dto.PageInfo;
 import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
-import admin.adminsiteserver.member.member.application.dto.MemberDto;
+import admin.adminsiteserver.member.member.application.dto.MemberResponse;
 import admin.adminsiteserver.member.member.domain.Member;
 import admin.adminsiteserver.member.member.domain.MemberFilePath;
 import admin.adminsiteserver.member.member.domain.MemberFilePathRepository;
@@ -14,6 +14,7 @@ import admin.adminsiteserver.member.member.exception.AlreadyExistUserIDException
 import admin.adminsiteserver.member.member.exception.NotExistMemberException;
 import admin.adminsiteserver.member.member.ui.dto.SignUpRequest;
 import admin.adminsiteserver.member.member.ui.dto.UpdateMemberRequest;
+import admin.adminsiteserver.member.member.ui.dto.UpdatePasswordRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,35 +39,43 @@ public class MemberService {
     private static final String MEMBER_IMAGE_PATH = "member/";
 
     @Transactional
-    public MemberDto signUp(SignUpRequest signUpRequest) {
+    public MemberResponse signUp(SignUpRequest signUpRequest) {
         Member member = signUpRequest.toMember(passwordEncoder);
-        memberRepository.findByUserId(member.getUserId())
-                .ifPresent(m -> {
-                    throw new AlreadyExistUserIDException();
-                });
+        checkAlreadySignUp(member);
         Member signupMember = memberRepository.save(member);
 
-        if (signUpRequest.getImage() != null) {
+        if (signUpRequest.hasImage()) {
             FilePathDto filePathDto = s3Uploader.upload(signUpRequest.getImage(), MEMBER_IMAGE_PATH);
             signupMember.addProfileImage(filePathDto.toFilePath(MemberFilePath.class));
-            return MemberDto.of(signupMember, filePathDto);
+            return MemberResponse.of(signupMember, filePathDto);
         }
-        return MemberDto.from(signupMember);
+        return MemberResponse.from(signupMember);
+    }
+
+    private void checkAlreadySignUp(Member member) {
+        memberRepository.findByEmail(member.getEmail())
+                .ifPresent(m -> {throw new AlreadyExistUserIDException();});
     }
 
     @Transactional
-    public void updateMember(UpdateMemberRequest updateMemberRequest, String userId) {
-        Member member = memberRepository.findByUserId(userId)
+    public void updateMember(UpdateMemberRequest updateMemberRequest, String email) {
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(NotExistMemberException::new);
-        member.update(updateMemberRequest.getEmail(),
-                updateMemberRequest.getName(),
+        member.updateMemberInfo(updateMemberRequest.getName(),
                 updateMemberRequest.getStudentNumber(),
                 updateMemberRequest.getPhoneNumber());
     }
 
     @Transactional
+    public void updatePassword(UpdatePasswordRequest request, String email) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(NotExistMemberException::new);
+        member.updatePassword(passwordEncoder.encode(request.getPassword()));
+    }
+
+    @Transactional
     public void updateMemberImage(MultipartFile multipartFile, String userId) {
-        Member member = memberRepository.findByUserId(userId)
+        Member member = memberRepository.findByEmail(userId)
                 .orElseThrow(NotExistMemberException::new);
         s3Uploader.delete(FilePathDto.from(member.getFilePath()));
         MemberFilePath filePath = filePathRepository.save(s3Uploader.upload(multipartFile, MEMBER_IMAGE_PATH).toFilePath(MemberFilePath.class));
@@ -75,20 +84,20 @@ public class MemberService {
 
     @Transactional
     public void deleteMember(String userId) {
-        Member member = memberRepository.findByUserId(userId)
+        Member member = memberRepository.findByEmail(userId)
                 .orElseThrow(NotExistMemberException::new);
         s3Uploader.delete(FilePathDto.from(member.getFilePath()));
-        memberRepository.deleteByUserId(userId);
+        memberRepository.deleteByEmail(userId);
     }
 
-    public MemberDto findMyself(LoginUserInfo loginUserInfo) {
-        Member member = memberRepository.findByUserId(loginUserInfo.getUserId())
+    public MemberResponse findMyself(LoginUserInfo loginUserInfo) {
+        Member member = memberRepository.findByEmail(loginUserInfo.getEmail())
                 .orElseThrow(NotExistMemberException::new);
-        return MemberDto.from(member);
+        return MemberResponse.from(member);
     }
 
-    public CommonResponse<List<MemberDto>> findMembers(Pageable pageable) {
-        Page<MemberDto> members = memberRepository.findAll(pageable).map(MemberDto::from);
+    public CommonResponse<List<MemberResponse>> findMembers(Pageable pageable) {
+        Page<MemberResponse> members = memberRepository.findAll(pageable).map(MemberResponse::from);
         return CommonResponse.of(members.getContent(), PageInfo.from(members), INQUIRE_SUCCESS.getMessage());
     }
 }

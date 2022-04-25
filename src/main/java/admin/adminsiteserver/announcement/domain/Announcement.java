@@ -6,11 +6,8 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static javax.persistence.CascadeType.*;
 import static lombok.AccessLevel.*;
 
 @Slf4j
@@ -23,28 +20,25 @@ public class Announcement extends BaseTimeEntity {
     @Id
     @GeneratedValue
     private Long id;
-    private String authorId;
+    private String authorEmail;
     private String authorName;
     private String title;
 
     @Lob
     private String content;
 
-    @OneToMany(cascade = ALL, orphanRemoval = true)
-    @JoinColumn(name = "announcement_id")
-    private List<AnnouncementFilePath> files = new ArrayList<>();
+    @Embedded
+    private AnnouncementFilePaths files = new AnnouncementFilePaths();
 
-    @OneToMany(cascade = ALL, orphanRemoval = true)
-    @JoinColumn(name = "announcement_id")
-    private List<AnnouncementComment> comments = new ArrayList<>();
+    @Embedded
+    private AnnouncementComments comments = new AnnouncementComments();
 
     @Builder
-    public Announcement(String authorId, String authorName, String title, String content, List<AnnouncementFilePath> files) {
-        this.authorId = authorId;
+    public Announcement(String authorEmail, String authorName, String title, String content) {
+        this.authorEmail = authorEmail;
         this.authorName = authorName;
         this.title = title;
         this.content = content;
-        this.files = files;
     }
 
     public void updateTitleAndContent(String title, String content) {
@@ -52,13 +46,27 @@ public class Announcement extends BaseTimeEntity {
         this.content = content;
     }
 
-    public void deleteFiles(List<FilePathDto> deleteFileUrls) {
-        files.removeIf(filePath -> deleteFileUrls.stream().map(FilePathDto::getFileUrl)
-                .collect(Collectors.toList())
-                .contains(filePath.getFileUrl()));
+    public void saveFilePaths(List<AnnouncementFilePath> filePaths) {
+        files.saveFilePaths(filePaths);
+    }
+
+    public List<FilePathDto> findDeleteFilePaths() {
+        return files.findDeleteFilePaths();
+    }
+
+    public void deleteFilePaths(List<FilePathDto> deleteFileUrls) {
+        files.deleteFiles(deleteFileUrls);
     }
 
     public void addComment(AnnouncementComment comment) {
-        this.comments.add(comment);
+        comments.addComment(comment);
+    }
+
+    public void deleteComment(AnnouncementComment comment) {
+        comments.deleteComment(comment);
+    }
+
+    public AnnouncementComment findUpdateOrDeleteComment(Long commentId) {
+        return comments.findUpdateComment(commentId);
     }
 }

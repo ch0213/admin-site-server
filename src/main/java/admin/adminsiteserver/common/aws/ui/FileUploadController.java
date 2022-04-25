@@ -8,6 +8,7 @@ import admin.adminsiteserver.common.dto.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -20,13 +21,13 @@ public class FileUploadController {
     private static final String FILE_DELETE_MESSAGE = "파일 삭제 성공";
 
     @PostMapping
-    public CommonResponse<List<FilePathDto>> uploadFile(FileUploadRequest request) {
+    public CommonResponse<List<FilePathDto>> uploadFile(@Valid FileUploadRequest request) {
         List<FilePathDto> filePathDto = fileUploadService.uploadFile(request);
         return CommonResponse.of(filePathDto, FILE_UPLOAD_MESSAGE);
     }
 
     @PostMapping("/delete")
-    public CommonResponse<Void> deleteFile(@RequestBody FileDeleteRequest request) {
+    public CommonResponse<Void> deleteFile(@Valid @RequestBody FileDeleteRequest request) {
         fileUploadService.deleteFile(request);
         return CommonResponse.from(FILE_DELETE_MESSAGE);
     }

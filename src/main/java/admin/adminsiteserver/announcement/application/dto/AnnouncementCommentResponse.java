@@ -22,7 +22,7 @@ public class AnnouncementCommentResponse {
     public static AnnouncementCommentResponse from(AnnouncementComment announcementComment) {
         return new AnnouncementCommentResponse(
                 announcementComment.getId(),
-                announcementComment.getAuthorId(),
+                announcementComment.getAuthorEmail(),
                 announcementComment.getAuthorName(),
                 announcementComment.getComment(),
                 announcementComment.getCreatedAt(),

@@ -10,19 +10,20 @@ import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static admin.adminsiteserver.levelup.ui.LevelUpResponseMessage.*;
 
 @RestController
-@RequestMapping("/levelup")
+@RequestMapping("/levelups")
 @RequiredArgsConstructor
 public class LevelUpController {
 
     private final LevelUpService levelUpService;
 
     @PostMapping
-    public CommonResponse<LevelUpResponse> register(@LoginUser LoginUserInfo loginUserInfo, @RequestBody LevelUpRequest request) {
+    public CommonResponse<LevelUpResponse> register(@LoginUser LoginUserInfo loginUserInfo, @Valid @RequestBody LevelUpRequest request) {
         LevelUpResponse levelUpResponse = levelUpService.registerLevelUp(loginUserInfo, request);
         return CommonResponse.of(levelUpResponse, LEVEL_UP_REGISTER_SUCCESS.getMessage());
     }
@@ -30,7 +31,7 @@ public class LevelUpController {
     @PutMapping("/{levelUpId}")
     public CommonResponse<LevelUpResponse> update(
             @LoginUser LoginUserInfo loginUserInfo,
-            @RequestBody LevelUpRequest request,
+            @Valid @RequestBody LevelUpRequest request,
             @PathVariable Long levelUpId
     ) {
         LevelUpResponse levelUpResponse = levelUpService.updateLevelUp(loginUserInfo, request, levelUpId);
@@ -59,7 +60,7 @@ public class LevelUpController {
     }
 
     @PostMapping("/approve")
-    public CommonResponse<Void> approveLevelUps(@RequestBody LevelUpProcessRequest request) {
+    public CommonResponse<Void> approveLevelUps(@Valid @RequestBody LevelUpProcessRequest request) {
         levelUpService.updateMembersPosition(request);
         return CommonResponse.from(LEVEL_UP_APPROVE_SUCCESS.getMessage());
     }
@@ -71,7 +72,7 @@ public class LevelUpController {
     }
 
     @PostMapping("/reject")
-    public CommonResponse<Void> rejectLevelUps(@RequestBody LevelUpProcessRequest request) {
+    public CommonResponse<Void> rejectLevelUps(@Valid @RequestBody LevelUpProcessRequest request) {
         levelUpService.rejectMembersPosition(request);
         return CommonResponse.from(LEVEL_UP_REJECT_SUCCESS.getMessage());
     }

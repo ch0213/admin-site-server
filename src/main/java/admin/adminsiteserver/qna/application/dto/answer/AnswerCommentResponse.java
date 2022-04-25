@@ -1,7 +1,6 @@
-package admin.adminsiteserver.qna.application.dto;
+package admin.adminsiteserver.qna.application.dto.answer;
 
-import admin.adminsiteserver.qna.domain.AnswerComment;
-import admin.adminsiteserver.qna.domain.QuestionComment;
+import admin.adminsiteserver.qna.domain.answer.AnswerComment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +21,7 @@ public class AnswerCommentResponse {
     public static AnswerCommentResponse from(AnswerComment answerComment) {
         return new AnswerCommentResponse(
                 answerComment.getId(),
-                answerComment.getAuthorId(),
+                answerComment.getAuthorEmail(),
                 answerComment.getAuthorName(),
                 answerComment.getComment(),
                 answerComment.getCreatedAt(),

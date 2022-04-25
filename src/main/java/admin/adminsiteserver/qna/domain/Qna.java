@@ -3,6 +3,8 @@ package admin.adminsiteserver.qna.domain;
 import admin.adminsiteserver.announcement.domain.AnnouncementComment;
 import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
 import admin.adminsiteserver.common.domain.BaseTimeEntity;
+import admin.adminsiteserver.qna.domain.answer.Answer;
+import admin.adminsiteserver.qna.domain.answer.Answers;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,33 +26,29 @@ public class Qna extends BaseTimeEntity {
 
     @Id @GeneratedValue
     private Long id;
-    private String authorId;
+    private String authorEmail;
     private String authorName;
     private String title;
 
     @Lob
     private String content;
 
-    @OneToMany(cascade = ALL, orphanRemoval = true)
-    @JoinColumn(name = "qna_id")
-    private List<QuestionFilePath> files = new ArrayList<>();
+    @Embedded
+    private QuestionFilePaths files = new QuestionFilePaths();
 
-    @OneToMany(cascade = ALL, orphanRemoval = true)
-    @JoinColumn(name = "qna_id")
-    private List<Answer> answers = new ArrayList<>();
+    @Embedded
+    private Answers answers = new Answers();
 
-    @OneToMany(cascade = ALL, orphanRemoval = true)
-    @JoinColumn(name = "qna_id")
-    private List<QuestionComment> comments = new ArrayList<>();
+    @Embedded
+    private QuestionComments comments = new QuestionComments();
 
     @Builder
-    public Qna(Long id, String authorId, String authorName, String title, String content, List<QuestionFilePath> files) {
+    public Qna(Long id, String authorEmail, String authorName, String title, String content) {
         this.id = id;
-        this.authorId = authorId;
+        this.authorEmail = authorEmail;
         this.authorName = authorName;
         this.title = title;
         this.content = content;
-        this.files = files;
     }
 
     public void updateContentAndTitle(String title, String content) {
@@ -58,17 +56,39 @@ public class Qna extends BaseTimeEntity {
         this.content = content;
     }
 
-    public void addAnswer(Answer answer) {
-        this.answers.add(answer);
+    public void saveFilePaths(List<QuestionFilePath> filePaths) {
+        files.saveFilePaths(filePaths);
     }
 
-    public void deleteFiles(List<FilePathDto> deleteFileUrls) {
-        files.removeIf(filePath -> deleteFileUrls.stream().map(FilePathDto::getFileUrl)
-                .collect(Collectors.toList())
-                .contains(filePath.getFileUrl()));
+    public void addAnswer(Answer answer) {
+        this.answers.addAnswer(answer);
+    }
+
+    public void deleteAnswer(Answer answer) {
+        this.answers.deleteAnswer(answer);
+    }
+
+    public Answer findAnswer(Long id) {
+        return this.answers.findAnswer(id);
+    }
+
+    public List<FilePathDto> findDeleteFilePaths() {
+        return files.findDeleteFilePaths();
+    }
+
+    public void deleteFilePaths(List<FilePathDto> deleteFileUrls) {
+        files.deleteFiles(deleteFileUrls);
     }
 
     public void addComment(QuestionComment comment) {
-        this.comments.add(comment);
+        comments.addComment(comment);
+    }
+
+    public void deleteComment(QuestionComment comment) {
+        comments.deleteComment(comment);
+    }
+
+    public QuestionComment findUpdateOrDeleteComment(Long commentId) {
+        return comments.findUpdateComment(commentId);
     }
 }

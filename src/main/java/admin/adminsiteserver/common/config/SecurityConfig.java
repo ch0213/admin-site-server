@@ -4,8 +4,6 @@ import admin.adminsiteserver.common.filter.JwtAuthenticationFilter;
 import admin.adminsiteserver.member.auth.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -40,9 +38,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/login", "/signup").permitAll()
-                .antMatchers(GET, "/announcement/**").permitAll()
-                .antMatchers("/levelup/admin").hasRole("ADMIN")
+                .antMatchers("/signup", "/login").permitAll()
+                .antMatchers(GET, "/announcements/**", "/gallerys/**", "/qnas/**", "/calendars/**").permitAll()
+                .antMatchers(GET, "/levelups/**").hasRole("ADMIN")
+                .antMatchers(POST, "/levelups/**/approve", "/levelups/**/reject").hasRole("ADMIN")
                 .anyRequest().authenticated();
     }
 

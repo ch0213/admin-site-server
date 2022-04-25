@@ -1,19 +1,17 @@
 package admin.adminsiteserver.announcement.application;
 
+import admin.adminsiteserver.announcement.application.dto.AnnouncementSimpleResponse;
 import admin.adminsiteserver.announcement.domain.AnnouncementComment;
-import admin.adminsiteserver.announcement.exception.NotExistAnnouncementCommentException;
 import admin.adminsiteserver.announcement.exception.UnauthorizedForAnnouncementCommentException;
 import admin.adminsiteserver.announcement.exception.UnauthorizedForAnnouncementException;
 import admin.adminsiteserver.announcement.ui.dto.AnnouncementCommentRequest;
 import admin.adminsiteserver.common.aws.infrastructure.S3Uploader;
 import admin.adminsiteserver.common.dto.CommonResponse;
-import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
 import admin.adminsiteserver.common.dto.PageInfo;
 import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
 import admin.adminsiteserver.announcement.application.dto.AnnouncementResponse;
 import admin.adminsiteserver.announcement.domain.Announcement;
 import admin.adminsiteserver.announcement.domain.AnnouncementRepository;
-import admin.adminsiteserver.announcement.domain.AnnouncementFilePath;
 import admin.adminsiteserver.announcement.exception.NotExistAnnouncementException;
 import admin.adminsiteserver.announcement.ui.dto.UpdateAnnouncementRequest;
 import admin.adminsiteserver.announcement.ui.dto.UploadAnnouncementRequest;
@@ -27,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static admin.adminsiteserver.announcement.ui.AnnouncementResponseMessage.*;
 
@@ -43,6 +40,7 @@ public class AnnouncementService {
     @Transactional
     public AnnouncementResponse upload(UploadAnnouncementRequest request, LoginUserInfo loginUserInfo) {
         Announcement announcement = request.createAnnouncement(loginUserInfo);
+        announcement.saveFilePaths(request.toAnnouncementFilePaths());
         announcementRepository.save(announcement);
         return AnnouncementResponse.from(announcement);
     }
@@ -54,11 +52,8 @@ public class AnnouncementService {
         validateAuthorityForAnnouncement(loginUserInfo, announcement);
 
         announcement.updateTitleAndContent(request.getTitle(), request.getContent());
-        announcement.getFiles().addAll(request.getFiles().stream()
-                .map(filePathDto -> filePathDto.toFilePath(AnnouncementFilePath.class))
-                .collect(Collectors.toList()));
-
-        announcement.deleteFiles(request.getDeleteFileUrls());
+        announcement.saveFilePaths(request.toAnnouncementFilePaths());
+        announcement.deleteFilePaths(request.getDeleteFileUrls());
         s3Uploader.delete(request.getDeleteFileUrls());
 
         return AnnouncementResponse.from(announcement);
@@ -69,10 +64,7 @@ public class AnnouncementService {
         Announcement announcement = announcementRepository.findById(announcementId)
                 .orElseThrow(NotExistAnnouncementException::new);
         validateAuthorityForAnnouncement(loginUserInfo, announcement);
-        List<FilePathDto> deleteFileURls = announcement.getFiles().stream()
-                .map(FilePathDto::from)
-                .collect(Collectors.toList());
-        s3Uploader.delete(deleteFileURls);
+        s3Uploader.delete(announcement.findDeleteFilePaths());
         announcementRepository.delete(announcement);
     }
 
@@ -80,42 +72,35 @@ public class AnnouncementService {
     public void addComment(Long announcementId, AnnouncementCommentRequest request, LoginUserInfo loginUserInfo) {
         Announcement announcement = announcementRepository.findById(announcementId)
                 .orElseThrow(NotExistAnnouncementException::new);
-        AnnouncementComment comment = request.toAnnouncementComment(loginUserInfo);
-        announcement.addComment(comment);
+        announcement.addComment(request.toAnnouncementComment(loginUserInfo));
     }
 
     @Transactional
     public void updateComment(Long announcementId, Long commentId, AnnouncementCommentRequest request, LoginUserInfo loginUserInfo) {
         Announcement announcement = announcementRepository.findById(announcementId)
                 .orElseThrow(NotExistAnnouncementException::new);
-        AnnouncementComment updateComment = announcement.getComments().stream()
-                .filter(comment -> comment.getId().equals(commentId))
-                .findAny()
-                .orElseThrow(NotExistAnnouncementCommentException::new);
-        validateAuthorityForComment(loginUserInfo, updateComment);
-        updateComment.updateComment(request.getComment());
+        AnnouncementComment comment = announcement.findUpdateOrDeleteComment(commentId);
+        validateAuthorityForComment(loginUserInfo, comment);
+        comment.updateComment(request.getComment());
     }
 
     @Transactional
     public void deleteComment(Long announcementId, Long commentId, LoginUserInfo loginUserInfo) {
         Announcement announcement = announcementRepository.findById(announcementId)
                 .orElseThrow(NotExistAnnouncementException::new);
-        AnnouncementComment deleteComment = announcement.getComments().stream()
-                .filter(comment -> comment.getId().equals(commentId))
-                .findAny()
-                .orElseThrow(NotExistAnnouncementCommentException::new);
-        validateAuthorityForComment(loginUserInfo, deleteComment);
-        announcement.getComments().remove(deleteComment);
+        AnnouncementComment comment = announcement.findUpdateOrDeleteComment(commentId);
+        validateAuthorityForComment(loginUserInfo, comment);
+        announcement.deleteComment(comment);
     }
 
     private void validateAuthorityForAnnouncement(LoginUserInfo loginUserInfo, Announcement announcement) {
-        if (!loginUserInfo.getUserId().equals(announcement.getAuthorId())) {
+        if (loginUserInfo.isNotEqualUser(announcement.getAuthorEmail())) {
             throw new UnauthorizedForAnnouncementException();
         }
     }
 
     private void validateAuthorityForComment(LoginUserInfo loginUserInfo, AnnouncementComment comment) {
-        if (!loginUserInfo.getUserId().equals(comment.getAuthorId())) {
+        if (loginUserInfo.isNotEqualUser(comment.getAuthorEmail())) {
             throw new UnauthorizedForAnnouncementCommentException();
         }
     }
@@ -126,10 +111,10 @@ public class AnnouncementService {
         return AnnouncementResponse.from(announcement);
     }
 
-    public CommonResponse<List<AnnouncementResponse>> findAll(Pageable pageable) {
+    public CommonResponse<List<AnnouncementSimpleResponse>> findAll(Pageable pageable) {
         PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("createdAt").descending());
-        Page<AnnouncementResponse> announcements = announcementRepository.findAll(pageRequest)
-                .map(AnnouncementResponse::from);
+        Page<AnnouncementSimpleResponse> announcements = announcementRepository.findAll(pageRequest)
+                .map(AnnouncementSimpleResponse::from);
 
         return CommonResponse.of(announcements.getContent(), PageInfo.from(announcements), ANNOUNCEMENT_FIND_ALL_SUCCESS.getMessage());
     }

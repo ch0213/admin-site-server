@@ -11,10 +11,9 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @Getter
 @AllArgsConstructor
 @JsonInclude(NON_NULL)
-public class MemberDto {
+public class MemberResponse {
 
     private Long id;
-    private String userId;
     private String email;
     private String name;
     private String studentNumber;
@@ -22,10 +21,9 @@ public class MemberDto {
     private String role;
     private FilePathDto profileImage;
 
-    public static MemberDto of(Member member, FilePathDto filePathDto) {
-        return new MemberDto(
+    public static MemberResponse of(Member member, FilePathDto filePathDto) {
+        return new MemberResponse(
                 member.getId(),
-                member.getUserId(),
                 member.getEmail(),
                 member.getName(),
                 member.getStudentNumber(),
@@ -35,16 +33,15 @@ public class MemberDto {
         );
     }
 
-    public static MemberDto from (Member member) {
-        return new MemberDto(
+    public static MemberResponse from (Member member) {
+        return new MemberResponse(
                 member.getId(),
-                member.getUserId(),
                 member.getEmail(),
                 member.getName(),
                 member.getStudentNumber(),
                 member.getPhoneNumber(),
                 member.getRole().getDescription(),
-                null
+                FilePathDto.from(member.getFilePath())
         );
     }
 }

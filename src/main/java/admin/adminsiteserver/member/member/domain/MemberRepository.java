@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
     Page<Member> findAll(Pageable pageable);
-    Optional<Member> findByUserId(String userId);
-    void deleteByUserId(String userId);
+    Optional<Member> findByEmail(String email);
+    void deleteByEmail(String email);
 }

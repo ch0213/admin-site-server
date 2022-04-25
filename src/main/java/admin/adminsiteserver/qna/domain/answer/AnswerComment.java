@@ -1,4 +1,4 @@
-package admin.adminsiteserver.qna.domain;
+package admin.adminsiteserver.qna.domain.answer;
 
 import admin.adminsiteserver.common.domain.BaseTimeEntity;
 import lombok.AllArgsConstructor;
@@ -18,12 +18,12 @@ import static lombok.AccessLevel.PROTECTED;
 public class AnswerComment extends BaseTimeEntity {
     @Id @GeneratedValue
     private Long id;
-    private String authorId;
+    private String authorEmail;
     private String authorName;
     private String comment;
 
-    public AnswerComment(String authorId, String authorName, String comment) {
-        this.authorId = authorId;
+    public AnswerComment(String authorEmail, String authorName, String comment) {
+        this.authorEmail = authorEmail;
         this.authorName = authorName;
         this.comment = comment;
     }

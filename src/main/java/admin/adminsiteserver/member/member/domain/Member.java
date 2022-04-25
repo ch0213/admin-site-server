@@ -1,14 +1,10 @@
 package admin.adminsiteserver.member.member.domain;
 
-import admin.adminsiteserver.announcement.domain.AnnouncementFilePath;
-import admin.adminsiteserver.levelup.exception.NotExistRoleException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-
-import java.util.Arrays;
 
 import static javax.persistence.CascadeType.*;
 import static javax.persistence.EnumType.*;
@@ -21,9 +17,8 @@ public class Member {
 
     @Id @GeneratedValue
     private Long id;
-    private String userId;
-    private String password;
     private String email;
+    private String password;
     private String name;
     private String studentNumber;
     private String phoneNumber;
@@ -35,8 +30,7 @@ public class Member {
     private RoleType role;
 
     @Builder
-    public Member(String userId, String password, String email, String name, String studentNumber, String phoneNumber, MemberFilePath filePath, RoleType role) {
-        this.userId = userId;
+    public Member(String email, String password, String name, String studentNumber, String phoneNumber, MemberFilePath filePath, RoleType role) {
         this.password = password;
         this.email = email;
         this.name = name;
@@ -46,11 +40,14 @@ public class Member {
         this.role = role;
     }
 
-    public void update(String email, String name, String studentNumber, String phoneNumber) {
-        this.email = email;
+    public void updateMemberInfo(String name, String studentNumber, String phoneNumber) {
         this.name = name;
         this.studentNumber = studentNumber;
         this.phoneNumber = phoneNumber;
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
     }
 
     public void addProfileImage(MemberFilePath filePath) {
@@ -58,10 +55,7 @@ public class Member {
         filePath.includedToMember(this);
     }
 
-    public void updateRole(String newRole) {
-        this.role = Arrays.stream(RoleType.values()).sequential()
-                .filter(roleType -> roleType.getDescription().equals(newRole))
-                .findAny()
-                .orElseThrow(NotExistRoleException::new);
+    public void updateRole(RoleType roleType) {
+        this.role = roleType;
     }
 }
