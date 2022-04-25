@@ -1,7 +1,10 @@
 package admin.adminsiteserver.member.member.domain;
 
+import admin.adminsiteserver.levelup.exception.NotExistRoleException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import java.util.Arrays;
 
 @Getter
 @AllArgsConstructor
@@ -14,4 +17,11 @@ public enum RoleType {
 
     private String role;
     private String description;
+
+    public static RoleType findNewRole(String newRole) {
+        return Arrays.stream(RoleType.values()).sequential()
+                .filter(roleType -> roleType.getDescription().equals(newRole))
+                .findAny()
+                .orElseThrow(NotExistRoleException::new);
+    }
 }
