@@ -12,15 +12,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class AnnouncementTest {
     Announcement announcement;
+    List<AnnouncementFilePath> filePaths;
 
     @BeforeEach
     void init() {
         announcement = Announcement.builder()
-                .authorId("testUser")
+                .authorEmail("admin@admin.com")
                 .authorName("테스트 유저")
                 .title("테스트 게시물입니다.")
                 .content("테스트 게시물의 내용입니다.")
                 .build();
+
+        filePaths = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            filePaths.add(new AnnouncementFilePath("테스트 파일명" + i, "테스트 파일 URL" + i));
+        }
     }
 
     @DisplayName("공지사항 제목, 내용 변경 테스트")
@@ -34,27 +40,22 @@ class AnnouncementTest {
     @DisplayName("파일 등록 테스트")
     @Test
     void uploadFile() {
-        for (int i = 0; i < 5; i++) {
-            announcement.getFiles().add(new AnnouncementFilePath("테스트 파일명" + i, "테스트 파일 URL" + i));
-        }
-
-        assertThat(announcement.getFiles()).hasSize(5);
+        announcement.saveFilePaths(filePaths);
+        assertThat(announcement.getFiles().getFiles()).hasSize(5);
     }
 
     @DisplayName("게시물에서 파일 삭제하는 경우")
     @Test
     void deleteFilesNormalCase() {
-        for (int i = 0; i < 5; i++) {
-            announcement.getFiles().add(new AnnouncementFilePath("테스트 파일명" + i, "테스트 파일 URL" + i));
-        }
         List<FilePathDto> deleteFilePathDots = new ArrayList<>();
         for (int i = 0; i < 5; i += 2) {
             deleteFilePathDots.add(new FilePathDto("테스트 파일명" + i, "테스트 파일 URL" + i));
         }
 
+        announcement.saveFilePaths(filePaths);
         announcement.deleteFilePaths(deleteFilePathDots);
 
-        assertThat(announcement.getFiles()).hasSize(2);
+        assertThat(announcement.getFiles().getFiles()).hasSize(2);
     }
 
     @DisplayName("게시물에 파일이 없을 때 삭제하는 경우")
@@ -65,6 +66,6 @@ class AnnouncementTest {
 
         announcement.deleteFilePaths(filePathDtos);
 
-        assertThat(announcement.getFiles()).hasSize(0);
+        assertThat(announcement.getFiles().getFiles()).hasSize(0);
     }
 }
