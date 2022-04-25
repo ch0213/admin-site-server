@@ -1,15 +1,17 @@
-package admin.adminsiteserver.qna.application.dto;
+package admin.adminsiteserver.qna.application.dto.answer;
 
 import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
-import admin.adminsiteserver.qna.domain.Answer;
+import admin.adminsiteserver.qna.domain.answer.Answer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 public class AnswerResponse {
     private Long id;
@@ -24,15 +26,15 @@ public class AnswerResponse {
     public static AnswerResponse from(Answer answer) {
         return new AnswerResponse(
                 answer.getId(),
-                answer.getAuthorId(),
+                answer.getAuthorEmail(),
                 answer.getAuthorName(),
                 answer.getContent(),
                 answer.getCreatedAt(),
                 answer.getModifiedAt(),
-                answer.getFiles().stream()
+                answer.getFiles().getFiles().stream()
                         .map(FilePathDto::from)
                         .collect(Collectors.toList()),
-                answer.getComments().stream()
+                answer.getComments().getComments().stream()
                         .map(AnswerCommentResponse::from)
                         .collect(Collectors.toList())
         );
