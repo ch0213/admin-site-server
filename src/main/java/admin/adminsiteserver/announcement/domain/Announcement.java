@@ -20,7 +20,7 @@ public class Announcement extends BaseTimeEntity {
     @Id
     @GeneratedValue
     private Long id;
-    private String authorId;
+    private String authorEmail;
     private String authorName;
     private String title;
 
@@ -34,8 +34,8 @@ public class Announcement extends BaseTimeEntity {
     private AnnouncementComments comments = new AnnouncementComments();
 
     @Builder
-    public Announcement(String authorId, String authorName, String title, String content) {
-        this.authorId = authorId;
+    public Announcement(String authorEmail, String authorName, String title, String content) {
+        this.authorEmail = authorEmail;
         this.authorName = authorName;
         this.title = title;
         this.content = content;
