@@ -20,9 +20,8 @@ public class Member {
 
     @Id @GeneratedValue
     private Long id;
-    private String userId;
-    private String password;
     private String email;
+    private String password;
     private String name;
     private String studentNumber;
     private String phoneNumber;
@@ -34,8 +33,7 @@ public class Member {
     private RoleType role;
 
     @Builder
-    public Member(String userId, String password, String email, String name, String studentNumber, String phoneNumber, MemberFilePath filePath, RoleType role) {
-        this.userId = userId;
+    public Member(String email, String password, String name, String studentNumber, String phoneNumber, MemberFilePath filePath, RoleType role) {
         this.password = password;
         this.email = email;
         this.name = name;
@@ -45,11 +43,14 @@ public class Member {
         this.role = role;
     }
 
-    public void update(String email, String name, String studentNumber, String phoneNumber) {
-        this.email = email;
+    public void updateMemberInfo(String name, String studentNumber, String phoneNumber) {
         this.name = name;
         this.studentNumber = studentNumber;
         this.phoneNumber = phoneNumber;
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
     }
 
     public void addProfileImage(MemberFilePath filePath) {
