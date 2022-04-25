@@ -1,13 +1,10 @@
 package admin.adminsiteserver.member.member.domain;
 
-import admin.adminsiteserver.levelup.exception.NotExistRoleException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-
-import java.util.Arrays;
 
 import static javax.persistence.CascadeType.*;
 import static javax.persistence.EnumType.*;
@@ -58,10 +55,7 @@ public class Member {
         filePath.includedToMember(this);
     }
 
-    public void updateRole(String newRole) {
-        this.role = Arrays.stream(RoleType.values()).sequential()
-                .filter(roleType -> roleType.getDescription().equals(newRole))
-                .findAny()
-                .orElseThrow(NotExistRoleException::new);
+    public void updateRole(RoleType roleType) {
+        this.role = roleType;
     }
 }
