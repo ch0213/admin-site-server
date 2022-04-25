@@ -19,12 +19,12 @@ public class AnnouncementComment extends BaseTimeEntity {
 
     @Id @GeneratedValue
     private Long id;
-    private String authorId;
+    private String authorEmail;
     private String authorName;
     private String comment;
 
-    public AnnouncementComment(String authorId, String authorName, String comment) {
-        this.authorId = authorId;
+    public AnnouncementComment(String authorEmail, String authorName, String comment) {
+        this.authorEmail = authorEmail;
         this.authorName = authorName;
         this.comment = comment;
     }
