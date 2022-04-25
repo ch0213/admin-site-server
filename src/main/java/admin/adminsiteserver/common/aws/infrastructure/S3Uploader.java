@@ -49,6 +49,7 @@ public class S3Uploader {
     }
 
     public void delete(List<FilePathDto> filePathDtos) {
+        if (filePathDtos == null) return;
         for (FilePathDto filePathDto : filePathDtos) {
             delete(filePathDto);
         }
@@ -57,7 +58,7 @@ public class S3Uploader {
     public void delete(FilePathDto filePathDto) {
         if (filePathDto == null) return;
         String fileName = filePathDto.getFileUrl().replace(cloudfront, "");
-        if (amazonS3.doesObjectExist(bucketName, fileName)) {
+        if (!fileName.isBlank() && amazonS3.doesObjectExist(bucketName, fileName)) {
             amazonS3.deleteObject(new DeleteObjectRequest(bucketName, fileName));
         }
     }
