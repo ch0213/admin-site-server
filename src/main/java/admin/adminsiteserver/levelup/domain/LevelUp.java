@@ -11,6 +11,7 @@ import javax.persistence.*;
 
 import java.util.Arrays;
 
+import static javax.persistence.EnumType.STRING;
 import static lombok.AccessLevel.*;
 
 @Entity
@@ -21,9 +22,10 @@ public class LevelUp extends BaseTimeEntity {
     @Id @GeneratedValue
     private Long id;
 
-    private String userId;
+    private String userEmail;
 
-    private String role;
+    @Enumerated(STRING)
+    private RoleType role;
 
     private boolean processed;
 
@@ -31,23 +33,23 @@ public class LevelUp extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    public LevelUp(String userId, String role, boolean processed, Member member) {
-        this.userId = userId;
-        this.role = role;
+    public LevelUp(String userEmail, String role, boolean processed, Member member) {
+        this.userEmail = userEmail;
+        this.role = RoleType.findNewRole(role);
         this.processed = processed;
         this.member = member;
     }
 
     public void updateRole(String newRole) {
-        this.role = Arrays.stream(RoleType.values()).sequential()
-                .filter(roleType -> roleType.getDescription().equals(newRole))
-                .findAny()
-                .orElseThrow(NotExistRoleException::new)
-                .getDescription();
+        this.role = RoleType.findNewRole(newRole);
+    }
+
+    public String registerUserId() {
+        return member.getEmail();
     }
 
     public void approve() {
-        this.getMember().updateRole(role);
+        member.updateRole(role);
         this.processed = true;
     }
 
