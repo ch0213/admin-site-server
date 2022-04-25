@@ -8,6 +8,7 @@ import admin.adminsiteserver.common.dto.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static admin.adminsiteserver.calendar.ui.CalendarResponseMessage.*;
@@ -20,14 +21,14 @@ public class CalendarController {
     private final CalendarService calendarService;
 
     @PostMapping
-    public CommonResponse<CalendarResponse> uploadCalendar(@RequestBody CalendarRequest calendarRequest) {
+    public CommonResponse<CalendarResponse> uploadCalendar(@Valid @RequestBody CalendarRequest calendarRequest) {
         CalendarResponse calendarResponse = calendarService.uploadCalendar(calendarRequest);
         return CommonResponse.of(calendarResponse, CALENDAR_REGISTER_SUCCESS.getMessage());
     }
 
     @PutMapping("/{calendarId}")
     public CommonResponse<CalendarResponse> updateCalendar(
-            @RequestBody CalendarRequest calendarRequest,
+            @Valid @RequestBody CalendarRequest calendarRequest,
             @PathVariable Long calendarId
     ) {
         CalendarResponse calendarResponse = calendarService.updateCalendar(calendarRequest, calendarId);
@@ -41,7 +42,7 @@ public class CalendarController {
     }
 
     @GetMapping
-    public CommonResponse<List<CalendarResponse>> inquireCalendar(InquireCalendarRequest request) {
+    public CommonResponse<List<CalendarResponse>> inquireCalendar(@Valid InquireCalendarRequest request) {
         return CommonResponse.of(calendarService.findCalendars(request), CALENDAR_LIST_INQUIRE_SUCCESS.getMessage());
     }
 }
