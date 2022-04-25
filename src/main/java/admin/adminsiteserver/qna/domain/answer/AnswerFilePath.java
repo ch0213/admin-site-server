@@ -1,4 +1,4 @@
-package admin.adminsiteserver.qna.domain;
+package admin.adminsiteserver.qna.domain.answer;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
