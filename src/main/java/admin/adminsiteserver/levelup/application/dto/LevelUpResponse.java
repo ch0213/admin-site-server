@@ -13,6 +13,8 @@ public class LevelUpResponse {
     private Long id;
     private String userId;
     private String name;
+    private String studentNumber;
+    private String currentRole;
     private String registerRoleType;
     private LocalDateTime registerAt;
 
@@ -21,6 +23,8 @@ public class LevelUpResponse {
                 levelUp.getId(),
                 levelUp.getUserEmail(),
                 levelUp.getMember().getName(),
+                levelUp.getMember().getStudentNumber(),
+                levelUp.getMember().getRole().getDescription(),
                 levelUp.getRole().getDescription(),
                 levelUp.getCreatedAt()
         );
