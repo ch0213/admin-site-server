@@ -56,7 +56,7 @@ public class AuthService {
 
     @Transactional
     public void saveAdmin(Member member) {
-        Optional<Member> admin = memberRepository.findByEmail("admin");
+        Optional<Member> admin = memberRepository.findByEmail("admin@admin.com");
         if (admin.isEmpty()) memberRepository.save(member);
     }
 }
