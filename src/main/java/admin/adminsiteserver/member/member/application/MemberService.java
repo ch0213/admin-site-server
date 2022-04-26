@@ -53,7 +53,7 @@ public class MemberService {
     }
 
     private void checkAlreadySignUp(Member member) {
-        memberRepository.findByEmail(member.getEmail())
+        memberRepository.findByEmailOrStudentNumber(member.getEmail(), member.getStudentNumber())
                 .ifPresent(m -> {throw new AlreadyExistUserIDException();});
     }
 
