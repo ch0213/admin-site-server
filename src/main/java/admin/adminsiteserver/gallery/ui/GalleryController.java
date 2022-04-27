@@ -21,7 +21,7 @@ import static admin.adminsiteserver.gallery.ui.GalleryResponseMessage.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/gallerys")
+@RequestMapping("/galleries")
 @RequiredArgsConstructor
 public class GalleryController {
 
