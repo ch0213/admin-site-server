@@ -1,5 +1,6 @@
 package admin.adminsiteserver.announcement.ui;
 
+import admin.adminsiteserver.announcement.application.AnnouncementQueryService;
 import admin.adminsiteserver.announcement.application.dto.AnnouncementSimpleResponse;
 import admin.adminsiteserver.announcement.ui.dto.AnnouncementCommentRequest;
 import admin.adminsiteserver.announcement.application.dto.AnnouncementCommentResponse;
@@ -26,6 +27,7 @@ import static admin.adminsiteserver.announcement.ui.AnnouncementResponseMessage.
 @RequiredArgsConstructor
 public class AnnouncementController {
 
+    private final AnnouncementQueryService announcementQueryService;
     private final AnnouncementService announcementService;
 
     @PostMapping
@@ -54,12 +56,12 @@ public class AnnouncementController {
 
     @GetMapping("/{announcementId}")
     public CommonResponse<AnnouncementResponse> findAnnouncement(@PathVariable Long announcementId) {
-        return CommonResponse.of(announcementService.find(announcementId), ANNOUNCEMENT_FIND_SUCCESS.getMessage());
+        return CommonResponse.of(announcementQueryService.find(announcementId), ANNOUNCEMENT_FIND_SUCCESS.getMessage());
     }
 
     @GetMapping
     public CommonResponse<List<AnnouncementSimpleResponse>> findAllAnnouncement(Pageable pageable) {
-        return announcementService.findAll(pageable);
+        return announcementQueryService.findAll(pageable);
     }
 
     @PostMapping("/{announcementId}/comments")
