@@ -1,13 +1,12 @@
 package admin.adminsiteserver.announcement.domain;
 
 import admin.adminsiteserver.common.domain.BaseTimeEntity;
+import admin.adminsiteserver.member.member.domain.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -20,14 +19,15 @@ public class AnnouncementComment extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
-    private String authorEmail;
-    private String authorName;
     private String comment;
 
-    public AnnouncementComment(String authorEmail, String authorName, String comment) {
-        this.authorEmail = authorEmail;
-        this.authorName = authorName;
+    @OneToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    public AnnouncementComment(String comment, Member member) {
         this.comment = comment;
+        this.member = member;
     }
 
     public void updateComment(String comment) {
