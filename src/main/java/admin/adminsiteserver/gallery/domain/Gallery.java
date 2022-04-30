@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.persistence.*;
 import java.util.List;
 
+import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 @Slf4j
@@ -20,8 +21,7 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor
 public class Gallery extends BaseTimeEntity {
 
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private String authorEmail;
     private String authorName;

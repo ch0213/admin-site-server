@@ -11,6 +11,7 @@ import javax.persistence.*;
 
 import java.util.List;
 
+import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.*;
 
 @Getter
@@ -19,7 +20,7 @@ import static lombok.AccessLevel.*;
 @AllArgsConstructor
 public class Answer extends BaseTimeEntity {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     private String authorEmail;

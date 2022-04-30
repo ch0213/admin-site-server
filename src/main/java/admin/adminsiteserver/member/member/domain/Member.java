@@ -8,6 +8,7 @@ import javax.persistence.*;
 
 import static javax.persistence.CascadeType.*;
 import static javax.persistence.EnumType.*;
+import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.*;
 
 @Entity
@@ -15,7 +16,7 @@ import static lombok.AccessLevel.*;
 @NoArgsConstructor(access = PROTECTED)
 public class Member {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private String email;
     private String password;

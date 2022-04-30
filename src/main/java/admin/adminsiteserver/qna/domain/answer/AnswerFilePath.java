@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 
+import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.*;
 
 @Slf4j
@@ -16,7 +17,7 @@ import static lombok.AccessLevel.*;
 @AllArgsConstructor
 public class AnswerFilePath {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private String fileName;
     private String fileUrl;

@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 @Getter
@@ -17,8 +18,7 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor
 public class GalleryComment extends BaseTimeEntity {
 
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private String authorEmail;
     private String authorName;
