@@ -1,6 +1,6 @@
-package admin.adminsiteserver.common.aws.util;
+package admin.adminsiteserver.aws.util;
 
-import admin.adminsiteserver.common.aws.exception.ConvertFileException;
+import admin.adminsiteserver.aws.exception.ConvertFileException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;

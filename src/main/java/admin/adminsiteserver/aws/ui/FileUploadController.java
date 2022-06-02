@@ -1,9 +1,9 @@
-package admin.adminsiteserver.common.aws.ui;
+package admin.adminsiteserver.aws.ui;
 
-import admin.adminsiteserver.common.aws.appliaction.FileUploadService;
-import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
-import admin.adminsiteserver.common.aws.ui.dto.FileDeleteRequest;
-import admin.adminsiteserver.common.aws.ui.dto.FileUploadRequest;
+import admin.adminsiteserver.aws.appliaction.FileUploadService;
+import admin.adminsiteserver.aws.infrastructure.dto.FilePathDto;
+import admin.adminsiteserver.aws.ui.dto.FileDeleteRequest;
+import admin.adminsiteserver.aws.ui.dto.FileUploadRequest;
 import admin.adminsiteserver.common.dto.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

@@ -1,6 +1,6 @@
-package admin.adminsiteserver.common.aws.ui.dto;
+package admin.adminsiteserver.aws.ui.dto;
 
-import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
+import admin.adminsiteserver.aws.infrastructure.dto.FilePathDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

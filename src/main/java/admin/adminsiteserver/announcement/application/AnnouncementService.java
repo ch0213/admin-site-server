@@ -4,7 +4,7 @@ import admin.adminsiteserver.announcement.domain.AnnouncementComment;
 import admin.adminsiteserver.announcement.exception.UnauthorizedForAnnouncementCommentException;
 import admin.adminsiteserver.announcement.exception.UnauthorizedForAnnouncementException;
 import admin.adminsiteserver.announcement.ui.dto.AnnouncementCommentRequest;
-import admin.adminsiteserver.common.aws.infrastructure.S3Uploader;
+import admin.adminsiteserver.aws.infrastructure.S3Uploader;
 import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
 import admin.adminsiteserver.announcement.application.dto.AnnouncementResponse;
 import admin.adminsiteserver.announcement.domain.Announcement;

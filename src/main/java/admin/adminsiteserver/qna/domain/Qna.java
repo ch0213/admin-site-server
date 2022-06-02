@@ -1,7 +1,6 @@
 package admin.adminsiteserver.qna.domain;
 
-import admin.adminsiteserver.announcement.domain.AnnouncementComment;
-import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
+import admin.adminsiteserver.aws.infrastructure.dto.FilePathDto;
 import admin.adminsiteserver.common.domain.BaseTimeEntity;
 import admin.adminsiteserver.qna.domain.answer.Answer;
 import admin.adminsiteserver.qna.domain.answer.Answers;
@@ -11,11 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static javax.persistence.CascadeType.*;
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.*;
 

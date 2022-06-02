@@ -1,6 +1,6 @@
 package admin.adminsiteserver.qna.ui.dto.answer;
 
-import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
+import admin.adminsiteserver.aws.infrastructure.dto.FilePathDto;
 import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
 import admin.adminsiteserver.qna.domain.answer.Answer;
 import admin.adminsiteserver.qna.domain.answer.AnswerFilePath;

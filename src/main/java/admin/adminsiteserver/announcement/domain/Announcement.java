@@ -1,6 +1,6 @@
 package admin.adminsiteserver.announcement.domain;
 
-import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
+import admin.adminsiteserver.aws.infrastructure.dto.FilePathDto;
 import admin.adminsiteserver.common.domain.BaseTimeEntity;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;

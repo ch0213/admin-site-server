@@ -1,6 +1,6 @@
 package admin.adminsiteserver.qna.application.dto.answer;
 
-import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
+import admin.adminsiteserver.aws.infrastructure.dto.FilePathDto;
 import admin.adminsiteserver.qna.domain.answer.Answer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

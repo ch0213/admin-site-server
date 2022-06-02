@@ -1,6 +1,6 @@
 package admin.adminsiteserver.gallery.domain;
 
-import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
+import admin.adminsiteserver.aws.infrastructure.dto.FilePathDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

@@ -1,7 +1,7 @@
-package admin.adminsiteserver.common.aws.infrastructure;
+package admin.adminsiteserver.aws.infrastructure;
 
-import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
-import admin.adminsiteserver.common.aws.util.S3Util;
+import admin.adminsiteserver.aws.infrastructure.dto.FilePathDto;
+import admin.adminsiteserver.aws.util.S3Util;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;

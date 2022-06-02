@@ -1,6 +1,6 @@
 package admin.adminsiteserver.qna.ui.dto;
 
-import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
+import admin.adminsiteserver.aws.infrastructure.dto.FilePathDto;
 import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
 import admin.adminsiteserver.qna.domain.Qna;
 import lombok.Getter;

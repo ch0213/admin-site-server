@@ -1,9 +1,9 @@
-package admin.adminsiteserver.common.aws.appliaction;
+package admin.adminsiteserver.aws.appliaction;
 
-import admin.adminsiteserver.common.aws.infrastructure.S3Uploader;
-import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
-import admin.adminsiteserver.common.aws.ui.dto.FileDeleteRequest;
-import admin.adminsiteserver.common.aws.ui.dto.FileUploadRequest;
+import admin.adminsiteserver.aws.infrastructure.S3Uploader;
+import admin.adminsiteserver.aws.infrastructure.dto.FilePathDto;
+import admin.adminsiteserver.aws.ui.dto.FileDeleteRequest;
+import admin.adminsiteserver.aws.ui.dto.FileUploadRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,7 @@
 package admin.adminsiteserver.announcement.ui.dto;
 
 import admin.adminsiteserver.announcement.domain.AnnouncementFilePath;
-import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
+import admin.adminsiteserver.aws.infrastructure.dto.FilePathDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

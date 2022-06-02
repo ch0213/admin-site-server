@@ -1,6 +1,6 @@
 package admin.adminsiteserver.gallery.ui.dto;
 
-import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
+import admin.adminsiteserver.aws.infrastructure.dto.FilePathDto;
 import admin.adminsiteserver.gallery.domain.Gallery;
 import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
 import lombok.Getter;

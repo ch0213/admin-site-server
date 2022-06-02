@@ -1,10 +1,9 @@
-package admin.adminsiteserver.common.aws.exception;
+package admin.adminsiteserver.aws.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Getter

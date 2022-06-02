@@ -1,6 +1,6 @@
 package admin.adminsiteserver.gallery.application;
 
-import admin.adminsiteserver.common.aws.infrastructure.S3Uploader;
+import admin.adminsiteserver.aws.infrastructure.S3Uploader;
 import admin.adminsiteserver.common.dto.CommonResponse;
 import admin.adminsiteserver.common.dto.PageInfo;
 import admin.adminsiteserver.gallery.application.dto.GalleryResponse;

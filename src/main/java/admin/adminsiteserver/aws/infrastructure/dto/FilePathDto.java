@@ -1,4 +1,4 @@
-package admin.adminsiteserver.common.aws.infrastructure.dto;
+package admin.adminsiteserver.aws.infrastructure.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

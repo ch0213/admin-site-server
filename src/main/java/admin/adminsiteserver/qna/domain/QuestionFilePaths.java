@@ -1,7 +1,6 @@
 package admin.adminsiteserver.qna.domain;
 
-import admin.adminsiteserver.announcement.domain.AnnouncementFilePath;
-import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
+import admin.adminsiteserver.aws.infrastructure.dto.FilePathDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
