@@ -5,7 +5,6 @@ import admin.adminsiteserver.member.auth.application.AuthService;
 import admin.adminsiteserver.member.auth.application.dto.LoginResponse;
 import admin.adminsiteserver.member.auth.ui.dto.LoginRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,8 +18,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<CommonResponse<LoginResponse>> login(@RequestBody LoginRequest loginRequest) {
-        LoginResponse loginResponse = authService.login(loginRequest);
-        return ResponseEntity.ok(CommonResponse.of(loginResponse, LOGIN_SUCCESS.getMessage()));
+    public CommonResponse<LoginResponse> login(@RequestBody LoginRequest request) {
+        LoginResponse loginResponse = authService.login(request);
+        return CommonResponse.of(loginResponse, LOGIN_SUCCESS.getMessage());
     }
 }
