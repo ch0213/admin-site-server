@@ -10,6 +10,7 @@ import static org.springframework.http.HttpStatus.*;
 @AllArgsConstructor
 public enum MemberExceptionType {
     ALREADY_EXIST_USER_ID("이미 존재하는 아이디입니다.", BAD_REQUEST),
+    ALREADY_EXIST_STUDENT_NUMBER("이미 존재하는 학번입니다.", BAD_REQUEST),
     NOT_EXIST_USER("존재하지 않는 유저입니다.", BAD_REQUEST);
 
     private final String message;
