@@ -7,6 +7,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class LoginResponse {
+
+    private Long id;
     private String email;
     private String name;
     private String studentNumber;
@@ -16,6 +18,7 @@ public class LoginResponse {
 
     public static LoginResponse of(Member member, JwtTokenDto tokens) {
         return new LoginResponse(
+                member.getId(),
                 member.getEmail(),
                 member.getName(),
                 member.getStudentNumber(),
