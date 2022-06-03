@@ -1,16 +1,14 @@
 package admin.adminsiteserver.member.auth.application;
 
+import admin.adminsiteserver.member.auth.domain.MemberAdapter;
+import admin.adminsiteserver.member.auth.exception.EmailEmptyException;
 import admin.adminsiteserver.member.member.domain.Member;
 import admin.adminsiteserver.member.member.domain.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
@@ -21,15 +19,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return memberRepository.findByEmail(username)
-                .map(this::createUserDetails)
+        Member member = memberRepository.findById(Long.valueOf(username))
                 .orElseThrow(() -> new UsernameNotFoundException(USER_NAME_NOT_FOUNT));
-    }
-
-    private UserDetails createUserDetails(Member member) {
-        SimpleGrantedAuthority grantedAuthority = new SimpleGrantedAuthority(member.getRole().getRole());
-        return new User(member.getEmail(),
-                member.getPassword(),
-                Collections.singleton(grantedAuthority));
+        if (member.hasEmail())
+            throw new EmailEmptyException();
+        return new MemberAdapter(member);
     }
 }
