@@ -1,20 +1,18 @@
 package admin.adminsiteserver.member.member.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
+
+import java.util.Objects;
 
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
-@Slf4j
 @Getter
 @Entity
 @NoArgsConstructor(access = PROTECTED)
-@AllArgsConstructor
 public class MemberFilePath {
 
     @Id @GeneratedValue(strategy = IDENTITY)
@@ -22,16 +20,21 @@ public class MemberFilePath {
     private String fileName;
     private String fileUrl;
 
-    @OneToOne
-    @JoinColumn(name = "member_id")
-    private Member member;
-
     public MemberFilePath(String fileName, String fileUrl) {
         this.fileName = fileName;
         this.fileUrl = fileUrl;
     }
 
-    public void includedToMember(Member member) {
-        this.member = member;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MemberFilePath that = (MemberFilePath) o;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getFileName(), that.getFileName()) && Objects.equals(getFileUrl(), that.getFileUrl());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getFileName(), getFileUrl());
     }
 }
