@@ -1,15 +1,12 @@
 package admin.adminsiteserver.levelup.domain;
 
 import admin.adminsiteserver.common.domain.BaseTimeEntity;
-import admin.adminsiteserver.levelup.exception.NotExistRoleException;
 import admin.adminsiteserver.member.member.domain.Member;
 import admin.adminsiteserver.member.member.domain.RoleType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-
-import java.util.Arrays;
 
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -36,13 +33,13 @@ public class LevelUp extends BaseTimeEntity {
 
     public LevelUp(String userEmail, String role, boolean processed, Member member) {
         this.userEmail = userEmail;
-        this.role = RoleType.findNewRole(role);
+        this.role = RoleType.matchRole(role);
         this.processed = processed;
         this.member = member;
     }
 
     public void updateRole(String newRole) {
-        this.role = RoleType.findNewRole(newRole);
+        this.role = RoleType.matchRole(newRole);
     }
 
     public String registerUserId() {
