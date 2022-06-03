@@ -2,14 +2,15 @@ package admin.adminsiteserver.member.member.ui;
 
 import admin.adminsiteserver.common.dto.CommonResponse;
 import admin.adminsiteserver.member.auth.util.LoginUser;
-import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
+import admin.adminsiteserver.member.member.application.MemberQueryService;
 import admin.adminsiteserver.member.member.application.MemberService;
 import admin.adminsiteserver.member.member.application.dto.MemberResponse;
+import admin.adminsiteserver.member.member.domain.Member;
 import admin.adminsiteserver.member.member.ui.dto.SignUpRequest;
 import admin.adminsiteserver.member.member.ui.dto.UpdateImageRequest;
 import admin.adminsiteserver.member.member.ui.dto.UpdateMemberRequest;
+import admin.adminsiteserver.member.member.ui.dto.UpdatePasswordRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,13 +20,22 @@ import java.util.List;
 
 import static admin.adminsiteserver.member.member.ui.MemberResponseMessage.*;
 
-@Slf4j
 @RestController
-@RequestMapping
 @RequiredArgsConstructor
 public class MemberController {
 
+    private final MemberQueryService memberQueryService;
     private final MemberService memberService;
+
+    @GetMapping("/members/me")
+    public CommonResponse<MemberResponse> findMyself(@LoginUser Member loginMember) {
+        return CommonResponse.of(MemberResponse.from(loginMember), INQUIRE_MYSELF_SUCCESS.getMessage());
+    }
+
+    @GetMapping("/members")
+    public CommonResponse<List<MemberResponse>> findMembers(Pageable pageable) {
+        return memberQueryService.findMembers(pageable);
+    }
 
     @PostMapping("/signup")
     public CommonResponse<MemberResponse> signUp(@Valid SignUpRequest signUpRequest) {
@@ -35,34 +45,33 @@ public class MemberController {
     @PutMapping("/members")
     public CommonResponse<Void> updateMember(
             @Valid @RequestBody UpdateMemberRequest updateMemberRequest,
-            @LoginUser LoginUserInfo loginUserInfo
+            @LoginUser Member loginMember
     ) {
-        memberService.updateMember(updateMemberRequest, loginUserInfo.getEmail());
+        memberService.updateInfo(updateMemberRequest, loginMember.getEmail());
+        return CommonResponse.from(UPDATE_SUCCESS.getMessage());
+    }
+
+    @PutMapping("/members/password")
+    public CommonResponse<Void> updatePassword(
+            @Valid @RequestBody UpdatePasswordRequest updatePasswordRequest,
+            @LoginUser Member loginMember
+    ) {
+        memberService.updatePassword(loginMember, updatePasswordRequest);
         return CommonResponse.from(UPDATE_SUCCESS.getMessage());
     }
 
     @PutMapping("/members/image")
     public CommonResponse<Void> updateMemberImage(
-            @Valid UpdateImageRequest updateImageRequest,
-            @LoginUser LoginUserInfo loginUserInfo
+            @LoginUser Member loginMember,
+            @Valid UpdateImageRequest updateImageRequest
     ) {
-        memberService.updateMemberImage(updateImageRequest.getImage(), loginUserInfo.getEmail());
+        memberService.updateImage(loginMember, updateImageRequest.getImage());
         return CommonResponse.from(UPDATE_SUCCESS.getMessage());
     }
 
     @DeleteMapping("/members")
-    public CommonResponse<Void> deleteMember(@LoginUser LoginUserInfo loginUserInfo) {
-        memberService.deleteMember(loginUserInfo.getEmail());
+    public CommonResponse<Void> deleteMember(@LoginUser Member loginMember) {
+        memberService.delete(loginMember);
         return CommonResponse.from(DELETE_SUCCESS.getMessage());
-    }
-
-    @GetMapping("/members/me")
-    public CommonResponse<MemberResponse> findMyself(@LoginUser LoginUserInfo loginUserInfo) {
-        return CommonResponse.of(memberService.findMyself(loginUserInfo), INQUIRE_MYSELF_SUCCESS.getMessage());
-    }
-
-    @GetMapping("/members")
-    public CommonResponse<List<MemberResponse>> findMembers(Pageable pageable) {
-        return memberService.findMembers(pageable);
     }
 }
