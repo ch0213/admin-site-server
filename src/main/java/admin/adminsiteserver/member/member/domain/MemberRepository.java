@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
-    Page<Member> findAll(Pageable pageable);
+    Page<Member> findAllByDeletedFalse(Pageable pageable);
     Optional<Member> findByEmail(String email);
     Optional<Member> findByEmailOrStudentNumber(String email, String studentNumber);
-    void deleteByEmail(String email);
+    Optional<Member> findByStudentNumberAndDeletedFalse(String studentNumber);
 }
