@@ -1,4 +1,4 @@
-package admin.adminsiteserver.member.member.domain;
+package admin.adminsiteserver.member.domain;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -7,7 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import static admin.adminsiteserver.member.member.domain.RoleType.MEMBER;
+import static admin.adminsiteserver.member.domain.RoleType.MEMBER;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("회원 도메인 테스트")
