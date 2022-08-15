@@ -1,14 +1,16 @@
-package admin.adminsiteserver.member.member.application.dto;
+package admin.adminsiteserver.member.dto.response;
 
-import admin.adminsiteserver.aws.infrastructure.dto.FilePathDto;
-import admin.adminsiteserver.member.member.domain.Member;
+import admin.adminsiteserver.aws.infrastructure.dto.FilePath;
+import admin.adminsiteserver.member.domain.Member;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(NON_NULL)
 public class MemberResponse {
@@ -19,9 +21,9 @@ public class MemberResponse {
     private String studentNumber;
     private String phoneNumber;
     private String role;
-    private FilePathDto profileImage;
+    private FilePath profileImage;
 
-    public static MemberResponse of(Member member, FilePathDto filePathDto) {
+    public static MemberResponse of(Member member, FilePath filePathDto) {
         return new MemberResponse(
                 member.getId(),
                 member.getEmail(),
@@ -41,7 +43,7 @@ public class MemberResponse {
                 member.getStudentNumber(),
                 member.getPhoneNumber(),
                 member.getRole().getDescription(),
-                FilePathDto.from(member.getFilePath())
+                FilePath.from(member.getFilePath())
         );
     }
 }

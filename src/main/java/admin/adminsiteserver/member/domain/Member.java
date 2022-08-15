@@ -1,34 +1,43 @@
-package admin.adminsiteserver.member.member.domain;
+package admin.adminsiteserver.member.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-import java.util.Objects;
-
-import static javax.persistence.CascadeType.*;
 import static javax.persistence.EnumType.*;
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.*;
 
 @Entity
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
 public class Member {
 
     @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
+
+    @Column(unique = true)
     private String email;
+
+    @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(unique = true)
     private String studentNumber;
+
+    @Column(nullable = false)
     private String phoneNumber;
+
     private boolean deleted;
 
-    @OneToOne(cascade = ALL, orphanRemoval = true)
-    @JoinColumn(name = "member_file_path_id")
+    @Embedded
     private MemberFilePath filePath;
 
     @Enumerated(STRING)
@@ -46,7 +55,7 @@ public class Member {
         this.deleted = false;
     }
 
-    public void updateMemberInfo(String name, String studentNumber, String phoneNumber) {
+    public void update(String name, String studentNumber, String phoneNumber) {
         this.name = name;
         this.studentNumber = studentNumber;
         this.phoneNumber = phoneNumber;
@@ -56,36 +65,27 @@ public class Member {
         this.password = password;
     }
 
-    public void uploadProfileImage(MemberFilePath filePath) {
-        this.filePath = filePath;
+    public void updateImage(String fileName, String fileUrl) {
+        this.filePath = new MemberFilePath(fileName, fileUrl);
     }
 
     public void updateRole(RoleType roleType) {
         this.role = roleType;
     }
 
-    public String securityRoleType() {
-        return role.getRole();
+    public void delete() {
+        this.deleted = true;
     }
 
     public boolean hasEmail() {
         return email != null;
     }
 
-    public void delete() {
-        this.deleted = true;
+    public boolean sameStudentNumber(String studentNumber) {
+        return this.studentNumber.equals(studentNumber);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Member member = (Member) o;
-        return isDeleted() == member.isDeleted() && Objects.equals(getId(), member.getId()) && Objects.equals(getEmail(), member.getEmail()) && Objects.equals(getPassword(), member.getPassword()) && Objects.equals(getName(), member.getName()) && Objects.equals(getStudentNumber(), member.getStudentNumber()) && Objects.equals(getPhoneNumber(), member.getPhoneNumber()) && Objects.equals(getFilePath(), member.getFilePath()) && getRole() == member.getRole();
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getEmail(), getPassword(), getName(), getStudentNumber(), getPhoneNumber(), isDeleted(), getFilePath(), getRole());
+    public String getRoleType() {
+        return role.getRole();
     }
 }
