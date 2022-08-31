@@ -1,13 +1,13 @@
 package admin.adminsiteserver.member.dto.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
 
 @Getter
-@NoArgsConstructor
+@AllArgsConstructor
 public class UpdateImageRequest {
     @NotNull(message = "이미지를 첨부해주세요.")
     private MultipartFile image;
