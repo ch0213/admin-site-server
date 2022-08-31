@@ -5,8 +5,8 @@ buildscript {
 }
 
 plugins {
-    id 'org.springframework.boot' version '2.7.0'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.springframework.boot' version '2.7.1'
+    id 'io.spring.dependency-management' version '1.0.13.RELEASE'
     id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
     id "org.asciidoctor.jvm.convert" version "3.3.2"
     id 'java'
@@ -17,6 +17,8 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 configurations {
+    asciidoctorExtensions
+    querydsl.extendsFrom compileClasspath
     compileOnly {
         extendsFrom annotationProcessor
     }
@@ -27,12 +29,10 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation group: 'com.google.guava', name: 'guava', version: '31.1-jre'
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
     implementation 'io.rest-assured:rest-assured-common:4.5.1'
@@ -41,8 +41,12 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     compileOnly 'org.projectlombok:lombok'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1'
+
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'mysql:mysql-connector-java'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
@@ -60,22 +64,22 @@ test {
 }
 
 asciidoctor {
-	inputs.dir snippetsDir
+    configurations 'asciidoctorExtensions'
+    inputs.dir snippetsDir
     dependsOn test
 }
 
 task copyDocument(type: Copy) {
-	dependsOn asciidoctor
-    delete file('src/main/resources/static/index.html')
-    from file("build/docs/asciidoc/index.html")
-    into file("src/main/resources/static")
+    dependsOn asciidoctor
+    from file("${asciidoctor.outputDir}")
+    into file("src/main/resources/static/docs")
 }
 
 bootJar {
-	dependsOn asciidoctor
-	from ("${asciidoctor.outputDir}/html5") {
-		into 'static/docs'
-	}
+    dependsOn copyDocument
+    from ("${asciidoctor.outputDir}") {
+        into 'static/docs'
+    }
 }
 
 def querydslDir = "$buildDir/generated/querydsl"
@@ -89,17 +93,6 @@ sourceSets {
     main.java.srcDir querydslDir
 }
 
-configurations {
-    querydsl.extendsFrom compileClasspath
-}
-
 compileQuerydsl {
     options.annotationProcessorPath = configurations.querydsl
-}
-
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
-    querydsl.extendsFrom compileClasspath
 }
