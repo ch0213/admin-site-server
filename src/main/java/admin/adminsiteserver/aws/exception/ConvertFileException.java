@@ -5,11 +5,11 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-import static admin.adminsiteserver.aws.exception.AwsExceptionType.CONVERT_FILE_EXCEPTION;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Getter
 public class ConvertFileException extends BaseException {
     public ConvertFileException() {
-        super(CONVERT_FILE_EXCEPTION.getMessage(), LocalDateTime.now(), CONVERT_FILE_EXCEPTION.getStatus());
+        super("파일을 변환할 수 없습니다.", LocalDateTime.now(), INTERNAL_SERVER_ERROR);
     }
 }
