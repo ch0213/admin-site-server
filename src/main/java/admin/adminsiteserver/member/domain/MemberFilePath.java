@@ -1,10 +1,12 @@
 package admin.adminsiteserver.member.domain;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Objects;
 
+@Getter
 @Embeddable
 @NoArgsConstructor
 public class MemberFilePath {
@@ -29,11 +31,11 @@ public class MemberFilePath {
             return false;
         }
         MemberFilePath that = (MemberFilePath) o;
-        return Objects.equals(fileName, that.fileName) && Objects.equals(fileUrl, that.fileUrl);
+        return Objects.equals(getFileName(), that.getFileName()) && Objects.equals(getFileUrl(), that.getFileUrl());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(fileName, fileUrl);
+        return Objects.hash(getFileName(), getFileUrl());
     }
 }
