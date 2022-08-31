@@ -1,0 +1,45 @@
+= Members API Document
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:nofooter:
+
+*link:index.html[메인화면으로 돌아가기]*
+
+== 회원 가입
+=== 정상적으로 회원가입
+operation::members/post[snippets='httpie-request,http-response']
+
+=== 이미 존재하는 이메일이나 학번으로 회원 가입 시도
+operation::members/post/fail[snippets='httpie-request,http-response']
+
+== 회원 조회
+=== 내 정보 조회
+operation::members/me/get[snippets='http-request,http-response']
+
+=== 아이디로 회원 정보 조회
+operation::members/id/get[snippets='http-request,http-response']
+
+=== 회원 목록 조회
+operation::members/get[snippets='http-request,http-response']
+
+== 회원 정보 변경
+=== 이름, 학번, 연락처 변경
+==== 정상 케이스
+operation::members/me/put[snippets='http-request,http-response']
+
+==== 이미 존재하는 학번으로 변경할 수 없다.
+operation::members/me/put/fail[snippets='http-request,http-response']
+
+=== 비밀번호 변경
+operation::members/me/password/put[snippets='http-request,http-response']
+
+=== 프로필 이미지 변경
+operation::members/me/image/put[snippets='httpie-request,http-response']
+
+== 회원 탈퇴
+=== 정상적으로 회원 탈퇴
+operation::members/me/delete[snippets='http-request,http-response']

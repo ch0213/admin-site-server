@@ -1,0 +1,13 @@
+= API 목록
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:nofooter:
+
+[width="70%"]
+|===
+|link:members.html[회원 API]
+|===
