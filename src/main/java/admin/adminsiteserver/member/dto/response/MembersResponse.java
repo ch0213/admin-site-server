@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class MembersResponse {
-    private List<MemberResponse> memberResponses;
+    private List<MemberResponse> members;
     private PageInfo pageInfo;
 
     public static MembersResponse from(Page<MemberResponse> members) {
