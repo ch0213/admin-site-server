@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 public class BaseException extends RuntimeException {
-    private String message;
-    private LocalDateTime timestamp;
-    private HttpStatus status;
+    private final String message;
+    private final LocalDateTime timestamp;
+    private final HttpStatus status;
 }

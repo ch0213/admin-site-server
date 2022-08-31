@@ -7,8 +7,8 @@ import admin.adminsiteserver.gallery.application.dto.GallerySimpleResponse;
 import admin.adminsiteserver.gallery.ui.dto.GalleryCommentRequest;
 import admin.adminsiteserver.gallery.ui.dto.UpdateGalleryRequest;
 import admin.adminsiteserver.gallery.ui.dto.UploadGalleryRequest;
-import admin.adminsiteserver.member.auth.util.LoginUser;
-import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
+import admin.adminsiteserver.authentication.util.AuthenticationPrincipal;
+import admin.adminsiteserver.authentication.ui.LoginUserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +29,7 @@ public class GalleryController {
 
     @PostMapping
     public CommonResponse<GalleryResponse> uploadGallery(@Valid @RequestBody UploadGalleryRequest request,
-                                                         @LoginUser LoginUserInfo loginUserInfo) {
+                                                         @AuthenticationPrincipal LoginUserInfo loginUserInfo) {
         GalleryResponse response = galleryService.upload(request, loginUserInfo);
         return CommonResponse.of(response, GALLERY_UPLOAD_SUCCESS.getMessage());
     }
@@ -37,7 +37,7 @@ public class GalleryController {
     @PutMapping("/{galleryId}")
     public CommonResponse<GalleryResponse> updateGallery(
             @Valid @RequestBody UpdateGalleryRequest request,
-            @LoginUser LoginUserInfo loginUserInfo,
+            @AuthenticationPrincipal LoginUserInfo loginUserInfo,
             @PathVariable Long galleryId
     )
     {
@@ -46,7 +46,7 @@ public class GalleryController {
     }
 
     @DeleteMapping("/{galleryId}")
-    public CommonResponse<Void> deleteGallery(@LoginUser LoginUserInfo loginUserInfo, @PathVariable Long galleryId) {
+    public CommonResponse<Void> deleteGallery(@AuthenticationPrincipal LoginUserInfo loginUserInfo, @PathVariable Long galleryId) {
         galleryService.delete(galleryId, loginUserInfo);
         return CommonResponse.from(GALLERY_DELETE_SUCCESS.getMessage());
     }
@@ -65,7 +65,7 @@ public class GalleryController {
     public CommonResponse<Void> uploadComment(
             @PathVariable Long galleryId,
             @Valid @RequestBody GalleryCommentRequest request,
-            @LoginUser LoginUserInfo loginUserInfo
+            @AuthenticationPrincipal LoginUserInfo loginUserInfo
     ) {
         galleryService.addComment(galleryId, request, loginUserInfo);
         return CommonResponse.from(COMMENT_UPLOAD_SUCCESS.getMessage());
@@ -76,7 +76,7 @@ public class GalleryController {
             @PathVariable Long galleryId,
             @PathVariable Long commentId,
             @Valid @RequestBody GalleryCommentRequest request,
-            @LoginUser LoginUserInfo loginUserInfo
+            @AuthenticationPrincipal LoginUserInfo loginUserInfo
     ) {
         galleryService.updateComment(galleryId, commentId, request, loginUserInfo);
         return CommonResponse.from(COMMENT_UPDATE_SUCCESS.getMessage());
@@ -86,7 +86,7 @@ public class GalleryController {
     public CommonResponse<Void> deleteComment(
             @PathVariable Long galleryId,
             @PathVariable Long commentId,
-            @LoginUser LoginUserInfo loginUserInfo
+            @AuthenticationPrincipal LoginUserInfo loginUserInfo
     ) {
         galleryService.deleteComment(galleryId, commentId, loginUserInfo);
         return CommonResponse.from(COMMENT_DELETE_SUCCESS.getMessage());

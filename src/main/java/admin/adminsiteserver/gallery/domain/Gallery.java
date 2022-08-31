@@ -1,6 +1,6 @@
 package admin.adminsiteserver.gallery.domain;
 
-import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
+import admin.adminsiteserver.aws.dto.response.FilePath;
 import admin.adminsiteserver.common.domain.BaseTimeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,11 +53,11 @@ public class Gallery extends BaseTimeEntity {
         files.saveFilePaths(filePaths);
     }
 
-    public List<FilePathDto> findDeleteFilePaths() {
+    public List<FilePath> findDeleteFilePaths() {
         return files.findDeleteFilePaths();
     }
 
-    public void deleteFilePaths(List<FilePathDto> deleteFileUrls) {
+    public void deleteFilePaths(List<FilePath> deleteFileUrls) {
         files.deleteFiles(deleteFileUrls);
     }
 

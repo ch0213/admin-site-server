@@ -1,7 +1,7 @@
 package admin.adminsiteserver.announcement.ui.dto;
 
 import admin.adminsiteserver.announcement.domain.AnnouncementComment;
-import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
+import admin.adminsiteserver.authentication.ui.LoginUserInfo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,9 +15,9 @@ public class AnnouncementCommentRequest {
 
     public AnnouncementComment toAnnouncementComment(LoginUserInfo loginUserInfo) {
         return new AnnouncementComment(
-                loginUserInfo.getEmail(),
-                loginUserInfo.getName(),
-                comment
+                null,
+                null,
+                null
         );
     }
 }

@@ -1,9 +1,9 @@
 package admin.adminsiteserver.levelup.ui.dto;
 
 import admin.adminsiteserver.levelup.domain.LevelUp;
-import admin.adminsiteserver.levelup.exception.NotExistRoleException;
-import admin.adminsiteserver.member.member.domain.Member;
-import admin.adminsiteserver.member.member.domain.RoleType;
+import admin.adminsiteserver.levelup.exception.NonExistentRoleException;
+import admin.adminsiteserver.member.domain.Member;
+import admin.adminsiteserver.member.domain.RoleType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +26,7 @@ public class LevelUpRequest {
         return Arrays.stream(RoleType.values()).sequential()
                 .filter(roleType -> roleType.getDescription().equals(role))
                 .findAny()
-                .orElseThrow(NotExistRoleException::new)
+                .orElseThrow(NonExistentRoleException::new)
                 .getDescription();
     }
 }

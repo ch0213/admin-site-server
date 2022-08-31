@@ -1,6 +1,6 @@
 package admin.adminsiteserver.announcement.application.dto;
 
-import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
+import admin.adminsiteserver.aws.dto.response.FilePath;
 import admin.adminsiteserver.announcement.domain.Announcement;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,7 +21,7 @@ public class AnnouncementResponse {
     private String content;
     private LocalDateTime createAt;
     private LocalDateTime lastModifiedAt;
-    private List<FilePathDto> files;
+    private List<FilePath> files;
     private List<AnnouncementCommentResponse> comments;
 
     public static AnnouncementResponse from(Announcement announcement) {
@@ -34,7 +34,7 @@ public class AnnouncementResponse {
                 announcement.getCreatedAt(),
                 announcement.getModifiedAt(),
                 announcement.getFiles().getFiles().stream()
-                        .map(FilePathDto::from)
+                        .map(FilePath::from)
                         .collect(Collectors.toList()),
                 announcement.getComments().getComments().stream()
                         .map(AnnouncementCommentResponse::from)

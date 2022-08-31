@@ -8,10 +8,10 @@ import admin.adminsiteserver.levelup.exception.NotAuthorizationLevelUpException;
 import admin.adminsiteserver.levelup.exception.NotExistLevelUpException;
 import admin.adminsiteserver.levelup.ui.dto.LevelUpProcessRequest;
 import admin.adminsiteserver.levelup.ui.dto.LevelUpRequest;
-import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
-import admin.adminsiteserver.member.member.domain.Member;
-import admin.adminsiteserver.member.member.domain.MemberRepository;
-import admin.adminsiteserver.member.member.exception.NotExistMemberException;
+import admin.adminsiteserver.authentication.ui.LoginUserInfo;
+import admin.adminsiteserver.member.domain.Member;
+import admin.adminsiteserver.member.domain.MemberRepository;
+import admin.adminsiteserver.member.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +30,7 @@ public class LevelUpService {
     @Transactional
     public LevelUpResponse registerLevelUp(LoginUserInfo loginUserInfo, LevelUpRequest request) {
         Member member = memberRepository.findByEmail(loginUserInfo.getEmail())
-                .orElseThrow(NotExistMemberException::new);
+                .orElseThrow(MemberNotFoundException::new);
         levelUpRepository.findByUserEmailAndProcessedIsFalse(loginUserInfo.getEmail())
                 .ifPresent(levelUp -> {throw new AlreadyExistLevelUpException();});
         LevelUp savedLevelUp = levelUpRepository.save(request.from(member));

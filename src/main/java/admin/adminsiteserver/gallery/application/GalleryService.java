@@ -1,6 +1,6 @@
 package admin.adminsiteserver.gallery.application;
 
-import admin.adminsiteserver.common.aws.infrastructure.S3Uploader;
+import admin.adminsiteserver.aws.infrastructure.S3Uploader;
 import admin.adminsiteserver.common.dto.CommonResponse;
 import admin.adminsiteserver.common.dto.PageInfo;
 import admin.adminsiteserver.gallery.application.dto.GalleryResponse;
@@ -14,7 +14,7 @@ import admin.adminsiteserver.gallery.exception.UnauthorizedForGalleryException;
 import admin.adminsiteserver.gallery.ui.dto.GalleryCommentRequest;
 import admin.adminsiteserver.gallery.ui.dto.UpdateGalleryRequest;
 import admin.adminsiteserver.gallery.ui.dto.UploadGalleryRequest;
-import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
+import admin.adminsiteserver.authentication.ui.LoginUserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

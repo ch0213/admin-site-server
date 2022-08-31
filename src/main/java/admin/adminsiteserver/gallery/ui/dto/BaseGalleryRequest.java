@@ -1,6 +1,6 @@
 package admin.adminsiteserver.gallery.ui.dto;
 
-import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
+import admin.adminsiteserver.aws.dto.response.FilePath;
 import admin.adminsiteserver.gallery.domain.GalleryFilePath;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,7 +20,7 @@ public abstract class BaseGalleryRequest {
 
     @NotBlank(message = "내용은 빈칸일 수 없습니다.")
     private String content;
-    private List<FilePathDto> files;
+    private List<FilePath> files;
 
     public List<GalleryFilePath> toGalleryFilePaths() {
         if (files == null) return new ArrayList<>();

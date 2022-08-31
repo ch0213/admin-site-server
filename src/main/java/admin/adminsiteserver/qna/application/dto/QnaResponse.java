@@ -1,6 +1,6 @@
 package admin.adminsiteserver.qna.application.dto;
 
-import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
+import admin.adminsiteserver.aws.dto.response.FilePath;
 import admin.adminsiteserver.qna.application.dto.answer.AnswerResponse;
 import admin.adminsiteserver.qna.domain.Qna;
 import lombok.AllArgsConstructor;
@@ -22,7 +22,7 @@ public class QnaResponse {
     private String content;
     private LocalDateTime createAt;
     private LocalDateTime lastModifiedAt;
-    private List<FilePathDto> files;
+    private List<FilePath> files;
     private List<QuestionCommentResponse> comments;
     private List<AnswerResponse> answers;
 
@@ -36,7 +36,7 @@ public class QnaResponse {
                 qna.getCreatedAt(),
                 qna.getModifiedAt(),
                 qna.getFiles().getFiles().stream()
-                        .map(FilePathDto::from)
+                        .map(FilePath::from)
                         .collect(Collectors.toList()),
                 qna.getComments().getComments().stream()
                         .map(QuestionCommentResponse::from)

@@ -22,8 +22,8 @@ public class AnnouncementCommentResponse {
     public static AnnouncementCommentResponse from(AnnouncementComment announcementComment) {
         return new AnnouncementCommentResponse(
                 announcementComment.getId(),
-                announcementComment.getAuthorEmail(),
-                announcementComment.getAuthorName(),
+                null,
+                null,
                 announcementComment.getComment(),
                 announcementComment.getCreatedAt(),
                 announcementComment.getModifiedAt()

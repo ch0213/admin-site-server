@@ -1,6 +1,6 @@
 package admin.adminsiteserver.qna.domain.answer;
 
-import admin.adminsiteserver.common.aws.infrastructure.dto.FilePathDto;
+import admin.adminsiteserver.aws.dto.response.FilePath;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,16 +27,16 @@ public class AnswerFilePaths {
         files.addAll(filePaths);
     }
 
-    public void deleteFiles(List<FilePathDto> deleteFileUrls) {
+    public void deleteFiles(List<FilePath> deleteFileUrls) {
         if (deleteFileUrls == null) return;
-        files.removeIf(filePath -> deleteFileUrls.stream().map(FilePathDto::getFileUrl)
+        files.removeIf(filePath -> deleteFileUrls.stream().map(FilePath::getFileUrl)
                 .collect(Collectors.toList())
                 .contains(filePath.getFileUrl()));
     }
 
-    public List<FilePathDto> findDeleteFilePaths() {
+    public List<FilePath> findDeleteFilePaths() {
         return files.stream()
-                .map(FilePathDto::from)
+                .map(FilePath::from)
                 .collect(Collectors.toList());
     }
 }
