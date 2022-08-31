@@ -23,7 +23,6 @@ public class AcceptanceTest {
             RestAssured.port = port;
             databaseCleanup.afterPropertiesSet();
         }
-
         databaseCleanup.execute();
     }
 }
