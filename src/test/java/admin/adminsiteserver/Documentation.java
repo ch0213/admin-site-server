@@ -19,6 +19,8 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 @ExtendWith(RestDocumentationExtension.class)
 @ActiveProfiles("test")
 public class Documentation {
+    private static final String SCHEME = "https";
+    private static final String HOST = "admin-site-server.com";
 
     @BeforeEach
     public void setUp(WebApplicationContext context, RestDocumentationContextProvider restDocumentation) {
@@ -26,10 +28,7 @@ public class Documentation {
     }
 
     protected static OperationRequestPreprocessor getDocumentRequest() {
-        return preprocessRequest(
-                modifyUris()
-                        .removePort(),
-                prettyPrint());
+        return preprocessRequest(modifyUris().scheme(SCHEME).host(HOST).removePort(), prettyPrint());
     }
 
     protected static OperationResponsePreprocessor getDocumentResponse() {
