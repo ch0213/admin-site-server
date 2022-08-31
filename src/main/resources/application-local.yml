@@ -1,17 +1,8 @@
 spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ADMIN_SITE_DB?serverTimezone=Asia/Seoul
-    username: test
-    password: 1234
-
   jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
     hibernate:
       ddl-auto: create-drop
-
-  flyway:
-    enabled: false
-
-logging:
-  level:
-    root: info
