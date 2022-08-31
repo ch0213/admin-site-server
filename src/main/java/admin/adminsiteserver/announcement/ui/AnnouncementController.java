@@ -3,10 +3,9 @@ package admin.adminsiteserver.announcement.ui;
 import admin.adminsiteserver.announcement.application.AnnouncementQueryService;
 import admin.adminsiteserver.announcement.application.dto.AnnouncementSimpleResponse;
 import admin.adminsiteserver.announcement.ui.dto.AnnouncementCommentRequest;
-import admin.adminsiteserver.announcement.application.dto.AnnouncementCommentResponse;
 import admin.adminsiteserver.common.dto.CommonResponse;
-import admin.adminsiteserver.member.auth.util.LoginUser;
-import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
+import admin.adminsiteserver.authentication.util.AuthenticationPrincipal;
+import admin.adminsiteserver.authentication.ui.LoginUserInfo;
 import admin.adminsiteserver.announcement.application.AnnouncementService;
 import admin.adminsiteserver.announcement.application.dto.AnnouncementResponse;
 import admin.adminsiteserver.announcement.ui.dto.UpdateAnnouncementRequest;
@@ -32,7 +31,7 @@ public class AnnouncementController {
 
     @PostMapping
     public CommonResponse<AnnouncementResponse> uploadAnnouncement(@Valid @RequestBody UploadAnnouncementRequest request,
-                                                                   @LoginUser LoginUserInfo loginUserInfo) {
+                                                                   @AuthenticationPrincipal LoginUserInfo loginUserInfo) {
         AnnouncementResponse response = announcementService.upload(request, loginUserInfo);
         return CommonResponse.of(response, ANNOUNCEMENT_UPLOAD_SUCCESS.getMessage());
     }
@@ -40,7 +39,7 @@ public class AnnouncementController {
     @PutMapping("/{announcementId}")
     public CommonResponse<AnnouncementResponse> updateAnnouncement(
             @Valid @RequestBody UpdateAnnouncementRequest request,
-            @LoginUser LoginUserInfo loginUserInfo,
+            @AuthenticationPrincipal LoginUserInfo loginUserInfo,
             @PathVariable Long announcementId
     )
     {
@@ -49,7 +48,7 @@ public class AnnouncementController {
     }
 
     @DeleteMapping("/{announcementId}")
-    public CommonResponse<Void> deleteAnnouncement(@LoginUser LoginUserInfo loginUserInfo, @PathVariable Long announcementId) {
+    public CommonResponse<Void> deleteAnnouncement(@AuthenticationPrincipal LoginUserInfo loginUserInfo, @PathVariable Long announcementId) {
         announcementService.delete(announcementId, loginUserInfo);
         return CommonResponse.from(ANNOUNCEMENT_DELETE_SUCCESS.getMessage());
     }
@@ -68,7 +67,7 @@ public class AnnouncementController {
     public CommonResponse<Void> uploadComment(
             @PathVariable Long announcementId,
             @Valid @RequestBody AnnouncementCommentRequest request,
-            @LoginUser LoginUserInfo loginUserInfo
+            @AuthenticationPrincipal LoginUserInfo loginUserInfo
     ) {
         announcementService.addComment(announcementId, request, loginUserInfo);
         return CommonResponse.from(COMMENT_UPLOAD_SUCCESS.getMessage());
@@ -79,7 +78,7 @@ public class AnnouncementController {
             @PathVariable Long announcementId,
             @PathVariable Long commentId,
             @Valid @RequestBody AnnouncementCommentRequest request,
-            @LoginUser LoginUserInfo loginUserInfo
+            @AuthenticationPrincipal LoginUserInfo loginUserInfo
     ) {
         announcementService.updateComment(announcementId, commentId, request, loginUserInfo);
         return CommonResponse.from(COMMENT_UPDATE_SUCCESS.getMessage());
@@ -89,7 +88,7 @@ public class AnnouncementController {
     public CommonResponse<Void> deleteComment(
             @PathVariable Long announcementId,
             @PathVariable Long commentId,
-            @LoginUser LoginUserInfo loginUserInfo
+            @AuthenticationPrincipal LoginUserInfo loginUserInfo
     ) {
         announcementService.deleteComment(announcementId, commentId, loginUserInfo);
         return CommonResponse.from(COMMENT_DELETE_SUCCESS.getMessage());

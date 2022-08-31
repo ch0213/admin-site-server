@@ -1,26 +1,23 @@
 package admin.adminsiteserver.aws.infrastructure;
 
-import admin.adminsiteserver.aws.infrastructure.dto.FilePathDto;
+import admin.adminsiteserver.aws.dto.response.FilePath;
 import admin.adminsiteserver.aws.util.S3Util;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Slf4j
-@RequiredArgsConstructor
 @Component
+@RequiredArgsConstructor
 public class S3Uploader {
-
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
@@ -28,38 +25,30 @@ public class S3Uploader {
     private String cloudfront;
 
     private final AmazonS3 amazonS3;
-    private final S3Util s3Util;
 
-    public List<FilePathDto> upload(List<MultipartFile> multipartFiles, String path) {
-        List<FilePathDto> filePathDtos = new ArrayList<>();
-        for (MultipartFile file : multipartFiles) {
-            filePathDtos.add(upload(file, path));
-        }
-        return filePathDtos;
+    public List<FilePath> upload(List<MultipartFile> files, String path) {
+        return files.stream()
+                .map(file -> upload(file, path))
+                .collect(Collectors.toList());
     }
 
-    public FilePathDto upload(MultipartFile multipartFile, String path) {
-        File file = s3Util.toFile(multipartFile);
-        String fileName = s3Util.createFileName(path);
+    public FilePath upload(MultipartFile multipartFile, String path) {
+        File file = S3Util.convertToFile(multipartFile);
+        String fileName = S3Util.createFileName(path);
 
-        amazonS3.putObject(new PutObjectRequest(bucketName, fileName, file).withCannedAcl(CannedAccessControlList.PublicRead));
-        s3Util.deleteRequestFile(file);
+        amazonS3.putObject(new PutObjectRequest(bucketName, fileName, file)
+                .withCannedAcl(CannedAccessControlList.PublicRead));
+        S3Util.delete(file);
 
-        return FilePathDto.of(multipartFile.getOriginalFilename(), cloudfront + fileName);
+        return FilePath.of(multipartFile.getOriginalFilename(), cloudfront + fileName);
     }
 
-    public void delete(List<FilePathDto> filePathDtos) {
-        if (filePathDtos == null) return;
-        for (FilePathDto filePathDto : filePathDtos) {
-            delete(filePathDto);
-        }
-    }
-
-    public void delete(FilePathDto filePathDto) {
-        if (filePathDto == null) return;
-        String fileName = filePathDto.getFileUrl().replace(cloudfront, "");
-        if (!fileName.isBlank() && amazonS3.doesObjectExist(bucketName, fileName)) {
-            amazonS3.deleteObject(new DeleteObjectRequest(bucketName, fileName));
-        }
+    public void delete(List<FilePath> filePaths) {
+        filePaths.forEach(filePath -> {
+            String fileName = filePath.getFileUrl().replace(cloudfront, "");
+            if (!fileName.isBlank() && amazonS3.doesObjectExist(bucketName, fileName)) {
+                amazonS3.deleteObject(new DeleteObjectRequest(bucketName, fileName));
+            }
+        });
     }
 }

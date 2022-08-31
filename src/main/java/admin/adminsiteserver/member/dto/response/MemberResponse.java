@@ -1,6 +1,6 @@
 package admin.adminsiteserver.member.dto.response;
 
-import admin.adminsiteserver.aws.infrastructure.dto.FilePath;
+import admin.adminsiteserver.aws.dto.response.FilePath;
 import admin.adminsiteserver.member.domain.Member;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -21,9 +21,9 @@ public class MemberResponse {
     private String studentNumber;
     private String phoneNumber;
     private String role;
-    private FilePath profileImage;
+    private FilePath image;
 
-    public static MemberResponse of(Member member, FilePath filePathDto) {
+    public static MemberResponse of(Member member, FilePath filePath) {
         return new MemberResponse(
                 member.getId(),
                 member.getEmail(),
@@ -31,7 +31,7 @@ public class MemberResponse {
                 member.getStudentNumber(),
                 member.getPhoneNumber(),
                 member.getRole().getDescription(),
-                filePathDto
+                filePath
         );
     }
 

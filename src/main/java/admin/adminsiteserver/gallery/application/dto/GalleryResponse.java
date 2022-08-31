@@ -1,6 +1,6 @@
 package admin.adminsiteserver.gallery.application.dto;
 
-import admin.adminsiteserver.aws.infrastructure.dto.FilePathDto;
+import admin.adminsiteserver.aws.dto.response.FilePath;
 import admin.adminsiteserver.gallery.domain.Gallery;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,7 +21,7 @@ public class GalleryResponse {
     private String content;
     private LocalDateTime createAt;
     private LocalDateTime lastModifiedAt;
-    private List<FilePathDto> files;
+    private List<FilePath> files;
     private List<GalleryCommentResponse> comments;
 
     public static GalleryResponse from(Gallery gallery) {
@@ -34,7 +34,7 @@ public class GalleryResponse {
                 gallery.getCreatedAt(),
                 gallery.getModifiedAt(),
                 gallery.getFiles().getFiles().stream()
-                        .map(FilePathDto::from)
+                        .map(FilePath::from)
                         .collect(Collectors.toList()),
                 gallery.getComments().getComments().stream()
                         .map(GalleryCommentResponse::from)

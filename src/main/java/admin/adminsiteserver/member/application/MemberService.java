@@ -1,12 +1,12 @@
 package admin.adminsiteserver.member.application;
 
 import admin.adminsiteserver.aws.infrastructure.S3Uploader;
-import admin.adminsiteserver.aws.infrastructure.dto.FilePath;
+import admin.adminsiteserver.aws.dto.response.FilePath;
 import admin.adminsiteserver.member.domain.Member;
 import admin.adminsiteserver.member.domain.MemberRepository;
-import admin.adminsiteserver.member.exception.AlreadyExistentMemberException;
-import admin.adminsiteserver.member.exception.AlreadyExistentStudentNumberException;
-import admin.adminsiteserver.member.exception.NonExistentMemberException;
+import admin.adminsiteserver.member.exception.MemberAlreadyExistException;
+import admin.adminsiteserver.member.exception.StudentNumberAlreadyExistException;
+import admin.adminsiteserver.member.exception.MemberNotFoundException;
 import admin.adminsiteserver.member.dto.request.SignUpRequest;
 import admin.adminsiteserver.member.dto.request.UpdateMemberRequest;
 import admin.adminsiteserver.member.dto.request.UpdatePasswordRequest;
@@ -21,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class MemberService {
 
-    private static final String MEMBER_IMAGE_PATH = "member/";
+    private static final String MEMBER_IMAGE_PATH = "members/";
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
@@ -42,7 +42,7 @@ public class MemberService {
         String studentNumber = member.getStudentNumber();
 
         if (memberRepository.existsByEmailOrStudentNumberAndDeletedFalse(email, studentNumber)) {
-            throw new AlreadyExistentMemberException();
+            throw new MemberAlreadyExistException();
         }
     }
 
@@ -65,7 +65,7 @@ public class MemberService {
         }
 
         if (memberRepository.existsByStudentNumberAndDeletedFalse(studentNumber)) {
-            throw new AlreadyExistentStudentNumberException();
+            throw new StudentNumberAlreadyExistException();
         }
     }
 
@@ -86,6 +86,6 @@ public class MemberService {
     }
 
     private Member findMemberById(Long id) {
-        return memberRepository.findById(id).orElseThrow(NonExistentMemberException::new);
+        return memberRepository.findById(id).orElseThrow(MemberNotFoundException::new);
     }
 }

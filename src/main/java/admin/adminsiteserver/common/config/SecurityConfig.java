@@ -1,14 +1,15 @@
 package admin.adminsiteserver.common.config;
 
-import admin.adminsiteserver.common.filter.JwtAuthenticationFilter;
-import admin.adminsiteserver.member.auth.util.JwtTokenProvider;
+import admin.adminsiteserver.authentication.ui.JwtAuthenticationFilter;
+import admin.adminsiteserver.authentication.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -19,8 +20,9 @@ import static org.springframework.security.config.http.SessionCreationPolicy.*;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
+    private final AuthenticationEntryPoint authenticationEntryPoint;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Bean
@@ -28,8 +30,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .cors().and()
                 .csrf().disable()
@@ -39,10 +41,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/signup", "/login").permitAll()
+                .antMatchers("/members/**", "/members").permitAll()
                 .antMatchers(GET, "/announcements/**", "/gallerys/**", "/qnas/**", "/calendars/**").permitAll()
                 .antMatchers(GET, "/levelups/**").hasRole("ADMIN")
                 .antMatchers(POST, "/levelups/**/approve", "/levelups/**/reject").hasRole("ADMIN")
-                .anyRequest().authenticated();
+                .and()
+                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
+        return http.build();
     }
 
     @Bean
@@ -58,5 +63,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
 }

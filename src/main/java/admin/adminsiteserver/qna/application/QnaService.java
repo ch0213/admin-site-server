@@ -3,8 +3,8 @@ package admin.adminsiteserver.qna.application;
 import admin.adminsiteserver.aws.infrastructure.S3Uploader;
 import admin.adminsiteserver.common.dto.CommonResponse;
 import admin.adminsiteserver.common.dto.PageInfo;
-import admin.adminsiteserver.member.auth.util.LoginUser;
-import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
+import admin.adminsiteserver.authentication.util.AuthenticationPrincipal;
+import admin.adminsiteserver.authentication.ui.LoginUserInfo;
 import admin.adminsiteserver.qna.application.dto.QnaResponse;
 import admin.adminsiteserver.qna.application.dto.QnaSimpleResponse;
 import admin.adminsiteserver.qna.domain.*;
@@ -39,7 +39,7 @@ public class QnaService {
     private final S3Uploader s3Uploader;
 
     @Transactional
-    public QnaResponse uploadQna(UploadQnaRequest request, @LoginUser LoginUserInfo loginUserInfo) {
+    public QnaResponse uploadQna(UploadQnaRequest request, @AuthenticationPrincipal LoginUserInfo loginUserInfo) {
         Qna qna = request.createQna(loginUserInfo);
         qna.saveFilePaths(request.toQuestionFilePaths());
         qnaRepository.save(qna);

@@ -1,7 +1,7 @@
 package admin.adminsiteserver.qna.ui.dto.answer;
 
-import admin.adminsiteserver.aws.infrastructure.dto.FilePathDto;
-import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
+import admin.adminsiteserver.aws.dto.response.FilePath;
+import admin.adminsiteserver.authentication.ui.LoginUserInfo;
 import admin.adminsiteserver.qna.domain.answer.Answer;
 import admin.adminsiteserver.qna.domain.answer.AnswerFilePath;
 import lombok.AllArgsConstructor;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class AnswerUploadRequest {
     @NotBlank(message = "내용은 빈칸일 수 없습니다.")
     private String content;
-    private List<FilePathDto> files;
+    private List<FilePath> files;
 
     public List<AnswerFilePath> toAnswerFilePaths() {
         if (files == null) return new ArrayList<>();

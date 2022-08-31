@@ -1,7 +1,7 @@
 package admin.adminsiteserver.gallery.ui.dto;
 
 import admin.adminsiteserver.gallery.domain.GalleryComment;
-import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
+import admin.adminsiteserver.authentication.ui.LoginUserInfo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

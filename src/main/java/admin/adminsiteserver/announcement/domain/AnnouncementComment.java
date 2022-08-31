@@ -1,7 +1,7 @@
 package admin.adminsiteserver.announcement.domain;
 
 import admin.adminsiteserver.common.domain.BaseTimeEntity;
-import admin.adminsiteserver.member.member.domain.Member;
+import admin.adminsiteserver.member.domain.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -4,7 +4,7 @@ import admin.adminsiteserver.member.domain.Member;
 import admin.adminsiteserver.member.dto.response.MemberResponse;
 import admin.adminsiteserver.member.domain.MemberRepository;
 import admin.adminsiteserver.member.dto.response.MembersResponse;
-import admin.adminsiteserver.member.exception.NonExistentMemberException;
+import admin.adminsiteserver.member.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +19,7 @@ public class MemberQueryService {
     private final MemberRepository memberRepository;
 
     public MemberResponse findById(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(NonExistentMemberException::new);
+        Member member = memberRepository.findByIdAndAndDeletedFalse(id).orElseThrow(MemberNotFoundException::new);
         return MemberResponse.from(member);
     }
 

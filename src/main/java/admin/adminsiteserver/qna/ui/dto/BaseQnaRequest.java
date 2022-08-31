@@ -1,6 +1,6 @@
 package admin.adminsiteserver.qna.ui.dto;
 
-import admin.adminsiteserver.aws.infrastructure.dto.FilePathDto;
+import admin.adminsiteserver.aws.dto.response.FilePath;
 import admin.adminsiteserver.qna.domain.QuestionFilePath;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,7 +20,7 @@ public class BaseQnaRequest {
 
     @NotBlank(message = "내용은 빈칸일 수 없습니다.")
     private String content;
-    private List<FilePathDto> files;
+    private List<FilePath> files;
 
     public List<QuestionFilePath> toQuestionFilePaths() {
         if (files == null) return new ArrayList<>();

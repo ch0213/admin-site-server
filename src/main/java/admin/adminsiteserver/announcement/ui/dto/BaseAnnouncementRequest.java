@@ -1,7 +1,7 @@
 package admin.adminsiteserver.announcement.ui.dto;
 
 import admin.adminsiteserver.announcement.domain.AnnouncementFilePath;
-import admin.adminsiteserver.aws.infrastructure.dto.FilePathDto;
+import admin.adminsiteserver.aws.dto.response.FilePath;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +20,7 @@ public abstract class BaseAnnouncementRequest {
 
     @NotBlank(message = "내용은 빈칸일 수 없습니다.")
     private String content;
-    private List<FilePathDto> files;
+    private List<FilePath> files;
 
     public List<AnnouncementFilePath> toAnnouncementFilePaths() {
         if (files == null) return new ArrayList<>();

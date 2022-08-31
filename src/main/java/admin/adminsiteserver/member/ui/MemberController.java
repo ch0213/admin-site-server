@@ -1,6 +1,6 @@
 package admin.adminsiteserver.member.ui;
 
-import admin.adminsiteserver.auth.util.AuthenticationPrincipal;
+import admin.adminsiteserver.authentication.util.AuthenticationPrincipal;
 import admin.adminsiteserver.common.dto.LoginMember;
 import admin.adminsiteserver.member.application.MemberQueryService;
 import admin.adminsiteserver.member.application.MemberService;
@@ -19,55 +19,59 @@ import javax.validation.Valid;
 
 import java.net.URI;
 
+@RequestMapping("/members")
 @RestController
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberQueryService memberQueryService;
     private final MemberService memberService;
 
-    @GetMapping("/members/{memberId}")
-    public ResponseEntity<MemberResponse> findMembers(@PathVariable Long memberId) {
-        return ResponseEntity.ok(memberQueryService.findById(memberId));
-    }
-
-    @GetMapping("/members")
-    public ResponseEntity<MembersResponse> findMembers(Pageable pageable) {
-        return ResponseEntity.ok(memberQueryService.findMembers(pageable));
-    }
-
-    @PostMapping("/members")
+    @PostMapping
     public ResponseEntity<Void> signUp(@Valid SignUpRequest signUpRequest) {
         Long memberId = memberService.signUp(signUpRequest);
         return ResponseEntity.created(URI.create("/members/" + memberId)).build();
     }
 
-    @GetMapping("/members/me")
+    @GetMapping
+    public ResponseEntity<MembersResponse> findMembers(Pageable pageable) {
+        return ResponseEntity.ok(memberQueryService.findMembers(pageable));
+    }
+
+    @GetMapping("/{memberId}")
+    public ResponseEntity<MemberResponse> findMember(@PathVariable Long memberId) {
+        return ResponseEntity.ok(memberQueryService.findById(memberId));
+    }
+
+    @GetMapping("/me")
     public ResponseEntity<MemberResponse> findMyself(@AuthenticationPrincipal LoginMember member) {
         MemberResponse memberResponse = memberQueryService.findById(member.getId());
         return ResponseEntity.ok(memberResponse);
     }
 
-    @DeleteMapping("/members/me")
-    public ResponseEntity<Void> deleteMember(@AuthenticationPrincipal LoginMember member) {
-        memberService.delete(member.getId());
-        return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("/members/me")
-    public ResponseEntity<Void> updateMember(@Valid @RequestBody UpdateMemberRequest request, @AuthenticationPrincipal LoginMember member) {
+    @PutMapping("/me")
+    public ResponseEntity<Void> updateMember(@Valid @RequestBody UpdateMemberRequest request,
+                                             @AuthenticationPrincipal LoginMember member) {
         memberService.update(member.getId(), request);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/members/password")
-    public ResponseEntity<Void> updatePassword(@Valid @RequestBody UpdatePasswordRequest request, @AuthenticationPrincipal LoginMember member) {
+    @PutMapping("/me/password")
+    public ResponseEntity<Void> updatePassword(@Valid @RequestBody UpdatePasswordRequest request,
+                                               @AuthenticationPrincipal LoginMember member) {
         memberService.updatePassword(member.getId(), request);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/members/image")
-    public ResponseEntity<Void> updateMemberImage(@Valid UpdateImageRequest request, @AuthenticationPrincipal LoginMember member) {
+    @PutMapping("/me/image")
+    public ResponseEntity<Void> updateMemberImage(@Valid UpdateImageRequest request,
+                                                  @AuthenticationPrincipal LoginMember member) {
         memberService.updateImage(member.getId(), request.getImage());
         return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deleteMember(@AuthenticationPrincipal LoginMember member) {
+        memberService.delete(member.getId());
+        return ResponseEntity.noContent().build();
     }
 }

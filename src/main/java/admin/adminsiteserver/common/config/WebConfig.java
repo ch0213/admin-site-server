@@ -1,6 +1,6 @@
 package admin.adminsiteserver.common.config;
 
-import admin.adminsiteserver.member.auth.util.LoginUserInfoArgumentResolver;
+import admin.adminsiteserver.authentication.ui.LoginMemberArgumentResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -14,6 +14,6 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new LoginUserInfoArgumentResolver());
+        resolvers.add(new LoginMemberArgumentResolver());
     }
 }

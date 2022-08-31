@@ -5,7 +5,7 @@ import admin.adminsiteserver.announcement.exception.UnauthorizedForAnnouncementC
 import admin.adminsiteserver.announcement.exception.UnauthorizedForAnnouncementException;
 import admin.adminsiteserver.announcement.ui.dto.AnnouncementCommentRequest;
 import admin.adminsiteserver.aws.infrastructure.S3Uploader;
-import admin.adminsiteserver.member.auth.util.dto.LoginUserInfo;
+import admin.adminsiteserver.authentication.ui.LoginUserInfo;
 import admin.adminsiteserver.announcement.application.dto.AnnouncementResponse;
 import admin.adminsiteserver.announcement.domain.Announcement;
 import admin.adminsiteserver.announcement.domain.AnnouncementRepository;
@@ -83,7 +83,7 @@ public class AnnouncementService {
     }
 
     private void validateAuthorityForComment(LoginUserInfo loginUserInfo, AnnouncementComment comment) {
-        if (loginUserInfo.isNotEqualUser(comment.getAuthorEmail())) {
+        if (loginUserInfo.isNotEqualUser(loginUserInfo.getEmail())) {
             throw new UnauthorizedForAnnouncementCommentException();
         }
     }

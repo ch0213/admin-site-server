@@ -1,6 +1,6 @@
 package admin.adminsiteserver.qna.domain;
 
-import admin.adminsiteserver.aws.infrastructure.dto.FilePathDto;
+import admin.adminsiteserver.aws.dto.response.FilePath;
 import admin.adminsiteserver.common.domain.BaseTimeEntity;
 import admin.adminsiteserver.qna.domain.answer.Answer;
 import admin.adminsiteserver.qna.domain.answer.Answers;
@@ -69,11 +69,11 @@ public class Qna extends BaseTimeEntity {
         return this.answers.findAnswer(id);
     }
 
-    public List<FilePathDto> findDeleteFilePaths() {
+    public List<FilePath> findDeleteFilePaths() {
         return files.findDeleteFilePaths();
     }
 
-    public void deleteFilePaths(List<FilePathDto> deleteFileUrls) {
+    public void deleteFilePaths(List<FilePath> deleteFileUrls) {
         files.deleteFiles(deleteFileUrls);
     }
 
