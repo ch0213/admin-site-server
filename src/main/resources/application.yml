@@ -1,13 +1,11 @@
 spring:
   profiles:
-    active: local
-    include: auth, cloud
+    include: auth, cloud, datasource
 
   jpa:
     properties:
       hibernate:
-        show_sql: true
-        format_sql: true
+        dialect: org.hibernate.dialect.MySQLInnoDBDialect
         default_batch_fetch_size: 100
     open-in-view: false
 
