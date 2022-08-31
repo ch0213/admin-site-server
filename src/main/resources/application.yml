@@ -5,7 +5,6 @@ spring:
   jpa:
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLInnoDBDialect
         default_batch_fetch_size: 100
     open-in-view: false
 
