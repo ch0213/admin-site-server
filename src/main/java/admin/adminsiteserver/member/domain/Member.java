@@ -78,7 +78,7 @@ public class Member {
     }
 
     public boolean hasEmail() {
-        return email != null;
+        return email != null && !email.isBlank();
     }
 
     public boolean sameStudentNumber(String studentNumber) {
