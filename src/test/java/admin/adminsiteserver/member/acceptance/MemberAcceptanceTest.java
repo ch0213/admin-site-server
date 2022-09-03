@@ -107,8 +107,12 @@ class MemberAcceptanceTest extends AcceptanceTest {
         회원_생성_요청("example1@email.com", "신짱구", "202000000");
         var 토큰 = 로그인되어_있음(EMAIL, PASSWORD).as(LoginResponse.class).getTokens().getAccessToken();
 
-        assertThat(회원정보_변경_요청(토큰, NAME, "202000000", PHONE_NUMBER).statusCode())
-                .isEqualTo(HttpStatus.BAD_REQUEST.value());
+        var response = 회원정보_변경_요청(토큰, NAME, "202000000", PHONE_NUMBER);
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(response.as(ErrorResponse.class).getMessage()).isEqualTo("이미 존재하는 학번입니다.")
+        );
     }
 
     @DisplayName("내 비밀번호를 변경한다.")
