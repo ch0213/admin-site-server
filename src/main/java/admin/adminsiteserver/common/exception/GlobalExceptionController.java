@@ -16,7 +16,6 @@ import static org.springframework.http.HttpStatus.*;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionController {
-
     public static final String VALID_ERROR_MESSAGE = "요청 양식을 확인해주세요.";
 
     @ExceptionHandler(BaseException.class)
@@ -30,5 +29,10 @@ public class GlobalExceptionController {
         exception.getBindingResult().getAllErrors()
                 .forEach(error -> errors.put(((FieldError) error).getField(), error.getDefaultMessage()));
         return new ResponseEntity<>(ErrorResponse.of(VALID_ERROR_MESSAGE, errors), BAD_REQUEST);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleException(Exception exception) {
+        return new ResponseEntity<>(ErrorResponse.from("예상치 못한 에러입니다."), INTERNAL_SERVER_ERROR);
     }
 }
