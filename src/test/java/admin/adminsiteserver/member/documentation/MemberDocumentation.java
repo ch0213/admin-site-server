@@ -5,7 +5,7 @@ import admin.adminsiteserver.authentication.domain.MemberAdapter;
 import admin.adminsiteserver.authentication.util.JwtTokenProvider;
 import admin.adminsiteserver.member.application.MemberQueryService;
 import admin.adminsiteserver.member.application.MemberService;
-import admin.adminsiteserver.member.dto.response.MemberResponse;
+import admin.adminsiteserver.member.ui.response.MemberResponse;
 import admin.adminsiteserver.member.exception.MemberAlreadyExistException;
 import admin.adminsiteserver.member.exception.StudentNumberAlreadyExistException;
 import admin.adminsiteserver.member.ui.MemberController;

@@ -2,8 +2,8 @@ package admin.adminsiteserver.member.fixture;
 
 import admin.adminsiteserver.member.domain.Member;
 import admin.adminsiteserver.member.domain.MemberFilePath;
-import admin.adminsiteserver.member.dto.response.MemberResponse;
-import admin.adminsiteserver.member.dto.response.MembersResponse;
+import admin.adminsiteserver.member.ui.response.MemberResponse;
+import admin.adminsiteserver.member.ui.response.MembersResponse;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.support.PageableExecutionUtils;
 

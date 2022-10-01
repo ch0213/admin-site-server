@@ -1,4 +1,4 @@
-package admin.adminsiteserver.member.dto.response;
+package admin.adminsiteserver.member.ui.response;
 
 import admin.adminsiteserver.aws.dto.response.FilePath;
 import admin.adminsiteserver.member.domain.Member;
