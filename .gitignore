@@ -37,3 +37,6 @@ out/
 .gradle/
 .env
 .DS_Store
+
+### docker ###
+docker/mysql/data
