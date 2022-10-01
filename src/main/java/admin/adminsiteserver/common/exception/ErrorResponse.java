@@ -1,6 +1,7 @@
 package admin.adminsiteserver.common.exception;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -8,9 +9,10 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorResponse {
     private String message;
@@ -19,7 +21,7 @@ public class ErrorResponse {
     private String error;
     private Map<String, String> errors;
 
-    public ErrorResponse(String message, LocalDateTime timestamp, int status, String error, Map<String, String> errors) {
+    private ErrorResponse(String message, LocalDateTime timestamp, int status, String error, Map<String, String> errors) {
         this.message = message;
         this.timestamp = timestamp;
         this.status = status;
@@ -42,6 +44,15 @@ public class ErrorResponse {
                 exception.getTimestamp(),
                 exception.getStatus().value(),
                 exception.getStatus().getReasonPhrase(),
+                null);
+    }
+
+    public static ErrorResponse from(String message) {
+        return new ErrorResponse(
+                message,
+                LocalDateTime.now(),
+                INTERNAL_SERVER_ERROR.value(),
+                INTERNAL_SERVER_ERROR.getReasonPhrase(),
                 null);
     }
 }

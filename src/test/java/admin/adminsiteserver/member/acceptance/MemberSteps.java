@@ -11,7 +11,7 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import static admin.adminsiteserver.AcceptanceSteps.given;
+import static admin.adminsiteserver.AcceptanceTestSteps.given;
 import static admin.adminsiteserver.member.fixture.MemberFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;

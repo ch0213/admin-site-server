@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberQueryService {
-
     private final MemberRepository memberRepository;
 
     public MemberResponse findById(Long id) {

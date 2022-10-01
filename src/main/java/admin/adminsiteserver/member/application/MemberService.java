@@ -20,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional
 @RequiredArgsConstructor
 public class MemberService {
-
     private static final String MEMBER_IMAGE_PATH = "members/";
 
     private final MemberRepository memberRepository;
