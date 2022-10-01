@@ -1,6 +1,6 @@
 package admin.adminsiteserver.member.acceptance;
 
-import admin.adminsiteserver.member.dto.response.MemberResponse;
+import admin.adminsiteserver.member.ui.response.MemberResponse;
 import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

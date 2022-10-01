@@ -1,4 +1,4 @@
-package admin.adminsiteserver.member.dto.request;
+package admin.adminsiteserver.member.ui.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

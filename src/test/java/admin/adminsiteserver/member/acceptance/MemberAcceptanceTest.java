@@ -5,7 +5,7 @@ import admin.adminsiteserver.authentication.dto.response.LoginResponse;
 import admin.adminsiteserver.aws.dto.response.FilePath;
 import admin.adminsiteserver.aws.infrastructure.S3Uploader;
 import admin.adminsiteserver.common.exception.ErrorResponse;
-import admin.adminsiteserver.member.dto.response.MemberResponse;
+import admin.adminsiteserver.member.ui.response.MemberResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

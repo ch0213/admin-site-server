@@ -1,9 +1,9 @@
 package admin.adminsiteserver.member.application;
 
 import admin.adminsiteserver.member.domain.Member;
-import admin.adminsiteserver.member.dto.response.MemberResponse;
+import admin.adminsiteserver.member.ui.response.MemberResponse;
 import admin.adminsiteserver.member.domain.MemberRepository;
-import admin.adminsiteserver.member.dto.response.MembersResponse;
+import admin.adminsiteserver.member.ui.response.MembersResponse;
 import admin.adminsiteserver.member.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

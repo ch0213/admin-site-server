@@ -1,4 +1,4 @@
-package admin.adminsiteserver.member.dto.response;
+package admin.adminsiteserver.member.ui.response;
 
 import admin.adminsiteserver.common.dto.PageInfo;
 import lombok.AccessLevel;
