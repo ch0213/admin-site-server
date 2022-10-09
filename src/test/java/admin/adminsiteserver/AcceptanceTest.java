@@ -1,11 +1,13 @@
 package admin.adminsiteserver;
 
+import admin.adminsiteserver.aws.infrastructure.S3Uploader;
 import admin.adminsiteserver.utils.DatabaseCleanup;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
@@ -16,6 +18,9 @@ public class AcceptanceTest {
 
     @Autowired
     private DatabaseCleanup databaseCleanup;
+
+    @MockBean
+    protected S3Uploader s3Uploader;
 
     @BeforeEach
     public void setUp() {
