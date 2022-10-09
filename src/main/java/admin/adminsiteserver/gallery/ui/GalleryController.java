@@ -7,7 +7,7 @@ import admin.adminsiteserver.gallery.application.dto.GallerySimpleResponse;
 import admin.adminsiteserver.gallery.ui.dto.GalleryCommentRequest;
 import admin.adminsiteserver.gallery.ui.dto.UpdateGalleryRequest;
 import admin.adminsiteserver.gallery.ui.dto.UploadGalleryRequest;
-import admin.adminsiteserver.authentication.util.AuthenticationPrincipal;
+import admin.adminsiteserver.authentication.ui.AuthenticationPrincipal;
 import admin.adminsiteserver.authentication.ui.LoginUserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

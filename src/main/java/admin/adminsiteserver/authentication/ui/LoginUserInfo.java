@@ -3,9 +3,10 @@ package admin.adminsiteserver.authentication.ui;
 import io.jsonwebtoken.Claims;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
+/**
+ * 리팩터링 후 삭제 예정
+ */
 @Getter
 @AllArgsConstructor
 public class LoginUserInfo {

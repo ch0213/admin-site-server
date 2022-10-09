@@ -1,6 +1,5 @@
-package admin.adminsiteserver.common.dto;
+package admin.adminsiteserver.authentication.domain;
 
-import admin.adminsiteserver.authentication.domain.MemberAdapter;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

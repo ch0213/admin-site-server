@@ -9,7 +9,6 @@ import java.util.Collections;
 
 @Getter
 public class MemberAdapter extends User {
-
     private final Member member;
 
     public MemberAdapter(Member member) {

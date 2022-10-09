@@ -4,7 +4,7 @@ import admin.adminsiteserver.announcement.application.AnnouncementQueryService;
 import admin.adminsiteserver.announcement.application.dto.AnnouncementSimpleResponse;
 import admin.adminsiteserver.announcement.ui.dto.AnnouncementCommentRequest;
 import admin.adminsiteserver.common.dto.CommonResponse;
-import admin.adminsiteserver.authentication.util.AuthenticationPrincipal;
+import admin.adminsiteserver.authentication.ui.AuthenticationPrincipal;
 import admin.adminsiteserver.authentication.ui.LoginUserInfo;
 import admin.adminsiteserver.announcement.application.AnnouncementService;
 import admin.adminsiteserver.announcement.application.dto.AnnouncementResponse;

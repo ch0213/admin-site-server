@@ -1,4 +1,4 @@
-package admin.adminsiteserver.authentication.util;
+package admin.adminsiteserver.authentication.ui;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

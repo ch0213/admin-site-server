@@ -1,6 +1,6 @@
 package admin.adminsiteserver.authentication.util;
 
-import admin.adminsiteserver.authentication.dto.response.JwtTokenDto;
+import admin.adminsiteserver.authentication.ui.response.TokenResponse;
 import admin.adminsiteserver.member.domain.Member;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -21,23 +21,25 @@ import static io.jsonwebtoken.SignatureAlgorithm.*;
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
-
     private static final String AUTHORIZATION = "Authorization";
     private static final String BEARER = "Bearer";
     private static final String TOKEN_DELIMITER = " ";
     private static final long ACCESS_TOKEN_VALID_TIME = 30 * 60 * 1000L;
-    private static final long REFRESH_TOKEN_VALID_TIME  = 30 * 60 * 1000L * 2 * 24;
+    private static final long REFRESH_TOKEN_VALID_TIME = 30 * 60 * 1000L * 2 * 24;
 
     @Value("${security.jwt.token.secret-key}")
-    private String SECRET_KEY;
+    private String secretKey;
+
+    @Value("${security.jwt.token.refresh-key}")
+    private String refreshKey;
 
     private final UserDetailsService userDetailsService;
 
-    public JwtTokenDto createTokens(Member member) {
-        String accessToken = createToken(member, SECRET_KEY, ACCESS_TOKEN_VALID_TIME);
-        String refreshToken = createToken(member, SECRET_KEY, REFRESH_TOKEN_VALID_TIME);
+    public TokenResponse createTokens(Member member) {
+        String accessToken = createToken(member, secretKey, ACCESS_TOKEN_VALID_TIME);
+        String refreshToken = createToken(member, refreshKey, REFRESH_TOKEN_VALID_TIME);
 
-        return new JwtTokenDto(accessToken, refreshToken);
+        return new TokenResponse(accessToken, refreshToken);
     }
 
     public Authentication getAuthentication(String token) {
@@ -63,7 +65,7 @@ public class JwtTokenProvider {
     }
 
     private String extractUserId(String token) {
-        return Jwts.parser().setSigningKey(SECRET_KEY)
+        return Jwts.parser().setSigningKey(secretKey)
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
@@ -81,7 +83,7 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
         } catch (Exception e) {
             return false;

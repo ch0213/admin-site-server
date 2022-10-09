@@ -3,7 +3,7 @@ package admin.adminsiteserver.qna.application;
 import admin.adminsiteserver.aws.infrastructure.S3Uploader;
 import admin.adminsiteserver.common.dto.CommonResponse;
 import admin.adminsiteserver.common.dto.PageInfo;
-import admin.adminsiteserver.authentication.util.AuthenticationPrincipal;
+import admin.adminsiteserver.authentication.ui.AuthenticationPrincipal;
 import admin.adminsiteserver.authentication.ui.LoginUserInfo;
 import admin.adminsiteserver.qna.application.dto.QnaResponse;
 import admin.adminsiteserver.qna.application.dto.QnaSimpleResponse;

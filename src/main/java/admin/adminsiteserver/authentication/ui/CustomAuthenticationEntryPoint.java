@@ -1,7 +1,7 @@
-package admin.adminsiteserver.authentication.util;
+package admin.adminsiteserver.authentication.ui;
 
 import admin.adminsiteserver.common.exception.ErrorResponse;
-import admin.adminsiteserver.authentication.exception.PermissionDeniedException;
+import admin.adminsiteserver.common.exception.PermissionDeniedException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.AuthenticationException;
@@ -18,7 +18,6 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 @Component
 @RequiredArgsConstructor
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
-
     private static final String APPLICATION_JSON = "application/json; charset:UTF-8";
     private final ObjectMapper objectMapper;
 
@@ -28,10 +27,10 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     }
 
     public void createErrorResponse(HttpServletResponse response) throws IOException {
-        response.setStatus(FORBIDDEN.value());
-        response.setContentType(APPLICATION_JSON);
         objectMapper.getFactory().configure(ESCAPE_NON_ASCII.mappedFeature(), true);
         String responseData = objectMapper.writeValueAsString(ErrorResponse.from(new PermissionDeniedException()));
         response.getWriter().write(responseData);
+        response.setStatus(FORBIDDEN.value());
+        response.setContentType(APPLICATION_JSON);
     }
 }
