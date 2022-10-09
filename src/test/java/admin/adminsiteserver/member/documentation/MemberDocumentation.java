@@ -2,7 +2,6 @@ package admin.adminsiteserver.member.documentation;
 
 import admin.adminsiteserver.Documentation;
 import admin.adminsiteserver.authentication.domain.MemberAdapter;
-import admin.adminsiteserver.authentication.util.JwtTokenProvider;
 import admin.adminsiteserver.member.application.MemberQueryService;
 import admin.adminsiteserver.member.application.MemberService;
 import admin.adminsiteserver.member.ui.response.MemberResponse;
@@ -18,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.HashMap;
@@ -39,27 +37,16 @@ class MemberDocumentation extends Documentation {
     @MockBean
     MemberService memberService;
 
-    @MockBean
-    JwtTokenProvider jwtTokenProvider;
-
-    @MockBean
-    AuthenticationEntryPoint authenticationEntryPoint;
-
     @BeforeEach
     public void setUp(WebApplicationContext context, RestDocumentationContextProvider restDocumentation) {
         super.setUp(context, restDocumentation);
-
-        MemberAdapter memberAdapter = new MemberAdapter(회원_생성());
-        when(jwtTokenProvider.getAuthentication(any()))
-                .thenReturn(new UsernamePasswordAuthenticationToken(memberAdapter, "", memberAdapter.getAuthorities()));
-        when(jwtTokenProvider.extractToken(any())).thenReturn("");
-        when(jwtTokenProvider.validateToken(any())).thenReturn(true);
+        setJwtTokenProvider(회원생성(), "", true);
     }
 
     @DisplayName("회원 가입을 한다.")
     @Test
     void signup() {
-        when(memberService.signUp(any())).thenReturn(회원_생성().getId());
+        when(memberService.signUp(any())).thenReturn(회원생성().getId());
 
         Map<String, Object> params = new HashMap<>();
         params.put("email", EMAIL);
@@ -109,7 +96,7 @@ class MemberDocumentation extends Documentation {
     @DisplayName("내 정보를 조회한다.")
     @Test
     void findMe() {
-        when(memberQueryService.findById(any())).thenReturn(MemberResponse.from(회원_생성()));
+        when(memberQueryService.findById(any())).thenReturn(MemberResponse.from(회원생성()));
 
         given().log().all()
                 .header("Authorization", "Bearer " + ACCESS_TOKEN)
@@ -125,7 +112,7 @@ class MemberDocumentation extends Documentation {
     @DisplayName("아이디로 회원을 조회한다.")
     @Test
     void findMemberById() {
-        when(memberQueryService.findById(any())).thenReturn(MemberResponse.from(회원_생성()));
+        when(memberQueryService.findById(any())).thenReturn(MemberResponse.from(회원생성()));
 
         given().log().all()
                 .header("Authorization", "Bearer " + ACCESS_TOKEN)

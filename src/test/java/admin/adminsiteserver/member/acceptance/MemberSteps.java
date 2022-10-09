@@ -114,22 +114,4 @@ public class MemberSteps {
                 () -> assertThat(memberResponse.getPhoneNumber()).isEqualTo(phoneNumber)
         );
     }
-
-    public static ExtractableResponse<Response> 로그인되어_있음(String email, String password) {
-        var response = 로그인_요청(email, password);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        return response;
-    }
-
-    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-
-        return given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login")
-                .then().log().all().extract();
-    }
 }

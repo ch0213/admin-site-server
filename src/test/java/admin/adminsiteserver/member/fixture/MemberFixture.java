@@ -10,6 +10,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 import java.io.File;
 import java.util.List;
 
+import static admin.adminsiteserver.member.domain.RoleType.ADMIN;
 import static admin.adminsiteserver.member.domain.RoleType.MEMBER;
 
 public class MemberFixture {
@@ -33,8 +34,20 @@ public class MemberFixture {
 
     public static final String ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
 
-    public static Member 회원_생성() {
+    public static Member 회원생성() {
         return new Member(ID, EMAIL, PASSWORD, NAME, STUDENT_NUMBER, PHONE_NUMBER, false, IMAGE_MULTIPART_FILE, MEMBER);
+    }
+
+    public static Member 관리자생성() {
+        return new Member(ID, EMAIL, PASSWORD, NAME, STUDENT_NUMBER, PHONE_NUMBER, false, IMAGE_MULTIPART_FILE, ADMIN);
+    }
+
+    public static Member 회장생성() {
+        return new Member(ID, EMAIL, PASSWORD, NAME, STUDENT_NUMBER, PHONE_NUMBER, false, IMAGE_MULTIPART_FILE, ADMIN);
+    }
+
+    public static Member 임원생성() {
+        return new Member(ID, EMAIL, PASSWORD, NAME, STUDENT_NUMBER, PHONE_NUMBER, false, IMAGE_MULTIPART_FILE, ADMIN);
     }
 
     public static MembersResponse 회원목록_생성() {
