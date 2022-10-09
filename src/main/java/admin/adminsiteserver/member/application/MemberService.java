@@ -27,35 +27,46 @@ public class MemberService {
     private final S3Uploader s3Uploader;
 
     public Long signUp(SignUpRequest request) {
-        Member member = request.toMember(passwordEncoder.encode(request.getPassword()));
-        checkAlreadyExist(member);
+        String password = passwordEncoder.encode(request.getPassword());
+        Member member = request.toEntity(password);
+        validateAlreadyExist(member);
 
-        Member signupMember = memberRepository.save(member);
-        saveImage(signupMember, request);
-
-        return signupMember.getId();
+        Member saveMember = memberRepository.save(member);
+        saveImage(saveMember, request);
+        return saveMember.getId();
     }
 
-    private void checkAlreadyExist(Member member) {
+    public void update(Long id, UpdateMemberRequest request) {
+        Member member = findMemberById(id);
+        validateStudentNumber(member, request.getStudentNumber());
+
+        member.update(request.getName(), request.getStudentNumber(), request.getPhoneNumber());
+    }
+
+    public void updatePassword(Long id, UpdatePasswordRequest request) {
+        Member member = findMemberById(id);
+        String newPassword = passwordEncoder.encode(request.getPassword());
+        member.updatePassword(newPassword);
+    }
+
+    public void updateProfileImage(Long id, MultipartFile image) {
+        Member member = findMemberById(id);
+        FilePath filePath = s3Uploader.upload(image, MEMBER_IMAGE_PATH);
+        member.updateImage(filePath.getFileName(), filePath.getFileUrl());
+    }
+
+    public void delete(Long id) {
+        Member member = findMemberById(id);
+        member.delete();
+    }
+
+    private void validateAlreadyExist(Member member) {
         String email = member.getEmail();
         String studentNumber = member.getStudentNumber();
 
         if (memberRepository.existsByEmailOrStudentNumberAndDeletedFalse(email, studentNumber)) {
             throw new MemberAlreadyExistException();
         }
-    }
-
-    private void saveImage(Member member, SignUpRequest request) {
-        if (request.hasImage()) {
-            FilePath filePath = s3Uploader.upload(request.getImage(), MEMBER_IMAGE_PATH);
-            member.updateImage(filePath.getFileName(), filePath.getFileUrl());
-        }
-    }
-
-    public void update(Long id, UpdateMemberRequest request) {
-        Member member = findMemberById(id);
-        validateStudentNumber(member, request.getStudentNumber());
-        member.update(request.getName(), request.getStudentNumber(), request.getPhoneNumber());
     }
 
     private void validateStudentNumber(Member member, String studentNumber) {
@@ -68,20 +79,11 @@ public class MemberService {
         }
     }
 
-    public void updatePassword(Long id, UpdatePasswordRequest request) {
-        Member member = findMemberById(id);
-        member.updatePassword(passwordEncoder.encode(request.getPassword()));
-    }
-
-    public void updateImage(Long id, MultipartFile image) {
-        Member member = findMemberById(id);
-        FilePath filePath = s3Uploader.upload(image, MEMBER_IMAGE_PATH);
-        member.updateImage(filePath.getFileName(), filePath.getFileUrl());
-    }
-
-    public void delete(Long id) {
-        Member member = findMemberById(id);
-        member.delete();
+    private void saveImage(Member member, SignUpRequest request) {
+        if (request.hasImage()) {
+            FilePath filePath = s3Uploader.upload(request.getImage(), MEMBER_IMAGE_PATH);
+            member.updateImage(filePath.getFileName(), filePath.getFileUrl());
+        }
     }
 
     private Member findMemberById(Long id) {

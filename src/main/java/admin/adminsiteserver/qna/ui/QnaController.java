@@ -1,7 +1,7 @@
 package admin.adminsiteserver.qna.ui;
 
 import admin.adminsiteserver.common.dto.CommonResponse;
-import admin.adminsiteserver.authentication.util.AuthenticationPrincipal;
+import admin.adminsiteserver.authentication.ui.AuthenticationPrincipal;
 import admin.adminsiteserver.authentication.ui.LoginUserInfo;
 import admin.adminsiteserver.qna.application.QnaService;
 import admin.adminsiteserver.qna.application.dto.*;

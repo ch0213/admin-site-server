@@ -33,13 +33,13 @@ public class LevelUp extends BaseTimeEntity {
 
     public LevelUp(String userEmail, String role, boolean processed, Member member) {
         this.userEmail = userEmail;
-        this.role = RoleType.matchRole(role);
+        this.role = RoleType.from(role);
         this.processed = processed;
         this.member = member;
     }
 
     public void updateRole(String newRole) {
-        this.role = RoleType.matchRole(newRole);
+        this.role = RoleType.from(newRole);
     }
 
     public String registerUserId() {

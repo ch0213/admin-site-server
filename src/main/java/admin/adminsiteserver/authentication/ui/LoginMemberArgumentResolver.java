@@ -1,8 +1,7 @@
 package admin.adminsiteserver.authentication.ui;
 
 import admin.adminsiteserver.authentication.domain.MemberAdapter;
-import admin.adminsiteserver.authentication.util.AuthenticationPrincipal;
-import admin.adminsiteserver.common.dto.LoginMember;
+import admin.adminsiteserver.authentication.domain.LoginMember;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.support.WebDataBinderFactory;

@@ -1,4 +1,4 @@
-package admin.adminsiteserver.authentication.dto.response;
+package admin.adminsiteserver.authentication.ui.response;
 
 import admin.adminsiteserver.member.domain.Member;
 import lombok.AllArgsConstructor;
@@ -15,9 +15,9 @@ public class LoginResponse {
     private String studentNumber;
     private String phoneNumber;
     private String role;
-    private JwtTokenDto tokens;
+    private TokenResponse tokens;
 
-    public static LoginResponse of(Member member, JwtTokenDto tokens) {
+    public static LoginResponse of(Member member, TokenResponse tokens) {
         return new LoginResponse(
                 member.getId(),
                 member.getEmail(),

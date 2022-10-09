@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Getter
-public class WrongPasswordException extends BaseException {
-    public WrongPasswordException() {
-        super("비밀번호가 잘못되었습니다.", LocalDateTime.now(), BAD_REQUEST);
+public class EmptyEmailException extends BaseException {
+    public EmptyEmailException() {
+        super("이메일이 존재하지 않습니다.", LocalDateTime.now(), BAD_REQUEST);
     }
 }

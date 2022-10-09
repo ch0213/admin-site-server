@@ -35,7 +35,7 @@ public class SignUpRequest {
         return image != null;
     }
 
-    public Member toMember(String password) {
+    public Member toEntity(String password) {
         return Member.builder()
                 .email(email)
                 .password(password)

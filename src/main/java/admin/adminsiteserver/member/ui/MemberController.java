@@ -1,7 +1,7 @@
 package admin.adminsiteserver.member.ui;
 
-import admin.adminsiteserver.authentication.util.AuthenticationPrincipal;
-import admin.adminsiteserver.common.dto.LoginMember;
+import admin.adminsiteserver.authentication.ui.AuthenticationPrincipal;
+import admin.adminsiteserver.authentication.domain.LoginMember;
 import admin.adminsiteserver.member.application.MemberQueryService;
 import admin.adminsiteserver.member.application.MemberService;
 import admin.adminsiteserver.member.ui.response.MemberResponse;
@@ -65,7 +65,7 @@ public class MemberController {
     @PutMapping("/me/image")
     public ResponseEntity<Void> updateMemberImage(@Valid UpdateImageRequest request,
                                                   @AuthenticationPrincipal LoginMember member) {
-        memberService.updateImage(member.getId(), request.getImage());
+        memberService.updateProfileImage(member.getId(), request.getImage());
         return ResponseEntity.ok().build();
     }
 

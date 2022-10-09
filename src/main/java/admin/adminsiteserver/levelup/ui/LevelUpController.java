@@ -5,7 +5,7 @@ import admin.adminsiteserver.levelup.application.LevelUpService;
 import admin.adminsiteserver.levelup.application.dto.LevelUpResponse;
 import admin.adminsiteserver.levelup.ui.dto.LevelUpProcessRequest;
 import admin.adminsiteserver.levelup.ui.dto.LevelUpRequest;
-import admin.adminsiteserver.authentication.util.AuthenticationPrincipal;
+import admin.adminsiteserver.authentication.ui.AuthenticationPrincipal;
 import admin.adminsiteserver.authentication.ui.LoginUserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

@@ -1,18 +1,18 @@
 package admin.adminsiteserver.member.acceptance;
 
 import admin.adminsiteserver.AcceptanceTest;
-import admin.adminsiteserver.authentication.dto.response.LoginResponse;
+import admin.adminsiteserver.authentication.ui.response.LoginResponse;
 import admin.adminsiteserver.aws.dto.response.FilePath;
-import admin.adminsiteserver.aws.infrastructure.S3Uploader;
 import admin.adminsiteserver.common.exception.ErrorResponse;
 import admin.adminsiteserver.member.ui.response.MemberResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.multipart.MultipartFile;
 
+import static admin.adminsiteserver.authentication.acceptance.AuthenticationSteps.로그인_요청;
+import static admin.adminsiteserver.authentication.acceptance.AuthenticationSteps.로그인되어_있음;
 import static admin.adminsiteserver.member.acceptance.MemberSteps.*;
 import static admin.adminsiteserver.member.fixture.MemberFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,9 +22,6 @@ import static org.mockito.Mockito.when;
 
 @DisplayName("회원 관련 기능 인수테스트")
 class MemberAcceptanceTest extends AcceptanceTest {
-    @MockBean
-    private S3Uploader s3Uploader;
-
     @BeforeEach
     void init() {
         when(s3Uploader.upload(any(MultipartFile.class), eq("members/")))
