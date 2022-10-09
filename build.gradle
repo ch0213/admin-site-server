@@ -73,12 +73,12 @@ dependencies {
 }
 
 ext {
-	snippetsDir = file('build/generated-snippets')
+    snippetsDir = file('build/generated-snippets')
 }
 
 test {
     useJUnitPlatform()
-	outputs.dir snippetsDir
+    outputs.dir snippetsDir
     finalizedBy 'jacocoTestReport'
 }
 
