@@ -18,7 +18,7 @@ public enum RoleType {
     private final String role;
     private final String description;
 
-    public static RoleType matchRole(String newRole) {
+    public static RoleType from(String newRole) {
         return Arrays.stream(RoleType.values())
                 .filter(roleType -> roleType.getDescription().equals(newRole))
                 .findAny()
