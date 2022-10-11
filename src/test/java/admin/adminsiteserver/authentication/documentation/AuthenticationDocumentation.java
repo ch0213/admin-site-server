@@ -8,7 +8,6 @@ import admin.adminsiteserver.authentication.ui.AuthenticationController;
 import admin.adminsiteserver.authentication.ui.response.LoginResponse;
 import admin.adminsiteserver.authentication.ui.response.TokenResponse;
 import admin.adminsiteserver.member.domain.Member;
-import admin.adminsiteserver.member.domain.MemberRepository;
 import io.restassured.module.mockmvc.response.ValidatableMockMvcResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,29 +16,27 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static admin.adminsiteserver.member.fixture.MemberFixture.회원생성;
+import static admin.adminsiteserver.member.fixture.MemberFixture.*;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 
-@DisplayName("인증 관련 기능 문서화 테스트")
+@DisplayName("인증 문서화 테스트")
 @WebMvcTest(controllers = {AuthenticationController.class})
 class AuthenticationDocumentation extends Documentation {
     @MockBean
     AuthenticationService authenticationService;
 
-    private Member member;
+    private Member member = 회원1.toEntity();
 
     @BeforeEach
     void register() {
-        member = 회원생성();
         setJwtTokenProvider(member, null, false);
     }
 

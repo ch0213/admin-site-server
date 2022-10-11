@@ -1,34 +1,39 @@
 package admin.adminsiteserver.member.documentation;
 
 import admin.adminsiteserver.Documentation;
-import admin.adminsiteserver.authentication.domain.MemberAdapter;
 import admin.adminsiteserver.member.application.MemberQueryService;
 import admin.adminsiteserver.member.application.MemberService;
+import admin.adminsiteserver.member.fixture.MemberFixture;
 import admin.adminsiteserver.member.ui.response.MemberResponse;
 import admin.adminsiteserver.member.exception.MemberAlreadyExistException;
 import admin.adminsiteserver.member.exception.StudentNumberAlreadyExistException;
 import admin.adminsiteserver.member.ui.MemberController;
+import admin.adminsiteserver.member.ui.response.MembersResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static admin.adminsiteserver.member.fixture.MemberFixture.*;
+import static admin.adminsiteserver.member.fixture.MemberInformation.*;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 
-@DisplayName("회원 관련 기능 문서화 테스트")
+@DisplayName("회원 문서화 테스트")
 @WebMvcTest(controllers = {MemberController.class})
 class MemberDocumentation extends Documentation {
     @MockBean
@@ -40,20 +45,14 @@ class MemberDocumentation extends Documentation {
     @BeforeEach
     public void setUp(WebApplicationContext context, RestDocumentationContextProvider restDocumentation) {
         super.setUp(context, restDocumentation);
-        setJwtTokenProvider(회원생성(), "", true);
+        setJwtTokenProvider(회원1.toEntityWithId(), "", true);
     }
 
     @DisplayName("회원 가입을 한다.")
     @Test
     void signup() {
-        when(memberService.signUp(any())).thenReturn(회원생성().getId());
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("email", EMAIL);
-        params.put("password", PASSWORD);
-        params.put("name", NAME);
-        params.put("studentNumber", STUDENT_NUMBER);
-        params.put("phoneNumber", PHONE_NUMBER);
+        when(memberService.signUp(any())).thenReturn(회원1.toEntityWithId().getId());
+        Map<String, Object> params = createParams();
 
         given().log().all()
                 .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -72,13 +71,7 @@ class MemberDocumentation extends Documentation {
     @Test
     void signupExistEmailOrStudentNumber() {
         when(memberService.signUp(any())).thenThrow(new MemberAlreadyExistException());
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("email", EMAIL);
-        params.put("password", PASSWORD);
-        params.put("name", NAME);
-        params.put("studentNumber", STUDENT_NUMBER);
-        params.put("phoneNumber", PHONE_NUMBER);
+        Map<String, Object> params = createParams();
 
         given().log().all()
                 .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -96,7 +89,7 @@ class MemberDocumentation extends Documentation {
     @DisplayName("내 정보를 조회한다.")
     @Test
     void findMe() {
-        when(memberQueryService.findById(any())).thenReturn(MemberResponse.from(회원생성()));
+        when(memberQueryService.findById(any())).thenReturn(MemberResponse.from(회원1.toEntityWithId()));
 
         given().log().all()
                 .header("Authorization", "Bearer " + ACCESS_TOKEN)
@@ -112,7 +105,7 @@ class MemberDocumentation extends Documentation {
     @DisplayName("아이디로 회원을 조회한다.")
     @Test
     void findMemberById() {
-        when(memberQueryService.findById(any())).thenReturn(MemberResponse.from(회원생성()));
+        when(memberQueryService.findById(any())).thenReturn(MemberResponse.from(회원1.toEntityWithId()));
 
         given().log().all()
                 .header("Authorization", "Bearer " + ACCESS_TOKEN)
@@ -128,7 +121,7 @@ class MemberDocumentation extends Documentation {
     @DisplayName("회원 목록을 조회한다.")
     @Test
     void findMembers() {
-        when(memberQueryService.findMembers(any())).thenReturn(회원목록_생성());
+        when(memberQueryService.findMembers(any())).thenReturn(회원목록생성());
 
         given().log().all()
                 .when().get("/members")
@@ -233,5 +226,22 @@ class MemberDocumentation extends Documentation {
                         getDocumentRequest(),
                         getDocumentResponse()))
                 .extract();
+    }
+
+    private MembersResponse 회원목록생성() {
+        List<MemberResponse> members = MemberFixture.members().stream()
+                .map(MemberResponse::from)
+                .collect(Collectors.toUnmodifiableList());
+        return MembersResponse.from(PageableExecutionUtils.getPage(members, PageRequest.of(1, 5), members::size));
+    }
+
+    private Map<String, Object> createParams() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("email", 회원1.getEmail());
+        params.put("password", 회원1.getPassword());
+        params.put("name", 회원1.getName());
+        params.put("studentNumber", 회원1.getStudentNumber());
+        params.put("phoneNumber", 회원1.getPhoneNumber());
+        return params;
     }
 }
