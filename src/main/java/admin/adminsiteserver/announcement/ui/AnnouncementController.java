@@ -28,8 +28,10 @@ public class AnnouncementController {
     private final AnnouncementService announcementService;
 
     @PostMapping
-    public ResponseEntity<Void> create(@Valid @RequestBody AnnouncementRequest request,
-                                       @AuthenticationPrincipal LoginMember loginMember) {
+    public ResponseEntity<Void> create(
+            @Valid @RequestBody AnnouncementRequest request,
+            @AuthenticationPrincipal LoginMember loginMember
+    ) {
         Long announcementId = announcementService.upload(request, loginMember);
         return ResponseEntity.created(URI.create("/announcements/" + announcementId)).build();
     }
