@@ -1,4 +1,4 @@
-package admin.adminsiteserver.announcement.application.dto;
+package admin.adminsiteserver.announcement.ui.response;
 
 import admin.adminsiteserver.announcement.domain.Announcement;
 import lombok.AllArgsConstructor;
@@ -12,18 +12,22 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class AnnouncementSimpleResponse {
     private Long id;
-    private String authorId;
+    private Long authorId;
+    private String getAuthorEmail;
+    private String authorStudentNumber;
     private String authorName;
     private String title;
     private String content;
     private LocalDateTime createAt;
-    private LocalDateTime lastModifiedAt;
+    private LocalDateTime modifiedAt;
 
     public static AnnouncementSimpleResponse from(Announcement announcement) {
         return new AnnouncementSimpleResponse(
                 announcement.getId(),
-                announcement.getAuthorEmail(),
-                announcement.getAuthorName(),
+                announcement.getAuthor().getAuthorId(),
+                announcement.getAuthor().getAuthorEmail(),
+                announcement.getAuthor().getAuthorStudentNumber(),
+                announcement.getAuthor().getAuthorName(),
                 announcement.getTitle(),
                 announcement.getContent(),
                 announcement.getCreatedAt(),

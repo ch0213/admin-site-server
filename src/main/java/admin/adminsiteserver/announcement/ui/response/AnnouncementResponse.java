@@ -1,4 +1,4 @@
-package admin.adminsiteserver.announcement.application.dto;
+package admin.adminsiteserver.announcement.ui.response;
 
 import admin.adminsiteserver.aws.dto.response.FilePath;
 import admin.adminsiteserver.announcement.domain.Announcement;
@@ -15,7 +15,9 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class AnnouncementResponse {
     private Long id;
-    private String authorEmail;
+    private Long authorId;
+    private String getAuthorEmail;
+    private String authorStudentNumber;
     private String authorName;
     private String title;
     private String content;
@@ -27,16 +29,18 @@ public class AnnouncementResponse {
     public static AnnouncementResponse from(Announcement announcement) {
         return new AnnouncementResponse(
                 announcement.getId(),
-                announcement.getAuthorEmail(),
-                announcement.getAuthorName(),
+                announcement.getAuthor().getAuthorId(),
+                announcement.getAuthor().getAuthorEmail(),
+                announcement.getAuthor().getAuthorStudentNumber(),
+                announcement.getAuthor().getAuthorName(),
                 announcement.getTitle(),
                 announcement.getContent(),
                 announcement.getCreatedAt(),
                 announcement.getModifiedAt(),
-                announcement.getFiles().getFiles().stream()
+                announcement.getNotDeletedFilePaths().stream()
                         .map(FilePath::from)
                         .collect(Collectors.toList()),
-                announcement.getComments().getComments().stream()
+                announcement.getNotDeletedComments().stream()
                         .map(AnnouncementCommentResponse::from)
                         .collect(Collectors.toList())
         );

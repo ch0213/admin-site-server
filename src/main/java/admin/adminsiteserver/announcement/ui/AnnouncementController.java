@@ -1,96 +1,95 @@
 package admin.adminsiteserver.announcement.ui;
 
 import admin.adminsiteserver.announcement.application.AnnouncementQueryService;
-import admin.adminsiteserver.announcement.application.dto.AnnouncementSimpleResponse;
-import admin.adminsiteserver.announcement.ui.dto.AnnouncementCommentRequest;
-import admin.adminsiteserver.common.dto.CommonResponse;
+import admin.adminsiteserver.announcement.ui.request.AnnouncementRequest;
+import admin.adminsiteserver.announcement.ui.response.AnnouncementSimpleResponse;
+import admin.adminsiteserver.announcement.ui.request.CommentRequest;
+import admin.adminsiteserver.authentication.domain.LoginMember;
 import admin.adminsiteserver.authentication.ui.AuthenticationPrincipal;
-import admin.adminsiteserver.authentication.ui.LoginUserInfo;
 import admin.adminsiteserver.announcement.application.AnnouncementService;
-import admin.adminsiteserver.announcement.application.dto.AnnouncementResponse;
-import admin.adminsiteserver.announcement.ui.dto.UpdateAnnouncementRequest;
-import admin.adminsiteserver.announcement.ui.dto.UploadAnnouncementRequest;
+import admin.adminsiteserver.announcement.ui.response.AnnouncementResponse;
+import admin.adminsiteserver.common.response.PageResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 
-import static admin.adminsiteserver.announcement.ui.AnnouncementResponseMessage.*;
-
-@Slf4j
 @RestController
 @RequestMapping("/announcements")
 @RequiredArgsConstructor
 public class AnnouncementController {
+    private static final String COMMENT_URI_FORMAT = "/announcements/%d/comments/%d";
 
     private final AnnouncementQueryService announcementQueryService;
     private final AnnouncementService announcementService;
 
     @PostMapping
-    public CommonResponse<AnnouncementResponse> uploadAnnouncement(@Valid @RequestBody UploadAnnouncementRequest request,
-                                                                   @AuthenticationPrincipal LoginUserInfo loginUserInfo) {
-        AnnouncementResponse response = announcementService.upload(request, loginUserInfo);
-        return CommonResponse.of(response, ANNOUNCEMENT_UPLOAD_SUCCESS.getMessage());
+    public ResponseEntity<Void> create(@Valid @RequestBody AnnouncementRequest request,
+                                       @AuthenticationPrincipal LoginMember loginMember) {
+        Long announcementId = announcementService.upload(request, loginMember);
+        return ResponseEntity.created(URI.create("/announcements/" + announcementId)).build();
     }
 
     @PutMapping("/{announcementId}")
-    public CommonResponse<AnnouncementResponse> updateAnnouncement(
-            @Valid @RequestBody UpdateAnnouncementRequest request,
-            @AuthenticationPrincipal LoginUserInfo loginUserInfo,
-            @PathVariable Long announcementId
-    )
-    {
-        AnnouncementResponse announcementResponse = announcementService.update(request, loginUserInfo, announcementId);
-        return CommonResponse.of(announcementResponse, ANNOUNCEMENT_UPDATE_SUCCESS.getMessage());
+    public ResponseEntity<Void> update(
+            @PathVariable Long announcementId,
+            @Valid @RequestBody AnnouncementRequest request,
+            @AuthenticationPrincipal LoginMember loginMember
+    ) {
+        announcementService.update(announcementId, request, loginMember);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{announcementId}")
-    public CommonResponse<Void> deleteAnnouncement(@AuthenticationPrincipal LoginUserInfo loginUserInfo, @PathVariable Long announcementId) {
-        announcementService.delete(announcementId, loginUserInfo);
-        return CommonResponse.from(ANNOUNCEMENT_DELETE_SUCCESS.getMessage());
+    public ResponseEntity<Void> delete(@PathVariable Long announcementId, @AuthenticationPrincipal LoginMember loginMember) {
+        announcementService.delete(announcementId, loginMember);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{announcementId}")
-    public CommonResponse<AnnouncementResponse> findAnnouncement(@PathVariable Long announcementId) {
-        return CommonResponse.of(announcementQueryService.find(announcementId), ANNOUNCEMENT_FIND_SUCCESS.getMessage());
+    public ResponseEntity<AnnouncementResponse> find(@PathVariable Long announcementId) {
+        AnnouncementResponse response = announcementQueryService.getAnnouncement(announcementId);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public CommonResponse<List<AnnouncementSimpleResponse>> findAllAnnouncement(Pageable pageable) {
-        return announcementQueryService.findAll(pageable);
+    public ResponseEntity<PageResponse<List<AnnouncementSimpleResponse>>> findAll(Pageable pageable) {
+        PageResponse<List<AnnouncementSimpleResponse>> response = announcementQueryService.getAnnouncements(pageable);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/{announcementId}/comments")
-    public CommonResponse<Void> uploadComment(
+    public ResponseEntity<Void> createComment(
             @PathVariable Long announcementId,
-            @Valid @RequestBody AnnouncementCommentRequest request,
-            @AuthenticationPrincipal LoginUserInfo loginUserInfo
+            @Valid @RequestBody CommentRequest request,
+            @AuthenticationPrincipal LoginMember loginMember
     ) {
-        announcementService.addComment(announcementId, request, loginUserInfo);
-        return CommonResponse.from(COMMENT_UPLOAD_SUCCESS.getMessage());
+        Long commentId = announcementService.addComment(announcementId, request, loginMember);
+        return ResponseEntity.created(URI.create(String.format(COMMENT_URI_FORMAT, announcementId, commentId))).build();
     }
 
     @PutMapping("/{announcementId}/comments/{commentId}")
-    public CommonResponse<Void> updateComment(
+    public ResponseEntity<Void> updateComment(
             @PathVariable Long announcementId,
             @PathVariable Long commentId,
-            @Valid @RequestBody AnnouncementCommentRequest request,
-            @AuthenticationPrincipal LoginUserInfo loginUserInfo
+            @Valid @RequestBody CommentRequest request,
+            @AuthenticationPrincipal LoginMember loginMember
     ) {
-        announcementService.updateComment(announcementId, commentId, request, loginUserInfo);
-        return CommonResponse.from(COMMENT_UPDATE_SUCCESS.getMessage());
+        announcementService.updateComment(announcementId, commentId, request, loginMember);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{announcementId}/comments/{commentId}")
-    public CommonResponse<Void> deleteComment(
+    public ResponseEntity<Void> deleteComment(
             @PathVariable Long announcementId,
             @PathVariable Long commentId,
-            @AuthenticationPrincipal LoginUserInfo loginUserInfo
+            @AuthenticationPrincipal LoginMember loginMember
     ) {
-        announcementService.deleteComment(announcementId, commentId, loginUserInfo);
-        return CommonResponse.from(COMMENT_DELETE_SUCCESS.getMessage());
+        announcementService.deleteComment(announcementId, commentId, loginMember);
+        return ResponseEntity.noContent().build();
     }
 }
