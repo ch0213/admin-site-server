@@ -30,7 +30,7 @@ public class GlobalExceptionController {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception exception) {
-        return new ResponseEntity<>(ErrorResponse.from("예상치 못한 에러입니다."), INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(ErrorResponse.from("예상치 못한 에러입니다. 관리자에게 문의해주세요."), INTERNAL_SERVER_ERROR);
     }
 
     private Map<String, String> extractErrorMessages(BindException exception) {
