@@ -41,10 +41,12 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/signup", "/login").permitAll()
-                .antMatchers("/members/**", "/members").permitAll()
-                .antMatchers(GET, "/announcements/**", "/gallerys/**", "/qnas/**", "/calendars/**").permitAll()
-                .antMatchers(GET, "/levelups/**").hasRole("ADMIN")
-                .antMatchers(POST, "/levelups/**/approve", "/levelups/**/reject").hasRole("ADMIN")
+                .antMatchers("/members", "/members/**").permitAll()
+                .antMatchers("/announcements/**/comments", "/announcements/**/comments/**").hasAnyRole("ADMIN", "PRESIDENT", "OFFICER", "MEMBER")
+                .antMatchers(GET, "/announcements", "/announcements/**").permitAll()
+                .antMatchers(POST, "/announcements", "/announcements/**").hasAnyRole("ADMIN", "PRESIDENT", "OFFICER")
+                .antMatchers(PUT, "/announcements", "/announcements/**").hasAnyRole("ADMIN", "PRESIDENT", "OFFICER")
+                .antMatchers(DELETE, "/announcements", "/announcements/**").hasAnyRole("ADMIN", "PRESIDENT", "OFFICER")
                 .and()
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
         return http.build();
