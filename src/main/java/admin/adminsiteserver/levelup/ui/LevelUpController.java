@@ -1,6 +1,6 @@
 package admin.adminsiteserver.levelup.ui;
 
-import admin.adminsiteserver.common.dto.CommonResponse;
+import admin.adminsiteserver.common.response.CommonResponse;
 import admin.adminsiteserver.levelup.application.LevelUpService;
 import admin.adminsiteserver.levelup.application.dto.LevelUpResponse;
 import admin.adminsiteserver.levelup.ui.dto.LevelUpProcessRequest;

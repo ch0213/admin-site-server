@@ -4,7 +4,7 @@ import admin.adminsiteserver.calendar.application.CalendarService;
 import admin.adminsiteserver.calendar.application.dto.CalendarResponse;
 import admin.adminsiteserver.calendar.ui.dto.CalendarRequest;
 import admin.adminsiteserver.calendar.ui.dto.InquireCalendarRequest;
-import admin.adminsiteserver.common.dto.CommonResponse;
+import admin.adminsiteserver.common.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,4 +1,4 @@
-package admin.adminsiteserver.common.dto;
+package admin.adminsiteserver.common.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -14,10 +14,10 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.*;
 public class CommonResponse<T> {
 
     private T data;
-    private PageInfo pageInfo;
+    private PageInformation pageInfo;
     private String message;
 
-    public static <T> CommonResponse<T> of(T data, PageInfo pageInfo, String message) {
+    public static <T> CommonResponse<T> of(T data, PageInformation pageInfo, String message) {
         return new CommonResponse<>(data, pageInfo, message);
     }
 
