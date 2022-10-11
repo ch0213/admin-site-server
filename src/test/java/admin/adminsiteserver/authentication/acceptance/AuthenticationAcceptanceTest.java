@@ -18,7 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-@DisplayName("인증 관련 기능 인수테스트")
+@DisplayName("인증 인수테스트")
 class AuthenticationAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     void init() {
