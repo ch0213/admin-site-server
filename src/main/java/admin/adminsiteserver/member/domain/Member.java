@@ -1,5 +1,6 @@
 package admin.adminsiteserver.member.domain;
 
+import admin.adminsiteserver.common.domain.RoleType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

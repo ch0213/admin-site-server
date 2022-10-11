@@ -1,4 +1,4 @@
-package admin.adminsiteserver.member.domain;
+package admin.adminsiteserver.common.domain;
 
 import admin.adminsiteserver.levelup.exception.NonExistentRoleException;
 import lombok.Getter;

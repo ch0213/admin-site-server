@@ -1,6 +1,7 @@
 package admin.adminsiteserver.authentication.domain;
 
 import admin.adminsiteserver.member.domain.Member;
+import admin.adminsiteserver.common.domain.RoleType;
 import lombok.Getter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -30,5 +31,9 @@ public class MemberAdapter extends User {
 
     public String getName() {
         return member.getName();
+    }
+
+    public RoleType getRoleType() {
+        return member.getRole();
     }
 }

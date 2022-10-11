@@ -1,7 +1,7 @@
 package admin.adminsiteserver.member.ui.request;
 
 import admin.adminsiteserver.member.domain.Member;
-import admin.adminsiteserver.member.domain.RoleType;
+import admin.adminsiteserver.common.domain.RoleType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
