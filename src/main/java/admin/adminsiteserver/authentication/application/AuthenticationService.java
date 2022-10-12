@@ -19,10 +19,14 @@ public class AuthenticationService {
     private final JwtTokenProvider jwtTokenProvider;
 
     public LoginResponse login(LoginRequest loginRequest) {
-        Member member = memberRepository.findByEmail(loginRequest.getEmail())
-                .orElseThrow(MemberNotFoundException::new);
+        Member member = findByEmail(loginRequest);
         validatePassword(loginRequest, member);
         return LoginResponse.of(member, jwtTokenProvider.createTokens(member));
+    }
+
+    private Member findByEmail(LoginRequest loginRequest) {
+        return memberRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(MemberNotFoundException::new);
     }
 
     private void validatePassword(LoginRequest request, Member member) {

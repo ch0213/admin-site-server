@@ -18,11 +18,15 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Member member = memberRepository.findById(Long.valueOf(username))
-                .orElseThrow(MemberNotFoundException::new);
-        if (!member.hasEmail()) {
-            throw new EmptyEmailException();
+        Member member = findById(username);
+        if (member.hasEmail()) {
+            return new MemberAdapter(member);
         }
-        return new MemberAdapter(member);
+        throw new EmptyEmailException();
+    }
+
+    private Member findById(String username) {
+        return memberRepository.findById(Long.valueOf(username))
+                .orElseThrow(MemberNotFoundException::new);
     }
 }
