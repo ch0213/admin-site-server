@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
+import static admin.adminsiteserver.member.acceptance.MemberSteps.회원정보_변경_요청;
 import static admin.adminsiteserver.member.fixture.MemberFixture.*;
 import static admin.adminsiteserver.announcement.acceptance.AnnouncementSteps.*;
 import static admin.adminsiteserver.authentication.acceptance.AuthenticationSteps.로그인되어_있음;
@@ -354,6 +355,24 @@ class AnnouncementAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.jsonPath().getList("data")).hasSize(3),
                 () -> assertThat(response.jsonPath().getList("data.title", String.class))
                         .containsExactly("동아리 해커톤 기획안_진짜_최종_제출", "동아리 해커톤 기획안_진짜_최종(진)", "동아리 해커톤 기획안_진짜_최종")
+        );
+    }
+
+    @DisplayName("회원 정보가 변경되면 공지사항의 작성자에 변경 정보가 반영된다.")
+    @Test
+    void updateMember() {
+        String 임원토큰 = 로그인되어_있음(임원1.getEmail(), 임원1.getPassword());
+        공지사항_등록_요청(임원토큰, "개강총회 일정 공지", "10월 22일 17시입니다.");
+        공지사항_등록_요청(임원토큰, "종강총회 일정 공지", "12월 15일 17시입니다.");
+
+        회원정보_변경_요청(임원토큰, "개명했어요", "202300000", "01012344321");
+
+        var response = 공지사항_목록_조회_요청(임원토큰, 0, 3);
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.jsonPath().getList("data")).hasSize(2),
+                () -> assertThat(response.jsonPath().getList("data.authorName", String.class))
+                        .containsExactly("개명했어요", "개명했어요")
         );
     }
 
