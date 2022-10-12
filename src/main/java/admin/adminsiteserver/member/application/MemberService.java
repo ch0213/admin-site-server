@@ -38,28 +38,28 @@ public class MemberService {
         return saveMember.getId();
     }
 
-    public void update(Long id, UpdateMemberRequest request) {
-        Member member = findMemberById(id);
+    public void update(Long memberId, UpdateMemberRequest request) {
+        Member member = findById(memberId);
         validateStudentNumber(member, request.getStudentNumber());
 
         member.update(request.getName(), request.getStudentNumber(), request.getPhoneNumber());
         memberEventPublisher.update(createAuthor(member));
     }
 
-    public void updatePassword(Long id, UpdatePasswordRequest request) {
-        Member member = findMemberById(id);
+    public void updatePassword(Long memberId, UpdatePasswordRequest request) {
+        Member member = findById(memberId);
         String newPassword = passwordEncoder.encode(request.getPassword());
         member.updatePassword(newPassword);
     }
 
-    public void updateProfileImage(Long id, MultipartFile image) {
-        Member member = findMemberById(id);
+    public void updateProfileImage(Long memberId, MultipartFile image) {
+        Member member = findById(memberId);
         FilePath filePath = s3Uploader.upload(image, MEMBER_IMAGE_PATH);
         member.updateImage(filePath.getFileName(), filePath.getFileUrl());
     }
 
-    public void delete(Long id) {
-        Member member = findMemberById(id);
+    public void delete(Long memberId) {
+        Member member = findById(memberId);
         member.delete();
     }
 
@@ -89,7 +89,7 @@ public class MemberService {
         }
     }
 
-    private Member findMemberById(Long id) {
+    private Member findById(Long id) {
         return memberRepository.findById(id).orElseThrow(MemberNotFoundException::new);
     }
 
