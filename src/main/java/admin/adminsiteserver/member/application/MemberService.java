@@ -2,6 +2,7 @@ package admin.adminsiteserver.member.application;
 
 import admin.adminsiteserver.aws.infrastructure.S3Uploader;
 import admin.adminsiteserver.aws.dto.response.FilePath;
+import admin.adminsiteserver.common.vo.Author;
 import admin.adminsiteserver.member.domain.Member;
 import admin.adminsiteserver.member.domain.MemberRepository;
 import admin.adminsiteserver.member.exception.MemberAlreadyExistException;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class MemberService {
     private static final String MEMBER_IMAGE_PATH = "members/";
 
+    private final MemberEventPublisher memberEventPublisher;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final S3Uploader s3Uploader;
@@ -41,6 +43,7 @@ public class MemberService {
         validateStudentNumber(member, request.getStudentNumber());
 
         member.update(request.getName(), request.getStudentNumber(), request.getPhoneNumber());
+        memberEventPublisher.update(createAuthor(member));
     }
 
     public void updatePassword(Long id, UpdatePasswordRequest request) {
@@ -88,5 +91,9 @@ public class MemberService {
 
     private Member findMemberById(Long id) {
         return memberRepository.findById(id).orElseThrow(MemberNotFoundException::new);
+    }
+
+    private Author createAuthor(Member member) {
+        return new Author(member.getId(), member.getEmail(), member.getStudentNumber(), member.getName(), member.getRole());
     }
 }
