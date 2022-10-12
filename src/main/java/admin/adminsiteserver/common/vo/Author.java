@@ -56,6 +56,10 @@ public class Author implements Comparable<Author> {
         return roleType == RoleType.GUEST;
     }
 
+    public boolean equalsId(Author author) {
+        return this.authorId.equals(author.authorId);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
