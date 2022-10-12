@@ -36,6 +36,10 @@ public class AnnouncementComments {
         comment.update(content, author);
     }
 
+    public void updateAuthor(Author author) {
+        this.comments.forEach(comment -> comment.updateAuthor(author));
+    }
+
     public void delete(Long commentId, Author author) {
         AnnouncementComment comment = findById(commentId);
         comment.delete(author);

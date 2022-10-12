@@ -1,5 +1,6 @@
 package admin.adminsiteserver.announcement.domain;
 
+import admin.adminsiteserver.common.vo.Author;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.CascadeType;
@@ -37,4 +38,6 @@ public class AnnouncementFilePaths {
                 .filter(AnnouncementFilePath::notDeleted)
                 .collect(Collectors.toUnmodifiableList());
     }
+
+
 }

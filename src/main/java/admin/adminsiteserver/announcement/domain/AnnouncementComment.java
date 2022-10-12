@@ -41,6 +41,12 @@ public class AnnouncementComment extends BaseTimeEntity {
         this.comment = comment;
     }
 
+    public void updateAuthor(Author author) {
+        if (this.author.equalsId(author)) {
+            this.author = author;
+        }
+    }
+
     public void delete(Author author) {
         validateAuthority(author);
         this.deleted = true;
