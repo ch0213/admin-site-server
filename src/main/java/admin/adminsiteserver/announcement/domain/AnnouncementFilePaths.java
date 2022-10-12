@@ -38,6 +38,4 @@ public class AnnouncementFilePaths {
                 .filter(AnnouncementFilePath::notDeleted)
                 .collect(Collectors.toUnmodifiableList());
     }
-
-
 }
