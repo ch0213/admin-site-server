@@ -17,9 +17,7 @@ public interface AnnouncementRepository {
 
     Optional<Announcement> findByIdAndDeletedIsFalse(Long id);
 
-    Page<Announcement> findAll(Pageable pageable);
-
-    Page<Announcement> findAllByDeletedIsFalse(Pageable pageable);
+    Page<Announcement> findAllByDeletedIsFalse(Long announcementId, Pageable pageable);
 
     List<Announcement> findAllByDeletedIsFalse();
 }

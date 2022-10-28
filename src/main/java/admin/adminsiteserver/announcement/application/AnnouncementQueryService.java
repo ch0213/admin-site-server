@@ -23,14 +23,14 @@ import java.util.List;
 public class AnnouncementQueryService {
     private final AnnouncementRepository announcementRepository;
 
-    public AnnouncementResponse getAnnouncement(Long announcementId) {
+    public AnnouncementResponse announcement(Long announcementId) {
         Announcement announcement = findById(announcementId);
         return AnnouncementResponse.from(announcement);
     }
 
-    public PageResponse<List<AnnouncementSimpleResponse>> getAnnouncements(Pageable pageable) {
+    public PageResponse<List<AnnouncementSimpleResponse>> announcements(Long announcementId, Pageable pageable) {
         Pageable param = getSortedPageable(pageable);
-        Page<AnnouncementSimpleResponse> announcements = findAll(param);
+        Page<AnnouncementSimpleResponse> announcements = findAll(announcementId, param);
         return PageResponse.of(announcements.getContent(), PageInformation.from(announcements));
     }
 
@@ -39,8 +39,8 @@ public class AnnouncementQueryService {
                 .orElseThrow(AnnouncementNotFoundException::new);
     }
 
-    private Page<AnnouncementSimpleResponse> findAll(Pageable sortedPageable) {
-        return announcementRepository.findAllByDeletedIsFalse(sortedPageable)
+    private Page<AnnouncementSimpleResponse> findAll(Long announcementId, Pageable pageable) {
+        return announcementRepository.findAllByDeletedIsFalse(announcementId, pageable)
                 .map(AnnouncementSimpleResponse::from);
     }
 

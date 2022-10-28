@@ -50,9 +50,10 @@ public class AnnouncementSteps {
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 공지사항_목록_조회_요청(String token, int page, int size) {
+    public static ExtractableResponse<Response> 공지사항_목록_조회_요청(String token, Long announcementId, int page, int size) {
         return given(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .queryParam("announcementId", "" + announcementId)
                 .queryParam("page", "" + page)
                 .queryParam("size", "" + size)
                 .when().get("/announcements")

@@ -54,13 +54,13 @@ public class AnnouncementController {
 
     @GetMapping("/{announcementId}")
     public ResponseEntity<AnnouncementResponse> find(@PathVariable Long announcementId) {
-        AnnouncementResponse response = announcementQueryService.getAnnouncement(announcementId);
+        AnnouncementResponse response = announcementQueryService.announcement(announcementId);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public ResponseEntity<PageResponse<List<AnnouncementSimpleResponse>>> findAll(Pageable pageable) {
-        PageResponse<List<AnnouncementSimpleResponse>> response = announcementQueryService.getAnnouncements(pageable);
+    public ResponseEntity<PageResponse<List<AnnouncementSimpleResponse>>> findAll(@RequestParam Long announcementId, Pageable pageable) {
+        PageResponse<List<AnnouncementSimpleResponse>> response = announcementQueryService.announcements(announcementId, pageable);
         return ResponseEntity.ok(response);
     }
 
