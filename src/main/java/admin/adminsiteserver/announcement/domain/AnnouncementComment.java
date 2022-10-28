@@ -1,8 +1,6 @@
 package admin.adminsiteserver.announcement.domain;
 
 import admin.adminsiteserver.common.domain.BaseTimeEntity;
-import admin.adminsiteserver.common.exception.PermissionDeniedException;
-import admin.adminsiteserver.common.vo.Author;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,7 +16,8 @@ public class AnnouncementComment extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    private String comment;
+    @Embedded
+    private Content comment;
 
     private boolean deleted;
 
@@ -31,24 +30,24 @@ public class AnnouncementComment extends BaseTimeEntity {
 
     public AnnouncementComment(Long id, String comment, Author author) {
         this.id = id;
-        this.comment = comment;
+        this.comment = new Content(comment);
         this.deleted = false;
         this.author = author;
     }
 
     public void update(String comment, Author author) {
-        validateAuthority(author);
-        this.comment = comment;
+        this.author.validate(author);
+        this.comment = new Content(comment);
     }
 
-    public void updateAuthor(Author author) {
+    public void exchange(Author author) {
         if (this.author.equalsId(author)) {
             this.author = author;
         }
     }
 
     public void delete(Author author) {
-        validateAuthority(author);
+        this.author.validate(author);
         this.deleted = true;
     }
 
@@ -56,17 +55,7 @@ public class AnnouncementComment extends BaseTimeEntity {
         this.deleted = true;
     }
 
-    public boolean notDeleted() {
-        return !this.deleted;
-    }
-
-    private void validateAuthority(Author author) {
-        if (!hasAuthority(author)) {
-            throw new PermissionDeniedException();
-        }
-    }
-
-    private boolean hasAuthority(Author author) {
-        return this.author.equals(author) || this.author.compareTo(author) > 0;
+    public String getComment() {
+        return comment.getContent();
     }
 }
