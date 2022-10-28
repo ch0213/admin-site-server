@@ -4,11 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -24,20 +25,28 @@ public class GlobalExceptionController {
 
     @ExceptionHandler(BindException.class)
     public ResponseEntity<ErrorResponse> handleBindException(BindException exception) {
-        Map<String, String> errors = extractErrorMessages(exception);
+        Map<String, String> errors = errors(exception);
         return new ResponseEntity<>(ErrorResponse.of(VALID_ERROR_MESSAGE, errors), BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception exception) {
+        log.error("Internal server error", exception);
         return new ResponseEntity<>(ErrorResponse.from("예상치 못한 에러입니다. 관리자에게 문의해주세요."), INTERNAL_SERVER_ERROR);
     }
 
-    private Map<String, String> extractErrorMessages(BindException exception) {
-        Map<String, String> errors = new HashMap<>();
-        exception.getBindingResult()
+    private Map<String, String> errors(BindException exception) {
+        return exception.getBindingResult()
                 .getAllErrors()
-                .forEach(error -> errors.put(((FieldError) error).getField(), error.getDefaultMessage()));
-        return errors;
+                .stream()
+                .collect(Collectors.toMap(this::field, this::message));
+    }
+
+    private String field(ObjectError error) {
+        return ((FieldError) error).getField();
+    }
+
+    private String message(ObjectError error) {
+        return error.getDefaultMessage();
     }
 }
