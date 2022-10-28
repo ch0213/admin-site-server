@@ -24,8 +24,8 @@ public class AnnouncementFilePaths {
     }
 
     public void update(List<AnnouncementFilePath> files) {
-        this.files.clear();
-        this.files.addAll(files);
+        deleteOldFiles(files);
+        this.files.addAll(newFiles(files));
     }
 
     public void deleteAll() {
@@ -36,5 +36,17 @@ public class AnnouncementFilePaths {
         return this.files.stream()
                 .filter(AnnouncementFilePath::notDeleted)
                 .collect(Collectors.toUnmodifiableList());
+    }
+
+    private void deleteOldFiles(List<AnnouncementFilePath> files) {
+        this.files.stream()
+                .filter(file -> !files.contains(file))
+                .forEach(AnnouncementFilePath::delete);
+    }
+
+    private List<AnnouncementFilePath> newFiles(List<AnnouncementFilePath> files) {
+        return files.stream()
+                .filter(file -> !this.files.contains(file))
+                .collect(Collectors.toList());
     }
 }
