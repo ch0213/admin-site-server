@@ -1,6 +1,5 @@
 package admin.adminsiteserver.announcement.domain;
 
-import admin.adminsiteserver.common.vo.Author;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.CascadeType;

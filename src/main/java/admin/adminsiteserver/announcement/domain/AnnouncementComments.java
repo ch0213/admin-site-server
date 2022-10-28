@@ -1,7 +1,6 @@
 package admin.adminsiteserver.announcement.domain;
 
 import admin.adminsiteserver.announcement.exception.AnnouncementCommentNotFoundException;
-import admin.adminsiteserver.common.vo.Author;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.CascadeType;
@@ -36,8 +35,8 @@ public class AnnouncementComments {
         comment.update(content, author);
     }
 
-    public void updateAuthor(Author author) {
-        this.comments.forEach(comment -> comment.updateAuthor(author));
+    public void exchange(Author author) {
+        this.comments.forEach(comment -> comment.exchange(author));
     }
 
     public void delete(Long commentId, Author author) {
@@ -51,14 +50,18 @@ public class AnnouncementComments {
 
     public List<AnnouncementComment> getNotDeletedComments() {
         return this.comments.stream()
-                .filter(AnnouncementComment::notDeleted)
+                .filter(comment -> !comment.isDeleted())
                 .collect(Collectors.toUnmodifiableList());
     }
 
     private AnnouncementComment findById(Long commentId) {
         return comments.stream()
-                .filter(comment -> comment.getId().equals(commentId))
+                .filter(comment -> isMatch(commentId, comment))
                 .findAny()
                 .orElseThrow(AnnouncementCommentNotFoundException::new);
+    }
+
+    private boolean isMatch(Long commentId, AnnouncementComment comment) {
+        return comment.getId().equals(commentId) && !comment.isDeleted();
     }
 }

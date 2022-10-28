@@ -13,9 +13,9 @@ import java.time.LocalDateTime;
 public class AnnouncementSimpleResponse {
     private Long id;
     private Long authorId;
-    private String getAuthorEmail;
     private String authorStudentNumber;
     private String authorName;
+    private String authorRole;
     private String title;
     private String content;
     private LocalDateTime createAt;
@@ -24,10 +24,10 @@ public class AnnouncementSimpleResponse {
     public static AnnouncementSimpleResponse from(Announcement announcement) {
         return new AnnouncementSimpleResponse(
                 announcement.getId(),
-                announcement.getAuthor().getAuthorId(),
-                announcement.getAuthor().getAuthorEmail(),
-                announcement.getAuthor().getAuthorStudentNumber(),
-                announcement.getAuthor().getAuthorName(),
+                announcement.getAuthor().getMemberId(),
+                announcement.getAuthor().getStudentNumber(),
+                announcement.getAuthor().getName(),
+                announcement.getAuthor().getRoleType().getRole(),
                 announcement.getTitle(),
                 announcement.getContent(),
                 announcement.getCreatedAt(),

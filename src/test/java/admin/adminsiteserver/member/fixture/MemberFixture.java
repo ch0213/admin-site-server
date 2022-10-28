@@ -1,7 +1,6 @@
 package admin.adminsiteserver.member.fixture;
 
 import admin.adminsiteserver.common.domain.RoleType;
-import admin.adminsiteserver.common.vo.Author;
 import admin.adminsiteserver.member.domain.Member;
 import admin.adminsiteserver.member.domain.MemberFilePath;
 import lombok.Getter;
@@ -51,9 +50,5 @@ public enum MemberFixture {
 
     public static List<Member> members() {
         return List.of(회원1.toEntityWithId(), 회원2.toEntity(), 회원.toEntity());
-    }
-
-    public Author getAuthor() {
-        return new Author(id, email, studentNumber, name, roleType);
     }
 }

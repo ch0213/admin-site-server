@@ -1,6 +1,5 @@
 package admin.adminsiteserver.authentication.domain;
 
-import admin.adminsiteserver.common.vo.Author;
 import admin.adminsiteserver.common.domain.RoleType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +24,5 @@ public class LoginMember {
                 memberAdapter.getStudentNumber(),
                 memberAdapter.getName(),
                 memberAdapter.getRoleType());
-    }
-
-    public Author toAuthor() {
-        return new Author(id, email, studentNumber, name, roleType);
     }
 }

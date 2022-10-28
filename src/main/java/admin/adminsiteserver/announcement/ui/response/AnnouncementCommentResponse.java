@@ -13,9 +13,9 @@ import java.time.LocalDateTime;
 public class AnnouncementCommentResponse {
     private Long id;
     private Long authorId;
-    private String getAuthorEmail;
     private String authorStudentNumber;
     private String authorName;
+    private String authorRole;
     private String comment;
     private LocalDateTime createAt;
     private LocalDateTime modifiedAt;
@@ -23,10 +23,10 @@ public class AnnouncementCommentResponse {
     public static AnnouncementCommentResponse from(AnnouncementComment announcementComment) {
         return new AnnouncementCommentResponse(
                 announcementComment.getId(),
-                announcementComment.getAuthor().getAuthorId(),
-                announcementComment.getAuthor().getAuthorEmail(),
-                announcementComment.getAuthor().getAuthorStudentNumber(),
-                announcementComment.getAuthor().getAuthorName(),
+                announcementComment.getAuthor().getMemberId(),
+                announcementComment.getAuthor().getStudentNumber(),
+                announcementComment.getAuthor().getName(),
+                announcementComment.getAuthor().getRoleType().getRole(),
                 announcementComment.getComment(),
                 announcementComment.getCreatedAt(),
                 announcementComment.getModifiedAt()

@@ -1,8 +1,6 @@
 package admin.adminsiteserver.announcement.domain;
 
 import admin.adminsiteserver.common.domain.BaseTimeEntity;
-import admin.adminsiteserver.common.exception.PermissionDeniedException;
-import admin.adminsiteserver.common.vo.Author;
 import lombok.*;
 
 import javax.persistence.*;
@@ -57,21 +55,21 @@ public class Announcement extends BaseTimeEntity {
     }
 
     public void update(String title, String content, List<AnnouncementFilePath> files, Author author) {
-        validateAuthority(author);
+        this.author.validate(author);
         this.title = title;
         this.content = content;
         this.files.update(files);
     }
 
-    public void updateAuthor(Author author) {
+    public void exchange(Author author) {
         if (this.author.equalsId(author)) {
             this.author = author;
         }
-        comments.updateAuthor(author);
+        comments.exchange(author);
     }
 
     public void delete(Author author) {
-        validateAuthority(author);
+        this.author.validate(author);
         this.deleted = true;
         this.files.deleteAll();
         this.comments.deleteAll();
@@ -95,15 +93,5 @@ public class Announcement extends BaseTimeEntity {
 
     public List<AnnouncementFilePath> getNotDeletedFilePaths() {
         return this.files.getNotDeletedFiles();
-    }
-
-    private void validateAuthority(Author author) {
-        if (!hasAuthority(author)) {
-            throw new PermissionDeniedException();
-        }
-    }
-
-    private boolean hasAuthority(Author author) {
-        return this.author.equals(author) || this.author.compareTo(author) > 0;
     }
 }
