@@ -56,12 +56,8 @@ public class AnnouncementComments {
 
     private AnnouncementComment findById(Long commentId) {
         return comments.stream()
-                .filter(comment -> isMatch(commentId, comment))
+                .filter(comment -> comment.isMatch(commentId))
                 .findAny()
                 .orElseThrow(AnnouncementCommentNotFoundException::new);
-    }
-
-    private boolean isMatch(Long commentId, AnnouncementComment comment) {
-        return comment.getId().equals(commentId) && !comment.isDeleted();
     }
 }

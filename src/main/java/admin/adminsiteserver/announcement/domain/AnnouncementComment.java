@@ -55,6 +55,10 @@ public class AnnouncementComment extends BaseTimeEntity {
         this.deleted = true;
     }
 
+    public boolean isMatch(Long id) {
+        return this.id.equals(id) && !deleted;
+    }
+
     public String getComment() {
         return comment.getContent();
     }
