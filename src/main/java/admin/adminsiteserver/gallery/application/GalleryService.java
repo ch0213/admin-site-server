@@ -1,8 +1,8 @@
 package admin.adminsiteserver.gallery.application;
 
 import admin.adminsiteserver.aws.infrastructure.S3Uploader;
-import admin.adminsiteserver.common.dto.CommonResponse;
-import admin.adminsiteserver.common.dto.PageInfo;
+import admin.adminsiteserver.common.response.CommonResponse;
+import admin.adminsiteserver.common.response.PageInformation;
 import admin.adminsiteserver.gallery.application.dto.GalleryResponse;
 import admin.adminsiteserver.gallery.application.dto.GallerySimpleResponse;
 import admin.adminsiteserver.gallery.domain.Gallery;
@@ -116,6 +116,6 @@ public class GalleryService {
         Page<GallerySimpleResponse> gallerys = galleryRepository.findAll(pageRequest)
                 .map(GallerySimpleResponse::from);
 
-        return CommonResponse.of(gallerys.getContent(), PageInfo.from(gallerys), GALLERY_FIND_ALL_SUCCESS.getMessage());
+        return CommonResponse.of(gallerys.getContent(), PageInformation.from(gallerys), GALLERY_FIND_ALL_SUCCESS.getMessage());
     }
 }

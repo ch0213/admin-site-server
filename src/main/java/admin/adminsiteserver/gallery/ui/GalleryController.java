@@ -1,6 +1,6 @@
 package admin.adminsiteserver.gallery.ui;
 
-import admin.adminsiteserver.common.dto.CommonResponse;
+import admin.adminsiteserver.common.response.CommonResponse;
 import admin.adminsiteserver.gallery.application.GalleryService;
 import admin.adminsiteserver.gallery.application.dto.GalleryResponse;
 import admin.adminsiteserver.gallery.application.dto.GallerySimpleResponse;

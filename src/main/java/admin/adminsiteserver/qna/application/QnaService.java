@@ -1,8 +1,8 @@
 package admin.adminsiteserver.qna.application;
 
 import admin.adminsiteserver.aws.infrastructure.S3Uploader;
-import admin.adminsiteserver.common.dto.CommonResponse;
-import admin.adminsiteserver.common.dto.PageInfo;
+import admin.adminsiteserver.common.response.CommonResponse;
+import admin.adminsiteserver.common.response.PageInformation;
 import admin.adminsiteserver.authentication.ui.AuthenticationPrincipal;
 import admin.adminsiteserver.authentication.ui.LoginUserInfo;
 import admin.adminsiteserver.qna.application.dto.QnaResponse;
@@ -158,7 +158,7 @@ public class QnaService {
     public CommonResponse<List<QnaSimpleResponse>> findQnas(Pageable pageable) {
         PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("createdAt").descending());
         Page<QnaSimpleResponse> qnas = qnaRepository.findAll(pageRequest).map(QnaSimpleResponse::from);
-        return CommonResponse.of(qnas.getContent(), PageInfo.from(qnas), INQUIRE_QNA_LIST_SUCCESS.getMessage());
+        return CommonResponse.of(qnas.getContent(), PageInformation.from(qnas), INQUIRE_QNA_LIST_SUCCESS.getMessage());
     }
 
     private void validateAuthorityForAnswer(LoginUserInfo loginUserInfo, Answer findAnswer) {

@@ -1,6 +1,6 @@
 package admin.adminsiteserver.member.ui.response;
 
-import admin.adminsiteserver.common.dto.PageInfo;
+import admin.adminsiteserver.common.response.PageInformation;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,12 +12,12 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class MembersResponse {
     private List<MemberResponse> members;
-    private PageInfo pageInfo;
+    private PageInformation pageInfo;
 
     public static MembersResponse from(Page<MemberResponse> members) {
         return new MembersResponse(
                 members.getContent(),
-                PageInfo.from(members)
+                PageInformation.from(members)
         );
     }
 }

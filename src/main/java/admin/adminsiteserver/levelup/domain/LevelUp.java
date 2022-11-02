@@ -2,7 +2,7 @@ package admin.adminsiteserver.levelup.domain;
 
 import admin.adminsiteserver.common.domain.BaseTimeEntity;
 import admin.adminsiteserver.member.domain.Member;
-import admin.adminsiteserver.member.domain.RoleType;
+import admin.adminsiteserver.common.domain.RoleType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

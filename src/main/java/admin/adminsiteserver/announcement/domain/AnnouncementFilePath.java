@@ -1,29 +1,39 @@
 package admin.adminsiteserver.announcement.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.*;
 
-@Slf4j
 @Getter
 @Entity
 @NoArgsConstructor(access = PROTECTED)
-@AllArgsConstructor
 public class AnnouncementFilePath {
-
     @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private String fileName;
     private String fileUrl;
+    private boolean deleted;
 
     public AnnouncementFilePath(String fileName, String fileUrl) {
+        this(null, fileName, fileUrl);
+    }
+
+    public AnnouncementFilePath(Long id, String fileName, String fileUrl) {
+        this.id = id;
         this.fileName = fileName;
         this.fileUrl = fileUrl;
+        this.deleted = false;
+    }
+
+    public void delete() {
+        this.deleted = true;
+    }
+
+    public boolean notDeleted() {
+        return !this.deleted;
     }
 }

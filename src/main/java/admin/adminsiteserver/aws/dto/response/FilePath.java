@@ -1,17 +1,20 @@
 package admin.adminsiteserver.aws.dto.response;
 
+import admin.adminsiteserver.aws.exception.ConvertFileException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.URL;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class FilePath {
     private String fileName;
+
+    @URL
     private String fileUrl;
 
     public static FilePath of(String fileName, String fileUrl) {
@@ -23,26 +26,17 @@ public class FilePath {
             Constructor<T> constructor = clazz.getConstructor(String.class, String.class);
             return constructor.newInstance(fileName, fileUrl);
         } catch (Exception e) {
-            e.getStackTrace();
+            throw new ConvertFileException();
         }
-        return null;
     }
 
     public static <T> FilePath from(T filePath) {
         try {
-            String newFileName = "";
-            String newFileUrl = "";
-            for (Method method : filePath.getClass().getMethods()) {
-                if (method.getName().equals("getFileName")) {
-                    newFileName = (String) method.invoke(filePath);
-                }
-                if (method.getName().equals("getFileUrl")) {
-                    newFileUrl = (String) method.invoke(filePath);
-                }
-            }
-            return new FilePath(newFileName, newFileUrl);
+            String fileName = (String) filePath.getClass().getMethod("getFileName").invoke(filePath);
+            String fileUrl = (String) filePath.getClass().getMethod("getFileUrl").invoke(filePath);
+            return new FilePath(fileName, fileUrl);
         } catch (Exception e) {
-            throw new IllegalArgumentException();
+            throw new ConvertFileException();
         }
     }
 }

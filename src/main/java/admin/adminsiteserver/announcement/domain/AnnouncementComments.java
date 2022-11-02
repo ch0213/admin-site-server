@@ -1,40 +1,63 @@
 package admin.adminsiteserver.announcement.domain;
 
-import admin.adminsiteserver.announcement.exception.NotExistAnnouncementCommentException;
-import lombok.Getter;
+import admin.adminsiteserver.announcement.exception.AnnouncementCommentNotFoundException;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static javax.persistence.CascadeType.ALL;
-import static lombok.AccessLevel.PROTECTED;
-
-@Getter
 @Embeddable
-@NoArgsConstructor(access = PROTECTED)
+@NoArgsConstructor
 public class AnnouncementComments {
-
-    @OneToMany(cascade = ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
     @JoinColumn(name = "announcement_id")
     private List<AnnouncementComment> comments = new ArrayList<>();
 
-    public void addComment(AnnouncementComment comment) {
-        this.comments.add(comment);
+    public AnnouncementComments(List<AnnouncementComment> comments) {
+        this.comments.addAll(comments);
     }
 
-    public AnnouncementComment findUpdateComment(Long commentId) {
+    public AnnouncementComment add(String content, Author author) {
+        AnnouncementComment comment = new AnnouncementComment(content, author);
+        comments.add(comment);
+        return comment;
+    }
+
+    public void update(Long commentId, String content, Author author) {
+        AnnouncementComment comment = findById(commentId);
+        comment.update(content, author);
+    }
+
+    public void exchange(Author author) {
+        this.comments.forEach(comment -> comment.exchange(author));
+    }
+
+    public void delete(Long commentId, Author author) {
+        AnnouncementComment comment = findById(commentId);
+        comment.delete(author);
+    }
+
+    public void deleteAll() {
+        this.comments.forEach(AnnouncementComment::forceDelete);
+    }
+
+    public List<AnnouncementComment> getNotDeletedComments() {
+        return this.comments.stream()
+                .filter(comment -> !comment.isDeleted())
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    private AnnouncementComment findById(Long commentId) {
         return comments.stream()
-                .filter(comment -> comment.getId().equals(commentId))
+                .filter(comment -> comment.isMatch(commentId))
                 .findAny()
-                .orElseThrow(NotExistAnnouncementCommentException::new);
-    }
-
-    public void deleteComment(AnnouncementComment comment) {
-        comments.remove(comment);
+                .orElseThrow(AnnouncementCommentNotFoundException::new);
     }
 }

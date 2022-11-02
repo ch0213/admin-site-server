@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static admin.adminsiteserver.AcceptanceTestSteps.given;
+import static admin.adminsiteserver.member.fixture.MemberInformation.IMAGE_FILE;
 import static admin.adminsiteserver.member.fixture.MemberFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -40,7 +41,7 @@ public class MemberSteps {
     }
 
     public static ExtractableResponse<Response> 회원_생성_요청(String email, String name, String studentNumber) {
-        return 회원_생성_요청(email, PASSWORD, name, studentNumber, PHONE_NUMBER, IMAGE_FILE);
+        return 회원_생성_요청(email, 회원1.getPassword(), name, studentNumber, 회원1.getPhoneNumber(), IMAGE_FILE);
     }
 
     public static ExtractableResponse<Response> 회원정보_변경_요청(String token, String name, String studentNumber,
