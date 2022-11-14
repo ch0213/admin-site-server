@@ -60,6 +60,8 @@ dependencies {
     implementation 'org.projectlombok:lombok:1.18.20'
     annotationProcessor 'org.projectlombok:lombok'
     compileOnly 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -91,7 +93,7 @@ jacocoTestReport {
     }
 
     def Qdomains = []
-    for (qPattern in '*.QA'..'*.QZ') {
+    for (qPattern in '**/QA'..'**/QZ') {
         Qdomains.add(qPattern + '*')
     }
 
@@ -101,6 +103,7 @@ jacocoTestReport {
                     '**/*Application*',
                     '**/*Request*',
                     '**/*Response*',
+                    '**/*Exception*',
                     '**/*Dto*',
             ] + Qdomains)
         }))
