@@ -1,6 +1,7 @@
 package admin.adminsiteserver.announcement.application;
 
 import admin.adminsiteserver.announcement.domain.AnnouncementComment;
+import admin.adminsiteserver.announcement.domain.Author;
 import admin.adminsiteserver.announcement.exception.AnnouncementNotFoundException;
 import admin.adminsiteserver.announcement.ui.request.CommentRequest;
 import admin.adminsiteserver.announcement.ui.request.AnnouncementRequest;
@@ -10,8 +11,6 @@ import admin.adminsiteserver.announcement.domain.AnnouncementRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static admin.adminsiteserver.announcement.util.LoginMemberConverter.author;
 
 @Service
 @Transactional
@@ -27,29 +26,29 @@ public class AnnouncementService {
 
     public void update(Long announcementId, AnnouncementRequest request, LoginMember loginMember) {
         Announcement announcement = findById(announcementId);
-        announcement.update(request.getTitle(), request.getContent(), request.getAnnouncementFiles(), author(loginMember));
+        announcement.update(request.getTitle(), request.getContent(), request.getAnnouncementFiles(), loginMember.toAuthor(Author::new));
     }
 
     public void delete(Long announcementId, LoginMember loginMember) {
         Announcement announcement = findById(announcementId);
-        announcement.delete(author(loginMember));
+        announcement.delete(loginMember.toAuthor(Author::new));
     }
 
     public Long addComment(Long announcementId, CommentRequest request, LoginMember loginMember) {
         Announcement announcement = findById(announcementId);
-        AnnouncementComment comment = announcement.addComment(request.getComment(), author(loginMember));
+        AnnouncementComment comment = announcement.addComment(request.getComment(), loginMember.toAuthor(Author::new));
         announcementRepository.flush();
         return comment.getId();
     }
 
     public void updateComment(Long announcementId, Long commentId, CommentRequest request, LoginMember loginMember) {
         Announcement announcement = findById(announcementId);
-        announcement.updateComment(commentId, request.getComment(), author(loginMember));
+        announcement.updateComment(commentId, request.getComment(), loginMember.toAuthor(Author::new));
     }
 
     public void deleteComment(Long announcementId, Long commentId, LoginMember loginMember) {
         Announcement announcement = findById(announcementId);
-        announcement.deleteComment(commentId, author(loginMember));
+        announcement.deleteComment(commentId, loginMember.toAuthor(Author::new));
     }
 
     private Announcement findById(Long id) {

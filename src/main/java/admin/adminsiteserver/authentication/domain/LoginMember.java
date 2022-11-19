@@ -17,6 +17,10 @@ public class LoginMember {
 
     private final RoleType roleType;
 
+    public <T> T toAuthor(AuthorConstructor<T> constructor) {
+        return constructor.author(id, name, studentNumber, roleType);
+    }
+
     public static LoginMember from(MemberAdapter memberAdapter) {
         return new LoginMember(
                 memberAdapter.getId(),
