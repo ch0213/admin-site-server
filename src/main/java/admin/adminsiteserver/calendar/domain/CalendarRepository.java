@@ -1,6 +1,9 @@
 package admin.adminsiteserver.calendar.domain;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
 
-public interface CalendarRepository extends JpaRepository<Calendar, Long>, CalendarCustomRepository {
+public interface CalendarRepository {
+    Calendar save(Calendar calendar);
+
+    Optional<Calendar> findByIdAndDeletedIsFalse(Long id);
 }

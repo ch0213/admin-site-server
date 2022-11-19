@@ -1,39 +1,76 @@
 package admin.adminsiteserver.calendar.domain;
 
-import lombok.AllArgsConstructor;
+import admin.adminsiteserver.calendar.exception.CalendarPeriodException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.*;
 
-@Entity
 @Getter
+@Entity
 @NoArgsConstructor(access = PROTECTED)
-@AllArgsConstructor
 public class Calendar {
     @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    @Embedded
+    private Author author;
+
     private String title;
 
-    private LocalDate startDate;
+    private String description;
 
-    public void updateTitleAndStartDate(String title, LocalDate localDate) {
-        this.title = title;
-        this.startDate = localDate;
+    private LocalDateTime startTime;
+
+    private LocalDateTime endTime;
+
+    private boolean deleted;
+
+    public Calendar(Author author, String title, String description, LocalDateTime startTime, LocalDateTime endTime) {
+        this(null, author, title, description, startTime, endTime);
     }
 
-    public Calendar(String title, LocalDate startDate) {
+    public Calendar(Long id, Author author, String title, String description, LocalDateTime startTime, LocalDateTime endTime) {
+        validate(startTime, endTime);
+        this.id = id;
+        this.author = author;
         this.title = title;
-        this.startDate = startDate;
+        this.description = description;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
+
+    public void update(String title, String description, LocalDateTime startTime, LocalDateTime endTime, Author author) {
+        validate(startTime, endTime);
+        this.author.validate(author);
+        this.title = title;
+        this.description = description;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
+
+    public void delete(Author author) {
+        this.author.validate(author);
+        this.deleted = true;
+    }
+
+    public void exchange(Author author) {
+        if (this.author.equalsId(author)) {
+            this.author = author;
+        }
+    }
+
+    private void validate(LocalDateTime start, LocalDateTime end) {
+        if (start.isAfter(end)) {
+            throw new CalendarPeriodException();
+        }
     }
 }
