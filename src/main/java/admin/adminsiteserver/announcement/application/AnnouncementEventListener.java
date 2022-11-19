@@ -30,25 +30,32 @@ public class AnnouncementEventListener {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener
     public void handle(MemberEvent event) {
-        Member member = findMember(event);
+        Member member = findMemberById(event.getMemberId());
         List<Announcement> announcements = announcementRepository.findAllByDeletedIsFalse();
         announcements.forEach(announcement -> announcement.exchange(author(member)));
-
-        MemberEventHistory history = findMemberEventHistory(event);
-        history.process();
+        complete(event);
     }
 
-    private Author author(Member member) {
-        return new Author(member.getId(), member.getName(), member.getStudentNumber(), member.getRole());
-    }
-
-    private Member findMember(MemberEvent event) {
-        return memberRepository.findById(event.getMemberId())
+    private Member findMemberById(Long memberId) {
+        return memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
     }
 
-    private MemberEventHistory findMemberEventHistory(MemberEvent event) {
-        return memberEventHistoryRepository.findByMemberId(event.getMemberId())
+    private MemberEventHistory findMemberEventHistoryById(Long memberId) {
+        return memberEventHistoryRepository.findByMemberId(memberId)
                 .orElseThrow(MemberEventHistoryNotFoundException::new);
+    }
+
+    private Author author(Member member) {
+        return new Author(
+                member.getId(),
+                member.getName(),
+                member.getStudentNumber(),
+                member.getRole());
+    }
+
+    private void complete(MemberEvent event) {
+        MemberEventHistory history = findMemberEventHistoryById(event.getMemberId());
+        history.process();
     }
 }
