@@ -1,5 +1,6 @@
 package admin.adminsiteserver.member.fixture;
 
+import admin.adminsiteserver.authentication.domain.AuthorConstructor;
 import admin.adminsiteserver.common.domain.RoleType;
 import admin.adminsiteserver.member.domain.Member;
 import admin.adminsiteserver.member.domain.MemberFilePath;
@@ -50,5 +51,9 @@ public enum MemberFixture {
 
     public static List<Member> members() {
         return List.of(회원1.toEntityWithId(), 회원2.toEntity(), 회원.toEntity());
+    }
+
+    public <T> T author(AuthorConstructor<T> constructor) {
+        return constructor.author(id, name, studentNumber, roleType);
     }
 }

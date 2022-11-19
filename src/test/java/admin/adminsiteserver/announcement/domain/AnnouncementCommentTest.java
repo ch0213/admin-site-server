@@ -1,10 +1,10 @@
 package admin.adminsiteserver.announcement.domain;
 
 import admin.adminsiteserver.common.exception.PermissionDeniedException;
+import admin.adminsiteserver.member.fixture.MemberFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static admin.adminsiteserver.announcement.util.MemberFixtureConverter.author;
 import static admin.adminsiteserver.member.fixture.MemberFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -102,5 +102,9 @@ class AnnouncementCommentTest {
         comment.forceDelete();
 
         assertThat(comment.isDeleted()).isTrue();
+    }
+
+    private Author author(MemberFixture memberFixture) {
+        return memberFixture.author(Author::new);
     }
 }

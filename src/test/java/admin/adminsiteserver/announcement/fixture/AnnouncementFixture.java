@@ -9,24 +9,23 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Collections;
 
-import static admin.adminsiteserver.announcement.util.MemberFixtureConverter.author;
 import static admin.adminsiteserver.member.fixture.MemberFixture.*;
 
 @Getter
 @RequiredArgsConstructor
 public enum AnnouncementFixture {
-    관리자1_공지사항(1L, author(관리자1), "안녕하세요 관리자1의 공지사항입니다.", "잘부탁드립니다 - 괸리자1"),
-    관리자2_공지사항(2L, author(관리자2), "안녕하세요 관리자2의 공지사항입니다.", "잘부탁드립니다 - 괸리자2"),
+    관리자1_공지사항(1L, 관리자1.author(Author::new), "안녕하세요 관리자1의 공지사항입니다.", "잘부탁드립니다 - 괸리자1"),
+    관리자2_공지사항(2L, 관리자2.author(Author::new), "안녕하세요 관리자2의 공지사항입니다.", "잘부탁드립니다 - 괸리자2"),
 
-    회장1_공지사항(3L, author(회장1), "안녕하세요 회장1의 공지사항입니다.", "잘부탁드립니다 - 회장1"),
-    회장2_공지사항(4L, author(회장2), "안녕하세요 회장2의 공지사항입니다.", "잘부탁드립니다 - 회장2"),
+    회장1_공지사항(3L, 회장1.author(Author::new), "안녕하세요 회장1의 공지사항입니다.", "잘부탁드립니다 - 회장1"),
+    회장2_공지사항(4L, 회장2.author(Author::new), "안녕하세요 회장2의 공지사항입니다.", "잘부탁드립니다 - 회장2"),
 
-    임원1_공지사항(5L, author(임원1), "안녕하세요 임원1의 공지사항입니다.", "잘부탁드립니다 - 임원1"),
-    임원2_공지사항(6L, author(관리자1), "안녕하세요 임원2의 공지사항입니다.", "잘부탁드립니다 - 임원2"),
+    임원1_공지사항(5L, 임원1.author(Author::new), "안녕하세요 임원1의 공지사항입니다.", "잘부탁드립니다 - 임원1"),
+    임원2_공지사항(6L, 관리자1.author(Author::new), "안녕하세요 임원2의 공지사항입니다.", "잘부탁드립니다 - 임원2"),
 
-    회원1_공지사항(7L, author(회원1), "안녕하세요 회원1의 공지사항입니다.", "잘부탁드립니다 - 회원1"),
-    회원2_공지사항(8L, author(회원2), "안녕하세요 회원2의 공지사항입니다.", "잘부탁드립니다 - 회원2"),
-    회원_공지사항(9L, author(회원), "안녕하세요 회원의 공지사항입니다.", "잘부탁드립니다 - 회원");
+    회원1_공지사항(7L, 회원1.author(Author::new), "안녕하세요 회원1의 공지사항입니다.", "잘부탁드립니다 - 회원1"),
+    회원2_공지사항(8L, 회원2.author(Author::new), "안녕하세요 회원2의 공지사항입니다.", "잘부탁드립니다 - 회원2"),
+    회원_공지사항(9L, 회원.author(Author::new), "안녕하세요 회원의 공지사항입니다.", "잘부탁드립니다 - 회원");
 
     private final Long id;
 
