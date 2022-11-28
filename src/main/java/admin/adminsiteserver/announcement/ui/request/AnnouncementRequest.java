@@ -24,10 +24,10 @@ public class AnnouncementRequest {
 
     private List<FilePath> files;
 
-    public Announcement toEntity(LoginMember loginMember) {
+    public Announcement toEntity(Author author) {
         List<AnnouncementFilePath> filePaths = getAnnouncementFiles();
         return Announcement.builder()
-                .author(loginMember.toAuthor(Author::new))
+                .author(author)
                 .title(getTitle())
                 .content(getContent())
                 .filePaths(filePaths)
