@@ -9,6 +9,10 @@ import java.time.LocalDateTime;
 @Getter
 public class CalendarPeriodException extends BaseException {
     public CalendarPeriodException() {
-        super("종료일은 시작일 이후여야 합니다.", LocalDateTime.now(), HttpStatus.BAD_REQUEST);
+        this("종료일은 시작일 이후여야 합니다.");
+    }
+
+    public CalendarPeriodException(String message) {
+        super(message, LocalDateTime.now(), HttpStatus.BAD_REQUEST);
     }
 }
