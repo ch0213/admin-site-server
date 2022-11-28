@@ -194,4 +194,22 @@ class CalendarAcceptanceTest extends AcceptanceTest {
         assertThat(일정_삭제_응답.statusCode())
                 .isEqualTo(HttpStatus.FORBIDDEN.value());
     }
+
+    @Test
+    void 일정_목록을_조회한다() {
+        String 관리자토큰 = 로그인되어_있음(관리자1.getEmail(), 관리자1.getPassword());
+        일정_등록_요청(관리자토큰, "세미나1", "인프라 특강", "2022-10-30T11:00", "2022-11-11T11:11");
+        일정_등록_요청(관리자토큰, "세미나2", "인프라 특강", "2022-10-30T11:00", "2022-12-01T11:11");
+        일정_등록_요청(관리자토큰, "세미나3", "인프라 특강", "2022-11-05T11:00", "2022-11-10T11:11");
+        일정_등록_요청(관리자토큰, "세미나4", "인프라 특강", "2022-11-25T11:00", "2022-12-01T11:11");
+
+        일정_등록_요청(관리자토큰, "세미나5", "인프라 특강", "2022-10-25T11:00", "2022-10-31T11:11");
+        일정_등록_요청(관리자토큰, "세미나6", "인프라 특강", "2022-12-01T11:00", "2022-12-02T11:11");
+
+        var response = 일정_목록_조회_요청(2022, 11).jsonPath().getList("title", String.class);
+        assertAll(
+                () -> assertThat(response).hasSize(4),
+                () -> assertThat(response).containsExactly("세미나1", "세미나2", "세미나3", "세미나4")
+        );
+    }
 }
