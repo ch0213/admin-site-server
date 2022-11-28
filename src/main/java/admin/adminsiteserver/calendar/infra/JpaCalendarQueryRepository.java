@@ -38,8 +38,8 @@ public class JpaCalendarQueryRepository implements CalendarQueryRepository {
     private BooleanExpression matches(int year, int month) {
         LocalDateTime min = LocalDateTime.of(LocalDate.of(year, month, 1), LocalTime.MIN);
         LocalDateTime max = LocalDateTime.of(LocalDate.of(year, month, 1).plusMonths(1), LocalTime.MIN);
-        return calendar.startTime.before(max)
-                .or(calendar.endTime.goe(min))
+        return calendar.endTime.goe(min)
+                .and(calendar.startTime.before(max))
                 .and(calendar.deleted.isFalse());
     }
 }
