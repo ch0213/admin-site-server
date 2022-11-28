@@ -2,6 +2,7 @@ package admin.adminsiteserver.announcement.domain;
 
 import admin.adminsiteserver.common.domain.RoleType;
 import admin.adminsiteserver.common.exception.PermissionDeniedException;
+import admin.adminsiteserver.member.fixture.MemberFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +14,6 @@ import java.util.stream.Collectors;
 import static admin.adminsiteserver.announcement.fixture.AnnouncementCommentFixture.*;
 import static admin.adminsiteserver.announcement.fixture.AnnouncementFilePathFixture.*;
 import static admin.adminsiteserver.announcement.fixture.AnnouncementFixture.*;
-import static admin.adminsiteserver.announcement.util.MemberFixtureConverter.author;
 import static admin.adminsiteserver.member.fixture.MemberFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -239,5 +239,9 @@ class AnnouncementTest {
 
     private AnnouncementComments announcementComments(AnnouncementComment... comments) {
         return new AnnouncementComments(Arrays.stream(comments).collect(Collectors.toList()));
+    }
+
+    private Author author(MemberFixture memberFixture) {
+        return memberFixture.author(Author::new);
     }
 }

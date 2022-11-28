@@ -1,8 +1,8 @@
-package admin.adminsiteserver.announcement.application;
+package admin.adminsiteserver.calendar.application;
 
-import admin.adminsiteserver.announcement.domain.Announcement;
-import admin.adminsiteserver.announcement.domain.AnnouncementRepository;
-import admin.adminsiteserver.announcement.domain.Author;
+import admin.adminsiteserver.calendar.domain.Author;
+import admin.adminsiteserver.calendar.domain.Calendar;
+import admin.adminsiteserver.calendar.domain.CalendarQueryRepository;
 import admin.adminsiteserver.member.domain.Member;
 import admin.adminsiteserver.member.domain.MemberEvent;
 import admin.adminsiteserver.member.domain.MemberEventHistory;
@@ -21,8 +21,8 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class AnnouncementEventListener {
-    private final AnnouncementRepository announcementRepository;
+public class CalendarEventListener {
+    private final CalendarQueryRepository calendarQueryRepository;
     private final MemberEventHistoryRepository memberEventHistoryRepository;
     private final MemberRepository memberRepository;
 
@@ -31,8 +31,8 @@ public class AnnouncementEventListener {
     @TransactionalEventListener
     public void handle(MemberEvent event) {
         Member member = findMemberById(event.getMemberId());
-        List<Announcement> announcements = announcementRepository.findAllByDeletedIsFalse();
-        announcements.forEach(announcement -> announcement.exchange(author(member)));
+        List<Calendar> calendars = calendarQueryRepository.findAllByAuthorId(member.getId());
+        calendars.forEach(calendar -> calendar.exchange(author(member)));
         complete(event);
     }
 

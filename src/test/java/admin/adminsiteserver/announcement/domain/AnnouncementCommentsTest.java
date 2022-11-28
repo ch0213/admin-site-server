@@ -1,6 +1,7 @@
 package admin.adminsiteserver.announcement.domain;
 
 import admin.adminsiteserver.common.exception.PermissionDeniedException;
+import admin.adminsiteserver.member.fixture.MemberFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -8,7 +9,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static admin.adminsiteserver.announcement.fixture.AnnouncementCommentFixture.*;
-import static admin.adminsiteserver.announcement.util.MemberFixtureConverter.author;
 import static admin.adminsiteserver.member.fixture.MemberFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -134,5 +134,9 @@ class AnnouncementCommentsTest {
         return comments.getNotDeletedComments().stream()
                 .map(AnnouncementComment::getComment)
                 .collect(Collectors.toList());
+    }
+
+    private Author author(MemberFixture memberFixture) {
+        return memberFixture.author(Author::new);
     }
 }

@@ -2,19 +2,16 @@ package admin.adminsiteserver.announcement.ui.request;
 
 import admin.adminsiteserver.announcement.domain.Announcement;
 import admin.adminsiteserver.announcement.domain.AnnouncementFilePath;
+import admin.adminsiteserver.announcement.domain.Author;
 import admin.adminsiteserver.authentication.domain.LoginMember;
 import admin.adminsiteserver.aws.dto.response.FilePath;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.URL;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static admin.adminsiteserver.announcement.util.LoginMemberConverter.author;
 
 @Getter
 @NoArgsConstructor
@@ -27,10 +24,10 @@ public class AnnouncementRequest {
 
     private List<FilePath> files;
 
-    public Announcement toEntity(LoginMember loginMember) {
+    public Announcement toEntity(Author author) {
         List<AnnouncementFilePath> filePaths = getAnnouncementFiles();
         return Announcement.builder()
-                .author(author(loginMember))
+                .author(author)
                 .title(getTitle())
                 .content(getContent())
                 .filePaths(filePaths)

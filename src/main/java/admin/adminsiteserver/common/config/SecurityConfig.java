@@ -1,6 +1,5 @@
 package admin.adminsiteserver.common.config;
 
-import admin.adminsiteserver.authentication.ui.JwtAuthenticationFilter;
 import admin.adminsiteserver.authentication.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -10,18 +9,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import static org.springframework.http.HttpMethod.*;
-import static org.springframework.security.config.http.SessionCreationPolicy.*;
-
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
     private final AuthenticationEntryPoint authenticationEntryPoint;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -32,24 +26,13 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .cors().and()
-                .csrf().disable()
-                .httpBasic().disable()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
-                .sessionManagement().sessionCreationPolicy(STATELESS)
-                .and()
-                .authorizeRequests()
-                .antMatchers("/signup", "/login").permitAll()
-                .antMatchers("/members", "/members/**").permitAll()
-                .antMatchers("/announcements/**/comments", "/announcements/**/comments/**").hasAnyRole("ADMIN", "PRESIDENT", "OFFICER", "MEMBER")
-                .antMatchers(GET, "/announcements", "/announcements/**").permitAll()
-                .antMatchers(POST, "/announcements", "/announcements/**").hasAnyRole("ADMIN", "PRESIDENT", "OFFICER")
-                .antMatchers(PUT, "/announcements", "/announcements/**").hasAnyRole("ADMIN", "PRESIDENT", "OFFICER")
-                .antMatchers(DELETE, "/announcements", "/announcements/**").hasAnyRole("ADMIN", "PRESIDENT", "OFFICER")
-                .and()
-                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
-        return http.build();
+        AdminSiteAuthorization authorization = new AdminSiteAuthorization(http, jwtTokenProvider);
+        return authorization
+                .announcements()
+                .authentication()
+                .calendars()
+                .members()
+                .build(authenticationEntryPoint);
     }
 
     @Bean

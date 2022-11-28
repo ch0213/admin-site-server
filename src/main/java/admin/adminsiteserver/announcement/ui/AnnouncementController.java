@@ -1,6 +1,7 @@
 package admin.adminsiteserver.announcement.ui;
 
 import admin.adminsiteserver.announcement.application.AnnouncementQueryService;
+import admin.adminsiteserver.announcement.domain.Author;
 import admin.adminsiteserver.announcement.ui.request.AnnouncementRequest;
 import admin.adminsiteserver.announcement.ui.response.AnnouncementSimpleResponse;
 import admin.adminsiteserver.announcement.ui.request.CommentRequest;
@@ -32,7 +33,7 @@ public class AnnouncementController {
             @Valid @RequestBody AnnouncementRequest request,
             @AuthenticationPrincipal LoginMember loginMember
     ) {
-        Long announcementId = announcementService.upload(request, loginMember);
+        Long announcementId = announcementService.upload(request, loginMember.toAuthor(Author::new));
         return ResponseEntity.created(URI.create("/announcements/" + announcementId)).build();
     }
 
@@ -42,13 +43,13 @@ public class AnnouncementController {
             @Valid @RequestBody AnnouncementRequest request,
             @AuthenticationPrincipal LoginMember loginMember
     ) {
-        announcementService.update(announcementId, request, loginMember);
+        announcementService.update(announcementId, request, loginMember.toAuthor(Author::new));
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{announcementId}")
     public ResponseEntity<Void> delete(@PathVariable Long announcementId, @AuthenticationPrincipal LoginMember loginMember) {
-        announcementService.delete(announcementId, loginMember);
+        announcementService.delete(announcementId, loginMember.toAuthor(Author::new));
         return ResponseEntity.noContent().build();
     }
 
@@ -70,7 +71,7 @@ public class AnnouncementController {
             @Valid @RequestBody CommentRequest request,
             @AuthenticationPrincipal LoginMember loginMember
     ) {
-        Long commentId = announcementService.addComment(announcementId, request, loginMember);
+        Long commentId = announcementService.addComment(announcementId, request, loginMember.toAuthor(Author::new));
         return ResponseEntity.created(URI.create(String.format(COMMENT_URI_FORMAT, announcementId, commentId))).build();
     }
 
@@ -81,7 +82,7 @@ public class AnnouncementController {
             @Valid @RequestBody CommentRequest request,
             @AuthenticationPrincipal LoginMember loginMember
     ) {
-        announcementService.updateComment(announcementId, commentId, request, loginMember);
+        announcementService.updateComment(announcementId, commentId, request, loginMember.toAuthor(Author::new));
         return ResponseEntity.ok().build();
     }
 
@@ -91,7 +92,7 @@ public class AnnouncementController {
             @PathVariable Long commentId,
             @AuthenticationPrincipal LoginMember loginMember
     ) {
-        announcementService.deleteComment(announcementId, commentId, loginMember);
+        announcementService.deleteComment(announcementId, commentId, loginMember.toAuthor(Author::new));
         return ResponseEntity.noContent().build();
     }
 }
