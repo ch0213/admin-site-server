@@ -1,6 +1,6 @@
 package admin.adminsiteserver.common.domain;
 
-import admin.adminsiteserver.levelup.exception.NonExistentRoleException;
+import admin.adminsiteserver.common.exception.RoleNotFoundException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +22,6 @@ public enum RoleType {
         return Arrays.stream(RoleType.values())
                 .filter(roleType -> roleType.getDescription().equals(newRole))
                 .findAny()
-                .orElseThrow(NonExistentRoleException::new);
+                .orElseThrow(RoleNotFoundException::new);
     }
 }
