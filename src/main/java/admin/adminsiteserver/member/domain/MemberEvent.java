@@ -1,6 +1,5 @@
 package admin.adminsiteserver.member.domain;
 
-import admin.adminsiteserver.common.domain.RoleType;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
