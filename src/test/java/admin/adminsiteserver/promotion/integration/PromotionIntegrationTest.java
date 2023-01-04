@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 
 import static admin.adminsiteserver.common.domain.RoleType.MEMBER;
 import static admin.adminsiteserver.common.domain.RoleType.OFFICER;
+import static admin.adminsiteserver.promotion.domain.PromotionStatus.APPROVE;
+import static admin.adminsiteserver.promotion.domain.PromotionStatus.REJECT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -52,7 +54,7 @@ class PromotionIntegrationTest {
         assertAll(
                 () -> assertThat(events.stream(PromotionEvent.class).count()).isOne(),
                 () -> assertThat(firstEvent().getPromotionId()).isEqualTo(promotionId1),
-                () -> assertThat(firstEvent().getStatus().name()).isEqualTo("APPROVE")
+                () -> assertThat(firstEvent().getStatus()).isEqualTo(APPROVE)
         );
     }
 
@@ -64,8 +66,8 @@ class PromotionIntegrationTest {
                 () -> assertThat(events.stream(PromotionEvent.class).count()).isEqualTo(2),
                 () -> assertThat(events.stream(PromotionEvent.class).map(PromotionEvent::getPromotionId))
                         .containsExactly(promotionId1, promotionId2),
-                () -> assertThat(events.stream(PromotionEvent.class).map(it -> it.getStatus().name()))
-                        .containsExactly("APPROVE", "APPROVE")
+                () -> assertThat(events.stream(PromotionEvent.class).map(PromotionEvent::getStatus))
+                        .containsExactly(APPROVE, APPROVE)
         );
     }
 
@@ -76,7 +78,7 @@ class PromotionIntegrationTest {
         assertAll(
                 () -> assertThat(events.stream(PromotionEvent.class).count()).isOne(),
                 () -> assertThat(firstEvent().getPromotionId()).isEqualTo(promotionId1),
-                () -> assertThat(firstEvent().getStatus().name()).isEqualTo("REJECT")
+                () -> assertThat(firstEvent().getStatus()).isEqualTo(REJECT)
         );
     }
 
@@ -88,8 +90,8 @@ class PromotionIntegrationTest {
                 () -> assertThat(events.stream(PromotionEvent.class).count()).isEqualTo(2),
                 () -> assertThat(events.stream(PromotionEvent.class).map(PromotionEvent::getPromotionId))
                         .containsExactly(promotionId1, promotionId2),
-                () -> assertThat(events.stream(PromotionEvent.class).map(it -> it.getStatus().name()))
-                        .containsExactly("REJECT", "REJECT")
+                () -> assertThat(events.stream(PromotionEvent.class).map(PromotionEvent::getStatus))
+                        .containsExactly(REJECT, REJECT)
         );
     }
 
