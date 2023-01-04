@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-import static admin.adminsiteserver.promotion.domain.PromotionStatus.APPROVE;
 import static org.springframework.transaction.event.TransactionPhase.BEFORE_COMMIT;
 
 @Component
@@ -34,7 +33,7 @@ public class MemberEventListener {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener
     public void promotionEvent(PromotionEvent event) {
-        if (event.getStatus() == APPROVE) {
+        if (event.approved()) {
             Member member = findById(event.getMemberId());
             member.updateRole(event.getRole());
         }

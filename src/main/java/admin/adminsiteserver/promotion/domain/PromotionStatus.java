@@ -14,6 +14,10 @@ public enum PromotionStatus {
                 .orElseThrow(PromotionStatusNotFoundException::new);
     }
 
+    public boolean approved() {
+        return this == APPROVE;
+    }
+
     private boolean matches(String type) {
         return this.name().equals(type);
     }

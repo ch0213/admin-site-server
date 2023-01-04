@@ -24,4 +24,8 @@ public class PromotionEvent {
         this.role = role;
         this.eventDateTime = LocalDateTime.now();
     }
+
+    public boolean approved() {
+        return status.approved();
+    }
 }
