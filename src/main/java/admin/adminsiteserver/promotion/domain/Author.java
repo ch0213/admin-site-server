@@ -76,4 +76,12 @@ public class Author {
     public int hashCode() {
         return Objects.hash(memberId, name, studentNumber, roleType);
     }
+
+    @Override
+    public String toString() {
+        return "Author{" +
+                "memberId=" + memberId +
+                ", roleType=" + roleType +
+                '}';
+    }
 }

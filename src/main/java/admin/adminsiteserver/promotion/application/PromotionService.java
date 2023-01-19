@@ -9,6 +9,7 @@ import admin.adminsiteserver.promotion.domain.Promotion;
 import admin.adminsiteserver.promotion.domain.PromotionRepository;
 import admin.adminsiteserver.promotion.exception.PromotionNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,10 +19,14 @@ import java.util.stream.Collectors;
 
 import static admin.adminsiteserver.promotion.domain.PromotionStatus.WAITING;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class PromotionService {
+    private static final String APPROVED_LOG_FORM = "Member({})'s promotion request({}) approved.";
+    private static final String REJECTED_LOG_FORM = "Member({})'s promotion request({}) rejected.";
+
     private final PromotionRepository promotionRepository;
 
     @Transactional
@@ -50,6 +55,7 @@ public class PromotionService {
         Promotion promotion = findById(promotionId);
         promotion.approve();
         promotionRepository.save(promotion);
+        log(APPROVED_LOG_FORM, promotion);
     }
 
     @Transactional
@@ -57,6 +63,7 @@ public class PromotionService {
         List<Promotion> promotions = promotionRepository.findAllByIdInAndStatus(promotionIds, WAITING);
         promotions.forEach(Promotion::approve);
         promotionRepository.saveAll(promotions);
+        promotions.forEach(promotion -> log(APPROVED_LOG_FORM, promotion));
     }
 
     @Transactional
@@ -64,6 +71,7 @@ public class PromotionService {
         Promotion promotion = findById(promotionId);
         promotion.reject();
         promotionRepository.save(promotion);
+        log(APPROVED_LOG_FORM, promotion);
     }
 
     @Transactional
@@ -71,6 +79,7 @@ public class PromotionService {
         List<Promotion> promotions = promotionRepository.findAllByIdInAndStatus(promotionIds, WAITING);
         promotions.forEach(Promotion::reject);
         promotionRepository.saveAll(promotions);
+        promotions.forEach(promotion -> log(REJECTED_LOG_FORM, promotion));
     }
 
     public List<PromotionResponse> findAll(PromotionFindRequest request, Pageable pageable) {
@@ -103,5 +112,9 @@ public class PromotionService {
     private Promotion findById(Long promotionId) {
         return promotionRepository.findByIdAndStatus(promotionId, WAITING)
                 .orElseThrow(PromotionNotFoundException::new);
+    }
+
+    private void log(String format, Promotion promotion) {
+        log.info(format, promotion.getAuthor(), promotion.getRole());
     }
 }
