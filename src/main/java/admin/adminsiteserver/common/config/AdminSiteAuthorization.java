@@ -62,6 +62,14 @@ public class AdminSiteAuthorization {
         return this;
     }
 
+    public AdminSiteAuthorization promotions() throws Exception {
+        http
+                .authorizeRequests()
+                .antMatchers("/promotions/**/approve", "/promotions/approve", "/promotions/**/reject", "/promotions/reject")
+                .hasAnyRole("ADMIN", "PRESIDENT");
+        return this;
+    }
+
     public SecurityFilterChain build(AuthenticationEntryPoint authenticationEntryPoint) throws Exception {
         http
                 .exceptionHandling()

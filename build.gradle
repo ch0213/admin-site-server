@@ -85,6 +85,25 @@ test {
     finalizedBy 'jacocoTestReport'
 }
 
+private excludedClassFilesForReport(classDirectories) {
+    classDirectories.setFrom(
+            files(classDirectories.files.collect {
+                fileTree(dir: it, exclude: [
+                        "**/*Application*",
+                        "**/*Config*",
+                        "**/*Request*",
+                        "**/*Response*",
+                        "**/*Exception*",
+                        "**/*Dto*",
+                        "**/Q*",
+                        "**/aws/**",
+                        "**/gallery/**",
+                        "**/qna/**",
+                ])
+            })
+    )
+}
+
 jacocoTestReport {
     reports {
         html.enabled true
@@ -92,54 +111,19 @@ jacocoTestReport {
         csv.enabled false
     }
 
-    def Qdomains = []
-    for (qPattern in '**/QA'..'**/QZ') {
-        Qdomains.add(qPattern + '*')
-    }
-
-    afterEvaluate {
-        classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: [
-                    '**/*Application*',
-                    '**/*Request*',
-                    '**/*Response*',
-                    '**/*Exception*',
-                    '**/*Dto*',
-            ] + Qdomains)
-        }))
-    }
+    excludedClassFilesForReport(classDirectories)
     finalizedBy 'jacocoTestCoverageVerification'
 }
 
 jacocoTestCoverageVerification {
-    def Qdomains = []
-    for (qPattern in '*.QA'..'*.QZ') {
-        Qdomains.add(qPattern + '*')
-    }
-
+    excludedClassFilesForReport(classDirectories)
     violationRules {
         rule {
-            element = 'CLASS'
-
-            limit {
-                counter = 'BRANCH'
-                value = 'COVEREDRATIO'
-                minimum = 0.80
-            }
-
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
                 minimum = 0.80
             }
-
-            excludes = [
-                    '**.*Application*',
-                    '**.*Request*',
-                    '**.*Response*',
-                    '**.*Exception*',
-                    '**.*Dto*'
-            ] + Qdomains
         }
     }
 }

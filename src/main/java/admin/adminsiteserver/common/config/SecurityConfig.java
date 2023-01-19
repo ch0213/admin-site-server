@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .authentication()
                 .calendars()
                 .members()
+                .promotions()
                 .build(authenticationEntryPoint);
     }
 

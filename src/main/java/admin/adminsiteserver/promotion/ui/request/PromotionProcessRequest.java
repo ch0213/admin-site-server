@@ -1,4 +1,4 @@
-package admin.adminsiteserver.levelup.ui.dto;
+package admin.adminsiteserver.promotion.ui.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class LevelUpProcessRequest {
+public class PromotionProcessRequest {
     @NotNull(message = "권한 신청 아이디를 입력해주세요.")
-    private List<Long> levelUpIds;
+    private List<Long> promotionIds;
 }
