@@ -5,6 +5,7 @@ import admin.adminsiteserver.announcement.ui.response.AnnouncementResponse;
 import admin.adminsiteserver.announcement.ui.response.AnnouncementSimpleResponse;
 import admin.adminsiteserver.announcement.domain.Announcement;
 import admin.adminsiteserver.announcement.domain.AnnouncementRepository;
+import admin.adminsiteserver.common.cache.LayeredCacheable;
 import admin.adminsiteserver.common.response.PageInformation;
 import admin.adminsiteserver.common.response.PageResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class AnnouncementQueryService {
         return AnnouncementResponse.from(announcement);
     }
 
+    @LayeredCacheable(cacheName = "announcements", key = "announcementId")
     public PageResponse<List<AnnouncementSimpleResponse>> announcements(Long announcementId, Pageable pageable) {
         Pageable param = getSortedPageable(pageable);
         Page<AnnouncementSimpleResponse> announcements = findAll(announcementId, param);
