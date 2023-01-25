@@ -35,6 +35,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+    // aop
+    implementation 'org.springframework:spring-aop'
+
     // security
     implementation 'org.springframework.boot:spring-boot-starter-security'
     testImplementation 'org.springframework.security:spring-security-test'
@@ -42,6 +45,12 @@ dependencies {
     // database
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'mysql:mysql-connector-java'
+
+    // cache
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'com.github.ben-manes.caffeine:caffeine'
+    implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.2'
 
     // querydsl
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
