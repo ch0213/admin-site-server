@@ -49,26 +49,34 @@ public class LayeredCacheAspect {
         Object result = joinPoint.proceed(joinPoint.getArgs());
         caffeineCache.put(key, result);
         redisCache.put(key, result);
-
         eventPublisher.publishEvent(CacheEvent.put(key));
         return result;
     }
 
     @Around("@annotation(LayeredCacheEvict)")
-    public void cacheEvict(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object cacheEvict(ProceedingJoinPoint joinPoint) throws Throwable {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-        LayeredCacheable cacheable = methodSignature.getMethod().getAnnotation(LayeredCacheable.class);
-        String cacheName = cacheable.cacheName();
-        String key = key(methodSignature, cacheable.key());
+        LayeredCacheEvict cacheEvict = methodSignature.getMethod().getAnnotation(LayeredCacheEvict.class);
+        String cacheName = cacheEvict.cacheName();
+        String key = key(methodSignature, cacheEvict.key());
 
-        joinPoint.proceed(joinPoint.getArgs());
+        Object result = joinPoint.proceed(joinPoint.getArgs());
 
         Cache caffeineCache = findCaffeineCacheByName(cacheName);
         Cache redisCache = findRedisCacheByName(cacheName);
+        clear(key, caffeineCache, redisCache);
+        eventPublisher.publishEvent(CacheEvent.evict(key));
+        return result;
+    }
 
+    private void clear(String key, Cache caffeineCache, Cache redisCache) {
+        if (key.isBlank()) {
+            caffeineCache.clear();
+            redisCache.clear();
+            return;
+        }
         caffeineCache.evict(key);
         redisCache.evict(key);
-        eventPublisher.publishEvent(CacheEvent.evict(key));
     }
 
     private Cache findRedisCacheByName(String cacheName) {
@@ -85,6 +93,6 @@ public class LayeredCacheAspect {
         return Arrays.stream(methodSignature.getParameterNames())
                 .filter(param -> param.equals(key))
                 .findAny()
-                .orElseThrow();
+                .orElse("");
     }
 }
