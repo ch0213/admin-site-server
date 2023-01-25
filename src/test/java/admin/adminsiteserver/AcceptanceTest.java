@@ -3,6 +3,7 @@ package admin.adminsiteserver;
 import admin.adminsiteserver.aws.infrastructure.S3Uploader;
 import admin.adminsiteserver.member.domain.Member;
 import admin.adminsiteserver.member.domain.MemberRepository;
+import admin.adminsiteserver.utils.CacheCleanup;
 import admin.adminsiteserver.utils.DatabaseCleanup;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +29,9 @@ public class AcceptanceTest {
     private DatabaseCleanup databaseCleanup;
 
     @Autowired
+    protected CacheCleanup cacheCleanup;
+
+    @Autowired
     protected MemberRepository memberRepository;
 
     @Autowired
@@ -43,6 +47,7 @@ public class AcceptanceTest {
             databaseCleanup.afterPropertiesSet();
         }
         databaseCleanup.execute();
+        cacheCleanup.execute();
         saveMembers();
     }
 
