@@ -19,6 +19,8 @@ import java.util.Objects;
 @Component
 @RequiredArgsConstructor
 public class LayeredCacheAspect {
+    private static final String EMPTY = "";
+
     private final CacheManager caffeineCacheManager;
 
     private final CacheManager redisCacheManager;
@@ -30,7 +32,7 @@ public class LayeredCacheAspect {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         LayeredCacheable cacheable = methodSignature.getMethod().getAnnotation(LayeredCacheable.class);
         String cacheName = cacheable.cacheName();
-        String key = key(methodSignature, cacheable.key());
+        String key = key(joinPoint, cacheable.key());
 
         Cache caffeineCache = findCaffeineCacheByName(cacheName);
         Cache redisCache = findRedisCacheByName(cacheName);
@@ -58,7 +60,7 @@ public class LayeredCacheAspect {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         LayeredCacheEvict cacheEvict = methodSignature.getMethod().getAnnotation(LayeredCacheEvict.class);
         String cacheName = cacheEvict.cacheName();
-        String key = key(methodSignature, cacheEvict.key());
+        String key = key(joinPoint, cacheEvict.key());
 
         Object result = joinPoint.proceed(joinPoint.getArgs());
 
@@ -89,10 +91,18 @@ public class LayeredCacheAspect {
                 "caffeine cache is null. cacheName: " + cacheName);
     }
 
-    private String key(MethodSignature methodSignature, String key) {
-        return Arrays.stream(methodSignature.getParameterNames())
+    private String key(ProceedingJoinPoint joinPoint, String key) {
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        String[] parameterNames = methodSignature.getParameterNames();
+        String parameterName = Arrays.stream(parameterNames)
                 .filter(param -> param.equals(key))
                 .findAny()
-                .orElse("");
+                .orElse(EMPTY);
+
+        return Arrays.stream(joinPoint.getArgs())
+                .map(Object::toString)
+                .filter(it -> it.equals(parameterName))
+                .findAny()
+                .orElse(EMPTY);
     }
 }
