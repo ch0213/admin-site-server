@@ -15,3 +15,9 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+
+server:
+  compression:
+    enabled: true
+    mime-types: application/json
+    min-response-size: 500
